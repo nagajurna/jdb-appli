@@ -11,8 +11,6 @@ var User = require('../Models/User');
 var passport = require('passport');
 
 var xsrfCheck = function(req, res, next) {
-	//console.log('cookie : ' + req.cookies['XSRF-TOKEN']);
-	//console.log('header : ' + req.headers['x-xsrf-token']);
 	if(req.headers['x-xsrf-token'] !== req.cookies['XSRF-TOKEN']) { 
 		return res.json({xsrfAlert: true, message: 'req.not.valid'}); 
 	}
