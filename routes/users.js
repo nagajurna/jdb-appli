@@ -11,8 +11,8 @@ var User = require('../Models/User');
 var passport = require('passport');
 
 var xsrfCheck = function(req, res, next) {
-	console.log('cookie : ' + req.cookies['XSRF-TOKEN']);
-	console.log('header : ' + req.headers['x-xsrf-token']);
+	//console.log('cookie : ' + req.cookies['XSRF-TOKEN']);
+	//console.log('header : ' + req.headers['x-xsrf-token']);
 	if(req.headers['x-xsrf-token'] !== req.cookies['XSRF-TOKEN']) { 
 		return res.json({xsrfAlert: true, message: 'req.not.valid'}); 
 	}
@@ -157,29 +157,27 @@ router.post('/forgotPassword', [xsrfCheck,credentialsPreCheck], function(req, re
 				console.log(err);
 				return res.json({mailSent: false, reason: err});
 			}
-			console.log(user);
 			//envoyer email
 			var transporter = nodemailer.createTransport({
 				service: 'Gmail',
 				auth: {
-					user: infos.mail, // Your email id
-					pass: infos.password // Your password
+					user: infos.mail, // votre adresse mail
+					pass: infos.password // mot de passe
 				}
 			});
 			var htmlMessage = '<p>' + user.name + ', cliquez sur ce lien suivant afin de créer un nouveau mot de passe :</p>' +
 							  '<p><a href="http://localhost:3000/#/forgotPassword/reset?mail=' + user.email + '&token=' + user.token + '">créer un nouveau mot de passe</a></p>'
 			var mailOptions = {
-				from: '<' + infos.mail + '>', // sender address
-				to: infos.mail, // list of receivers
-				subject: 'Reset Password', // Subject line
-				html: htmlMessage // You can choose to send an HTML body instead
+				from: '<' + infos.mail + '>', // expéditeur
+				to: infos.mail, // destinataire
+				subject: 'Reset Password',
+				html: htmlMessage
 			};
 			transporter.sendMail(mailOptions, function(error, info){
 				if(error){
 					//console.log(error);
 					return res.json({mailSent: false, reason: error});
 				} else {
-					//console.log('Message sent: ' + info.response);
 					var message = "Un mail a été envoyé à l'adresse suivante : " + req.body.email;
 					return res.json({mailSent: true, message: message });
 				}
