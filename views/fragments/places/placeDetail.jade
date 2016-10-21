@@ -1,0 +1,11 @@
+div(class="panel panel-default")
+  .panel-heading
+    h4: a(data-toggle="collapse" data-parent="#accordion" href='' data-target="{{ '#collapse' + $index }}" ng-click="$ctrl.test($ctrl.spot)") {{ $ctrl.spot.name }}
+  div(id="{{ 'collapse' + $index }}" class="panel-collapse collapse")
+    .panel-body
+      p {{ $ctrl.spot.address  + ' ' + $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+      p {{ $ctrl.spot.tel }}
+      p {{ $ctrl.spot.horaires }}
+      p {{ $ctrl.spot.description }}
+      ul
+        li(ng-repeat='g in $ctrl.spot.games') {{ g.name }}

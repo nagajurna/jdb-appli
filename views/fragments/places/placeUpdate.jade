@@ -1,0 +1,44 @@
+div(ng-init="$ctrl.showPlace()")
+  h1 Modifier {{ $ctrl.spot.name }}
+
+  a(href='/#/admin/places') Retour admin
+
+  form(novalidate)
+    p
+      label name
+      input(type='text' ng-model='$ctrl.spot.name')
+    p
+      label NameAlpha
+      input(type='text' ng-model='$ctrl.spot.nameAlpha')
+    p
+      label Address
+      input(type='text' ng-model='$ctrl.spot.address')
+    p
+      label cp
+      input(type='text' ng-model='$ctrl.spot.cp')
+    p
+      label City
+      input(type='text' ng-model='$ctrl.spot.city')
+    p
+      label Tel
+      input(type='text' ng-model='$ctrl.spot.tel')
+    p
+      label Horaires
+      input(type='text' ng-model='$ctrl.spot.horaires')
+    p
+      label Description
+      textarea(ng-model='$ctrl.spot.description')  
+    p
+      label latitude
+      input(type='text' ng-model='$ctrl.spot.lat')
+    p
+      label longitude
+      input(type='text' ng-model='$ctrl.spot.lg')
+    p(ng-repeat='game in $ctrl.games')
+      label {{game.name}}
+      input(type='checkbox' ng-model="$ctrl.gameIds[game._id]")
+    p  
+      label visible
+      input(type='checkbox' ng-model='$ctrl.spot.visible')  
+    p
+      input(type='button' ng-click='$ctrl.update($ctrl.spot._id)' value='modifier')

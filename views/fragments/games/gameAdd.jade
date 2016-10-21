@@ -1,0 +1,15 @@
+div
+  h1 Ajouter un jeu
+
+  a(href='/#/admin/games') Retour admin/jeu
+
+  form(novalidate)
+    p
+      label name
+      input(type='text' ng-model='$ctrl.game.name')  
+    p
+      label pathname
+      input(type='text' ng-model='$ctrl.game.pathname')
+    p
+      input(type='button' ng-click='$ctrl.add()' value='ajouter')
+

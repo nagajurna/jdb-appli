@@ -1,0 +1,26 @@
+div
+  h1 Inscription
+
+  form(novalidate)
+    p
+      span(ng-bind='$ctrl.form.message')
+    p
+      label name
+      input(type='text' ng-model='$ctrl.user.name')
+      span(ng-bind='$ctrl.form.errors.name.message')  
+    p
+      label email
+      input(type='text' ng-model='$ctrl.user.email')
+      span(ng-bind='$ctrl.form.errors.email.message')
+    p
+      label password
+      input(type='password' ng-model='$ctrl.user.password')
+      span(ng-bind='$ctrl.form.errors.password.message')
+    p
+      label password confirm
+      input(type='password' ng-model='$ctrl.user.passwordConfirm')
+      span(ng-bind='$ctrl.form.errors.passwordConfirm.message')
+    p
+      input(type='button' ng-click='$ctrl.signup()' value='valider')
+
+    a(href='/#/connexion') Connexion

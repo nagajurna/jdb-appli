@@ -1,0 +1,46 @@
+body {
+  padding: 0px;
+  margin: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  min-height: 100%;
+/*
+  background-color: #333333;
+*/
+ }
+
+/*
+a {
+  color: #00B7FF;
+}
+*/
+
+#leftCol {
+/*
+	margin: 0px;
+	padding: 0px;
+*/
+	
+}
+
+#rightCol {
+/*
+	margin-left: 0px;
+	padding-left: 0px;
+*/
+}
+
+nav.navbar.navbar-inverse {
+	border-radius: 0px;
+	margin-right: -30px;
+	margin-left: -15px;
+}
+
+/*
+div.navbar-header a.navbar-brand {
+	color: #fff;
+}
+
+.active {
+	color: black;
+}
+*/

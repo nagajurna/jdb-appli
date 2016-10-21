@@ -1,0 +1,13 @@
+div(ng-init="$ctrl.showPlaces()")
+  #accordion.panel-group
+    div(ng-repeat='spot in $ctrl.spots' class="panel panel-default")
+      .panel-heading
+        h4(ng-click="$ctrl.position(spot)"): a(data-toggle="collapse" data-parent="#accordion" href='' data-target="{{ '#collapse' + $index }}") {{ spot.name }}
+      div(id="{{ 'collapse' + $index }}" class="panel-collapse collapse")
+        .panel-body
+          p {{ spot.address  + ' ' + spot.cp + ' ' + spot.city }}
+          p {{ spot.tel }}
+          p {{ spot.horaires }}
+          p {{ spot.description }}
+          ul
+            li(ng-repeat='g in spot.games') {{ g.name }}

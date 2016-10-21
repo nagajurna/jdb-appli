@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .container-fluid
+    .row
+      .col-sm-3#leftCol
+        nav.navbar.navbar-inverse
+          .navbar-header
+            a.navbar-brand(href='/#/') JDB
+          ul.nav.navbar-nav
+            li(ng-if='loggedIn') 
+              a(href='/#/profil') {{ currentUser.name }}
+            li(ng-if='loggedIn') 
+              a(href='' ng-click='signout()') Déconnexion
+            li(ng-if='!loggedIn') 
+              a(href='/#/connexion') Connexion
+            li(ng-if='admin') 
+              a(href='/#/admin') admin  
+        div(ng-view)
+      .col-sm-9#rightCol
+        div(my-leaflet source='markers' position='position')

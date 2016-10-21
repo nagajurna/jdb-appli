@@ -1,0 +1,15 @@
+div(ng-init="$ctrl.showGame()")
+  h1 Modifier {{ game.name }}
+
+  a(href='/#/admin/games') Retour admin/jeu
+
+  form(novalidate)
+    p
+      label name
+      input(type='text' ng-model='$ctrl.game.name')  
+    p
+      label pathname
+      input(type='text' ng-model='$ctrl.game.pathname')
+    p
+      input(type='button' ng-click='$ctrl.update($ctrl.game._id)' value='modifier')
+

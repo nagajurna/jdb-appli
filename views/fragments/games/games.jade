@@ -1,0 +1,22 @@
+div(ng-init="$ctrl.showGames()")
+  .row
+    .col-xs-12
+      h1
+        a(href='/#/admin') Admin
+  .row
+    .col-xs-12
+      h4
+        a(href='/#/admin/games/add') New
+  
+  .row(ng-repeat='game in $ctrl.games')
+    .col-xs-6
+      p {{game.name | uppercase}} 
+        
+    .col-xs-3
+      p 
+        a(href='/#/admin/games/update/{{game._id}}') update 
+        
+    .col-xs-3
+      p  
+        a(href='' ng-click="$ctrl.remove(game._id)") remove  
+
