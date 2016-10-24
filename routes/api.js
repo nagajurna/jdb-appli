@@ -33,7 +33,7 @@ router.post('/games/add', function(req, res, next) {
 });
 
 /* GET  game */
-router.get('/games/:id', function(req, res, next) {
+router.get('/game/:id', function(req, res, next) {
 	var id = req.params.id;
 	Game.findOne({_id: id}, function(err, doc) {
 		if(err) return console.log(err);
@@ -77,6 +77,20 @@ router.get('/places', function(req, res, next) {
 		});
 });
 
+/* GET places/game */
+router.get('/places/:game', function(req, res, next) {
+	var gameId = req.params.game;
+	console.log(gameId);
+	Place
+	.find({ games: gameId })
+	.populate('games')
+	.exec(function(err,docs) {
+		if(err) return console.log(err);
+		console.log;
+		res.json(docs);
+		});
+});
+
 /* POST addPlace */
 router.post('/places/add', function(req, res, next) {
 	var games = [];
@@ -108,13 +122,15 @@ router.post('/places/add', function(req, res, next) {
 });
 
 /* GET  place */
-router.get('/places/:id', function(req, res, next) {
+router.get('/place/:id', function(req, res, next) {
 	var id = req.params.id;
+	console.log(id);
 	Place
 	.findOne({_id: id})
 	.populate('games')
 	.exec(function(err, place) {
 		if(err) return console.log(err);
+		console.log(place);
 		res.json(place);
 		});
 });
@@ -158,6 +174,21 @@ router.delete('/places/delete/:id', function(req, res, next) {
 		if(err) return console.log(err);
 		res.json('ok');
 	});
+});
+
+/*SET MARKERS*/
+router.post('/markers', function(req, res, next) {
+	req.session.markers = req.body.markers;
+	res.json({message: 'markers enregistrés dans session'});
+});
+
+/*GET MARKERS*/
+router.get('/markers', function(req, res, next) {
+	if(req.session.markers) {
+		var markers = req.session.markers;
+		res.json({session: 'ok', markers: markers});
+	}
+	
 });
 
 module.exports = router;

@@ -7,15 +7,22 @@ block content
         nav.navbar.navbar-inverse
           .navbar-header
             a.navbar-brand(href='/#/') JDB
-          ul.nav.navbar-nav
+          ul.nav.navbar-nav.navbar-right
             li(ng-if='loggedIn') 
-              a(href='/#/profil') {{ currentUser.name }}
+              a(href='' ng-click="modalLoad('profile')")
+                span(class="glyphicon glyphicon-user")
             li(ng-if='loggedIn') 
-              a(href='' ng-click='signout()') Déconnexion
+              a(href='' ng-click='signout()')
+                span(class="glyphicon glyphicon-log-out")
             li(ng-if='!loggedIn') 
-              a(href='/#/connexion') Connexion
+              a(href='' ng-click="modalLoad('sign-in')") 
+                span(class="glyphicon glyphicon-log-in")
             li(ng-if='admin') 
-              a(href='/#/admin') admin  
+              a(href='/#/admin') admin
+           
+          
         div(ng-view)
+        <modal template='template' user="currentUser"></modal>
       .col-sm-9#rightCol
         div(my-leaflet source='markers' position='position')
+        <games-bar></games-bar>

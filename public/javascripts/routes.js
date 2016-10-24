@@ -2,32 +2,13 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<places-index></places-index>',
+				template: '<home on-places="markersRefresh(places)"></home>',
 			}).
-			when('/inscription', {
-				template: '<sign-up on-refresh="userRefresh(user)"></sign-up>',
+			when('/places', {
+				template: '<places on-places="markersRefresh(places)"></places>',
 			}).
-			when('/connexion', {
-				template: '<sign-in on-refresh="userRefresh(user)"></sign-in>',
-			}).
-			when('/profil', {
-				template: '<profile user="currentUser"></profile>',
-				resolve: {
-					checkusers: function(authService) {
-						return authService.checkLoggedIn();
-					}
-				}
-			}).
-			when('/resetPassword', {
-				template: '<reset-password current="currentUser"></reset-password>',
-				resolve: {
-					checkusers: function(authService) {
-						return authService.checkLoggedIn();
-					}
-				}
-			}).
-			when('/forgotPassword', {
-				template: '<forgot-password></forgot-password>',
+			when('/places/:game', {
+				template: '<places-Game on-game="markersRefresh(places)"></places-Game>',
 			}).
 			when('/forgotPassword/reset', {
 				template: '<forgot-password-reset></forgot-password-reset>'
@@ -65,7 +46,7 @@ app.config(['$routeProvider', '$locationProvider',
 				}
 			}).
 			when('/admin/places', {
-				template: '<places on-refresh="markersRefresh(places)"></places>',
+				template: '<places-admin on-refresh="markersRefresh(places)"></places-admin>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();

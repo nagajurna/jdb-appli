@@ -1,4 +1,4 @@
-var app = angular.module("jdbApp", ['ngRoute','app.leaflet','app.authService', 'app.places', 'app.games', 'app.admin', 'app.users']);
+var app = angular.module("jdbApp", ['ngRoute','app.leaflet','app.authService','app.mapService', 'app.places', 'app.games', 'app.main', 'app.users']);
 
 //leaflet directive
 var leafletDirective = angular.module('app.leaflet', [])
@@ -26,6 +26,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 				
 			var markers = [];//destiné à recueillir tous les markers
 			addMarker = function(places) {
+				markers = [];//supprime précédents markers
 				for(i=0; i<places.length; i++)
 				{
 					if(places[i].lat!=null) {
@@ -50,7 +51,6 @@ var leafletDirective = angular.module('app.leaflet', [])
 				{
 					map.removeLayer(markers[i]);
 				}
-				markers = [];
 			}
 			
 			scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
@@ -81,26 +81,56 @@ var leafletDirective = angular.module('app.leaflet', [])
 	});
 
 //admin module
-var admin = angular.module('app.admin', []);
+var main = angular.module('app.main', []);
 
-admin.component('admin', {
+main.component('home', {
+		templateUrl: '/fragments/home',
+		bindings: {
+			onPlaces: '&'
+		},
+		controller: function($http) {
+			var ctrl = this;
+			ctrl.showGames = function() {
+				$http.get('/api/games').
+					then(function(response) {
+						 ctrl.games = response.data;
+					});
+				};
+				
+			ctrl.showPlaces = function() {
+			$http.get('/api/places/').
+				then(function(response) {
+					ctrl.spots = response.data;
+					ctrl.onPlaces({places: ctrl.spots});
+				});
+			};
+			ctrl.showPlaces();
+		}
+});
+
+main.component('admin', {
 		templateUrl: '/fragments/admin/admin'
 });
 
 //places module
 var places = angular.module('app.places', []);
 
-places.component('placesIndex', {
-	templateUrl: '/fragments/places/placesIndex',
+places.component('places', {
+	templateUrl: '/fragments/places/places',
+	bindings: {
+		onPlaces: '&'
+	},
 	controller: function($scope, $http) {
 		var ctrl = this;
+		
 		ctrl.showPlaces = function() {
-			$http.get('/api/places').
+			$http.get('/api/places/').
 				then(function(response) {
-					 ctrl.spots = response.data;
+					ctrl.spots = response.data;
+					ctrl.onPlaces({places: ctrl.spots});
 				});
 			};
-		
+			
 		ctrl.position = function(spot) {
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
@@ -113,15 +143,70 @@ places.component('placesIndex', {
 				
 			$('#collapse'+data.index).collapse('toggle');
 			
-			console.log(data);
 		});
 		
 		
 	}
 });
 
-places.component('places', {
-	templateUrl: '/fragments/places/places',
+places.component('placesGame', {
+	templateUrl: '/fragments/places/placesGame',
+	bindings: {
+		onGame: '&'
+	},
+	controller: function($scope, $route, $http) {
+		var ctrl = this;
+		
+		ctrl.showGame = function() {
+			$http.get('/api/game/' + $route.current.params.game).
+				then(function(response) {
+					ctrl.game = response.data;
+				});
+		}
+		ctrl.showGame();
+		
+		ctrl.showPlaces = function() {
+			$http.get('/api/places/'  + $route.current.params.game).
+				then(function(response) {
+					ctrl.spots = response.data;
+					ctrl.onGame({places: ctrl.spots});
+				});
+			};
+			
+		ctrl.position = function(spot) {
+			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		};
+		
+		$scope.$on('item', function(ev,data) {
+			$('#collapse'+data.index).collapse({
+				toggle: 'true',
+				parent: '#accordion'
+				});
+				
+			$('#collapse'+data.index).collapse('toggle');
+			
+		});
+		
+		
+	}
+});
+
+places.component('gamesBar', {
+	templateUrl: '/fragments/games/gamesBar',
+	controller: function($http) {
+		var ctrl = this;
+		ctrl.showGames = function() {
+			$http.get('/api/games').
+				then(function(response) {
+					 ctrl.games = response.data;
+				});
+			};
+	}
+		
+});
+
+places.component('placesAdmin', {
+	templateUrl: '/fragments/places/placesAdmin',
 	bindings: {
 		onRefresh: '&'
 	},
@@ -196,8 +281,9 @@ places.component('placeUpdate', {
 			/* get games */
 			ctrl.getGames();
 			/* get place*/
-			$http.get('/api/places/' + $route.current.params.id).
+			$http.get('/api/place/' + $route.current.params.id).
 				then(function(response) {
+					console.log(response.data);
 					ctrl.spot = response.data;
 					ctrl.gameIds = {};
 					//check place games
@@ -262,7 +348,7 @@ games.component('gameUpdate', {
 	controller: function($http, $route, $location) {
 		var ctrl = this;
 		ctrl.showGame = function() {
-			$http.get('/api/games/' + $route.current.params.id).
+			$http.get('/api/game/' + $route.current.params.id).
 				then(function(response) {
 					ctrl.game = response.data;
 				});
@@ -281,14 +367,31 @@ games.component('gameUpdate', {
 //users module	
 var users = angular.module('app.users', []);
 
+users.component('modal', {
+	templateUrl: '/fragments/users/modal',
+	bindings: {
+		template: '=',
+		user: '<'
+	},
+	controller: function() {
+		var ctrl = this;
+		ctrl.title = "";
+		ctrl.close = function(action) {
+			$("#myModal").modal(action);
+		};
+	}
+});
+
 users.component('signUp', {
 	templateUrl: '/fragments/users/signUp',
 	bindings: {
-		onRefresh: '&'
+		title: '=',
+		template: '=',
+		onCompleted: '&'
 	},
 	controller: function($scope, $http, $location,authService) {
-		
 		var ctrl = this;
+		ctrl.title = "Inscription";
 		ctrl.user = {};
 		ctrl.form = {};
 		
@@ -308,11 +411,16 @@ users.component('signUp', {
 						ctrl.user = {};
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
-							ctrl.onRefresh({user: user});
-							$location.path('/');
+							ctrl.onCompleted({action: "hide"});
+							$scope.$emit('refreshUser', user);
+							//$location.path(ctrl.redirect);
 						});
 					}
 				});
+		};
+		
+		ctrl.modalLoad = function(template) {
+			ctrl.template = template;
 		};
 	}
 });
@@ -320,11 +428,14 @@ users.component('signUp', {
 users.component('signIn', {
 	templateUrl: '/fragments/users/signIn',
 	bindings: {
-		onRefresh: '&'
+		title: '=',
+		template: '=',
+		onCompleted: '&'
 	},
-	controller: function($scope, $http, $location,authService) {
+	controller: function($scope, $http, $location, $route, authService) {
 		
 		var ctrl = this;
+		ctrl.title = "Connexion";
 		ctrl.user = {};
 		ctrl.form = {};
 		
@@ -344,34 +455,51 @@ users.component('signIn', {
 						ctrl.user = {};
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
-							ctrl.onRefresh({user: user});
-							$location.path('/');
+							ctrl.onCompleted({action: "hide"});
+							$scope.$emit('refreshUser', user);
+							//$location.path(ctrl.redirect);
+							
 						});
 					}
 				});
 		};
+		
+		ctrl.modalLoad = function(template) {
+			ctrl.template = template;
+		};	
+		
+		
 	}
 });
 
 users.component('profile', {
 	templateUrl: '/fragments/users/profile',
 	bindings: {
-		user: "<"
+		user: '<',
+		title: '=',
+		template: '='
+	},
+	controller: function() {
+		var ctrl = this;
+		ctrl.title = "Profil";
 	}
 });
 
 users.component('resetPassword', {
 	templateUrl: '/fragments/users/resetPassword',
 	bindings: {
-		current: "<"
+		user: '<',
+		title: '=',
+		template: '='
 	},
 	controller: function($http, authService) {
 		var ctrl = this;
+		ctrl.title = "Modifier votre mot de passe";
 		ctrl.user = {};
 		ctrl.form = {};
 				
 		ctrl.resetPassword = function() {
-			ctrl.user.email = ctrl.current.email;
+			ctrl.user.email = ctrl.user.email;
 			$http.put('/users/resetPassword', ctrl.user).
 				then(function(response) {
 					console.log(response.data);
@@ -391,14 +519,20 @@ users.component('resetPassword', {
 					}
 				});
 		};
+		
 	}
 });
 
 users.component('forgotPassword', {
 	templateUrl: '/fragments/users/forgotPassword',
+	bindings: {
+		title: '=',
+		template: '=',
+	},
 	controller: function($http) {
 		
 		var ctrl = this;
+		ctrl.title = 'Mot de passe oublié';
 		ctrl.user = {};
 		ctrl.form = {};
 		
@@ -422,6 +556,10 @@ users.component('forgotPassword', {
 					}
 				});
 		};
+		
+		ctrl.modalLoad = function(template) {
+			ctrl.template = template;
+		};	
 	}
 });
 

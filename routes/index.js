@@ -13,10 +13,10 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET fragments files. */
-//router.get('/fragments/:filename', function(req, res, next) {
-	//var filename = req.params.filename;
-	//res.render('fragments/' + filename);
-//});
+router.get('/fragments/:filename', function(req, res, next) {
+	var filename = req.params.filename;
+	res.render('fragments/' + filename);
+});
 
 /* GET fragments files in repertory. */
 router.get('/fragments/:repertory/:filename', function(req, res, next) {

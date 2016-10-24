@@ -1,23 +1,15 @@
 div(ng-init="$ctrl.showPlaces()")
-  .row
-    .col-xs-12
-      h1: a(href='/#/admin') Admin
-  
-  .row
-    .col-xs-12
-      h2: a.active(href='/#/admin/places') Places
-      
-  .row
-    .col-xs-12
-      h3: a(href='/#/admin/places/add') New
-  
-  .row(ng-repeat='spot in $ctrl.spots')
-    .col-xs-6
-      p {{spot.name}}
-    
-    .col-xs-3
-      p: a(href='/#/admin/places/update/{{ spot._id }}') update
-      
-    .col-xs-3
-      p: a(href='' ng-click="$ctrl.remove(spot._id)") remove
+  h4 Tous les bars
+  #accordion.panel-group
+    div(ng-repeat='spot in $ctrl.spots' class="panel panel-default")
+      .panel-heading
+        h4(ng-click="$ctrl.position(spot)"): a(data-toggle="collapse" data-parent="#accordion" href='' data-target="{{ '#collapse' + $index }}") {{ spot.name }}
+      div(id="{{ 'collapse' + $index }}" class="panel-collapse collapse")
+        .panel-body
+          p {{ spot.address  + ' ' + spot.cp + ' ' + spot.city }}
+          p {{ spot.tel }}
+          p {{ spot.horaires }}
+          p {{ spot.description }}
+          ul
+            li(ng-repeat='g in spot.games') {{ g.name }}
 

@@ -1,6 +1,4 @@
 div
-  h1 Inscription
-
   form(novalidate)
     p
       span(ng-bind='$ctrl.form.message')
@@ -23,4 +21,4 @@ div
     p
       input(type='button' ng-click='$ctrl.signup()' value='valider')
 
-    a(href='/#/connexion') Connexion
+    a(href='' ng-click="$ctrl.template ='sign-in'") Connexion

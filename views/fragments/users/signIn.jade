@@ -1,21 +1,19 @@
-div
-  h1 Connexion
-
+div(title="formulaire de connexion")
   form(novalidate)
     p
       span(ng-bind='$ctrl.form.message')
     p
-      label email
+      label Email
       input(type='text' ng-model='$ctrl.user.email')
       span(ng-bind='$ctrl.form.errors.email.message') 
     p
-      label password
+      label Password
       input(type='password' ng-model='$ctrl.user.password')
       span(ng-bind='$ctrl.form.errors.password.message')
     p
-      a(href='/#/forgotPassword') mot de passe oublié ?
+      a(href='' title="Mot de passe oublié" ng-click="$ctrl.template='forgot-password'") Mot de passe oublié ?
     p
-      input(type='button' ng-click='$ctrl.signin()' value='valider')
+      input(type='button' title="Valider" ng-click='$ctrl.signin()' value='Valider')
       
-    a(href='/#/inscription') Inscription
+    a(href='' title="Inscription" ng-click="$ctrl.template='sign-up'") Inscription
 

@@ -1,0 +1,7 @@
+div(id="game-bar" ng-init="$ctrl.showGames()" class="hidden-xs")
+  ul
+    li: a(href="/#/places") Tous 
+    li(ng-repeat="game in $ctrl.games")
+      a(href="{{ '/#/places/' + game._id}}") {{ game.name + ' ' }}
+  
+

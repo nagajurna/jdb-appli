@@ -1,0 +1,23 @@
+div(ng-init="$ctrl.showPlaces()")
+  .row
+    .col-xs-12
+      h1: a(href='/#/admin') Admin
+  
+  .row
+    .col-xs-12
+      h2: a.active(href='/#/admin/places') Places
+      
+  .row
+    .col-xs-12
+      h3: a(href='/#/admin/places/add') New
+  
+  .row(ng-repeat='spot in $ctrl.spots')
+    .col-xs-6
+      p {{spot.name}}
+    
+    .col-xs-3
+      p: a(href='/#/admin/places/update/{{ spot._id }}') update
+      
+    .col-xs-3
+      p: a(href='' ng-click="$ctrl.remove(spot._id)") remove
+
