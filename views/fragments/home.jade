@@ -1,4 +1,5 @@
-div(ng-init="$ctrl.showGames()")
-  ul
-    li: h4: a(href="/#/places") Tous les bars
-    li(ng-repeat='game in $ctrl.games'): h4: a(href="{{ '/#/places/' + game._id}}") {{ game.name }}
+.main-wrapper(ng-init="$ctrl.showGames()")
+  .wrapper-strict
+    ul(class="list-group")
+      li(class="list-group-item"): p: a(href="/#/places") Tous les bars
+      li(class="list-group-item" ng-repeat='game in $ctrl.games'): p: a(href="{{ '/#/places/' + game.pathname}}") {{ game.name }}

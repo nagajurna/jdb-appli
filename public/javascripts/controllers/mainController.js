@@ -50,11 +50,6 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 			mapService.getMarkers().then(function(value) {
 				$scope.markers = value.markers.places;
 			});	
-			//$http.get('/api/places').
-				//then(function(response) {
-					 //$scope.markers = response.data;
-					 //console.log(response.data);
-				//});
 		};
 		//mise à jour des markers quand modif admin (add, update, delete places) : lancée de 'places' component
 		$scope.markersRefresh = function(places) {
@@ -84,7 +79,7 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		$scope.modalLoad = function(template) {
 			$scope.template = template;
 			$("#myModal").modal('show');
-		}	
+		}
 		
 			
 	}]);

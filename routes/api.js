@@ -10,7 +10,7 @@ var Place = require('../Models/Place');
 
 /* GET games */
 router.get('/games', function(req, res, next) {
-	Game.find({}, '_id name', function(err,docs) {
+	Game.find({}, function(err,docs) {
 		if(err) return console.log(err);
 		res.json(docs);
 		});
@@ -33,9 +33,9 @@ router.post('/games/add', function(req, res, next) {
 });
 
 /* GET  game */
-router.get('/game/:id', function(req, res, next) {
-	var id = req.params.id;
-	Game.findOne({_id: id}, function(err, doc) {
+router.get('/game/:pathname', function(req, res, next) {
+	var pathname = req.params.pathname;
+	Game.findOne({pathname: pathname}, function(err, doc) {
 		if(err) return console.log(err);
 		res.json(doc);
 		});
@@ -78,17 +78,21 @@ router.get('/places', function(req, res, next) {
 });
 
 /* GET places/game */
-router.get('/places/:game', function(req, res, next) {
-	var gameId = req.params.game;
-	console.log(gameId);
-	Place
-	.find({ games: gameId })
-	.populate('games')
-	.exec(function(err,docs) {
+router.get('/places/:pathname', function(req, res, next) {
+	var gamePathname = req.params.pathname;
+	Game.findOne({pathname: gamePathname}, function(err, game) {
 		if(err) return console.log(err);
-		console.log;
-		res.json(docs);
-		});
+		Place
+		.find({ games: game._id })
+		.populate('games')
+		.exec(function(err,places) {
+			if(err) return console.log(err);
+			res.json(places);
+			});
+		
+	});
+	
+	
 });
 
 /* POST addPlace */

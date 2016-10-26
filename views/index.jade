@@ -2,12 +2,14 @@ extends layout
 
 block content
   .container-fluid
-    .row
-      .col-sm-3#leftCol
+    .row.content
+      .col-sm-3.leftCol
         nav.navbar.navbar-inverse
           .navbar-header
             a.navbar-brand(href='/#/') JDB
           ul.nav.navbar-nav.navbar-right
+            li(ng-if='admin') 
+              a(href='/#/admin') Espace Admin
             li(ng-if='loggedIn') 
               a(href='' ng-click="modalLoad('profile')")
                 span(class="glyphicon glyphicon-user")
@@ -17,12 +19,9 @@ block content
             li(ng-if='!loggedIn') 
               a(href='' ng-click="modalLoad('sign-in')") 
                 span(class="glyphicon glyphicon-log-in")
-            li(ng-if='admin') 
-              a(href='/#/admin') admin
            
-          
-        div(ng-view)
+        #view(ng-view)
         <modal template='template' user="currentUser"></modal>
-      .col-sm-9#rightCol
+      .col-sm-9.rightCol
         div(my-leaflet source='markers' position='position')
-        <games-bar></games-bar>
+        div(id="game-bar" games-bar)
