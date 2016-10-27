@@ -1,6 +1,6 @@
 //leaflet directive
 var leafletDirective = angular.module('app.leaflet', [])
-	.directive('myLeaflet', function() {
+	.directive('myLeaflet', function($route, mapService) {
 			
 		function initialize(scope, element, attrs) {
 			var wh = window.innerHeight;
@@ -32,15 +32,44 @@ var leafletDirective = angular.module('app.leaflet', [])
 				{
 					if(places[i].lat!=null) {
 						var marker = L.marker([places[i].lat, places[i].lg]).addTo(map);
-						marker.bindPopup(places[i].name);
-						var myFunction = function(index) {
+						
+						var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
+						if($route.current.params.game) {
+							link1 = "/#/places/game/" + $route.current.params.game + "/name/" + places[i].nameAlpha;
+							link2 = "/places/game/" + $route.current.params.game;
+						} else {
+							link1 = "/#/places/name/" + places[i].nameAlpha;
+							link2 = "/places";
+						}
+						
+						var games ='';
+						var virg;
+						for(j=0; j<places[i].games.length; j++)
+						{
+							j<places[i].games.length-1 ? virg = ', ' : virg = '';
+							if(j==0)
+							{
+								places[i].games[j].name = places[i].games[j].name.replace(/^./, places[i].games[j].name.charAt(0).toUpperCase());
+							}
+							games += '<span>' + places[i].games[j].name + virg + '</span>';
+						}
+					
+						
+						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
+										   games + '</br>'
+										  
+						
+						marker.bindPopup(popupContent);
+												
+						var myFunction = function(place) {
 							marker.on('click', function(ev) {
-								scope.$broadcast('item', {index: index});
+								mapService.setScrollPosition(link2, place._id)
 							});
 						};
-						myFunction(places[i]._id);
+						myFunction(places[i]);
 						
 						markers.push(marker);//chaque marker est ajouté à markers
+							
 					}
 				}
 			}
@@ -55,8 +84,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 			}
 			
 			scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
-				removeMarker(markers);//supprimer tous les markers
-				if(angular.isDefined(newColl)) {
+				if(angular.isDefined(newColl) && !angular.equals(newColl,oldColl)) {
+					removeMarker(markers);//supprimer tous les markers
 					addMarker(newColl);//ajouter markers
 				}
 			});
@@ -67,7 +96,6 @@ var leafletDirective = angular.module('app.leaflet', [])
 					if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
 						map.flyTo(L.latLng(newPos.lat,newPos.lg));
 					}
-					
 					markers[newPos.index].openPopup();
 				}
 			});
@@ -121,7 +149,7 @@ places.component('places', {
 	bindings: {
 		onPlaces: '&'
 	},
-	controller: function($scope, $http) {
+	controller: function($scope, $http, mapService) {
 		var ctrl = this;
 		
 		ctrl.showPlaces = function() {
@@ -133,19 +161,13 @@ places.component('places', {
 			};
 			
 		ctrl.position = function(spot) {
-			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
 		
 		
 		$scope.$on('item', function(ev,data) {
-			var offset = $('.wrapper').scrollTop() + $('#' + data.index).offset().top-$('.wrapper').offset().top;
-			$('.wrapper').animate({
-					scrollTop: offset
-				},500);
-			
+			mapService.getScrollPosition(data);
 		});
-		
-		
 	}
 });
 
@@ -154,7 +176,7 @@ places.component('placesGame', {
 	bindings: {
 		onGame: '&'
 	},
-	controller: function($scope, $route, $http) {
+	controller: function($scope, $route, $http, mapService) {
 		var ctrl = this;
 		
 		ctrl.showGame = function() {
@@ -166,7 +188,7 @@ places.component('placesGame', {
 				
 		ctrl.showPlaces = function() {
 			ctrl.showGame();
-			$http.get('/api/places/'  + $route.current.params.game).
+			$http.get('/api/places/game/'  + $route.current.params.game).
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.onGame({places: ctrl.spots});
@@ -174,18 +196,37 @@ places.component('placesGame', {
 			};
 			
 		ctrl.position = function(spot) {
-			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
 		
 		$scope.$on('item', function(ev,data) {
-			var offset = $('.wrapper').scrollTop() + $('#' + data.index).offset().top-$('.wrapper').offset().top;
-			$('.wrapper').animate({
-					scrollTop: offset
-				},500);
-			
+			mapService.getScrollPosition(data);
 		});
+	}
+});
+
+places.component('place', {
+	templateUrl: '/fragments/places/place',
+	controller: function($scope, $route, $http, mapService) {
 		
+		var ctrl = this;
 		
+		if($route.current.params.game) {
+			ctrl.redirect = "/places/game/" + $route.current.params.game
+		} else {
+			ctrl.redirect = "/places"
+		}
+		
+		ctrl.showPlace = function() {
+			$http.get('/api/places/'  + $route.current.params.name).
+				then(function(response) {
+					ctrl.spot = response.data;
+				});
+			};
+			
+		ctrl.back = function() {
+			mapService.setScrollPosition(ctrl.redirect,ctrl.spot._id);
+		};
 	}
 });
 
@@ -200,7 +241,6 @@ places.directive('gamesBar', function ($http) {
 					$http.get('/api/games').
 						then(function(response) {
 							scope.games = response.data;
-							console.log(scope.games);
 						})
 					};
 				scope.showGames();
@@ -297,9 +337,8 @@ places.component('placeUpdate', {
 			/* get games */
 			ctrl.getGames();
 			/* get place*/
-			$http.get('/api/place/' + $route.current.params.id).
+			$http.get('/api/places/' + $route.current.params.name).
 				then(function(response) {
-					console.log(response.data);
 					ctrl.spot = response.data;
 					ctrl.gameIds = {};
 					//check place games
@@ -364,7 +403,7 @@ games.component('gameUpdate', {
 	controller: function($http, $route, $location) {
 		var ctrl = this;
 		ctrl.showGame = function() {
-			$http.get('/api/game/' + $route.current.params.id).
+			$http.get('/api/game/' + $route.current.params.name).
 				then(function(response) {
 					ctrl.game = response.data;
 				});
@@ -383,19 +422,34 @@ games.component('gameUpdate', {
 //users module	
 var users = angular.module('app.users', []);
 
-users.component('modal', {
-	templateUrl: '/fragments/users/modal',
+users.component('divUser', {
+	templateUrl: '/fragments/users/divUser',
 	bindings: {
 		template: '=',
 		user: '<'
 	},
 	controller: function() {
-		var ctrl = this;
-		ctrl.title = "";
+		
+		var ctrl = this;	
+		
+		/* SIZE */
+		/*Init*/
+		var w = $('.leftCol').width();
+		var h = $('.leftCol').height()-52;
+		$("#div-user").css({"width": w+"px", "height": h+"px"});
+		/*on resize*/
+		$(window).on('resize', function() {
+			var w = $('.leftCol').width();
+			var h = $('.leftCol').height()-52;
+			$("#div-user").css({"width": w+"px", "height": h+"px"});
+		});
+		
 		ctrl.close = function(action) {
-			$("#myModal").modal(action);
-		};
+			$('#div-user').toggleClass("in");
+		}
+			
 	}
+	
 });
 
 users.component('signUp', {

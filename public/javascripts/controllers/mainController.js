@@ -2,10 +2,11 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 	function mainController($scope, $http, $location, $route, authService, mapService) {
 		//INITIALISATION DE APP
 		$scope.appInit = function () {
+			$scope.loggedIn = false;
+			$scope.currentUser = null;
 			$scope.getUser();
 			$scope.getMarkers();
 		};
-		
 		/*USER*/
 		//initialisation de loggedIn et currentUser lancée par $scope.appInit
 		$scope.getUser = function() {
@@ -15,6 +16,7 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 				$scope.admin = ($scope.loggedIn && $scope.currentUser.role==="ADMIN") ? true : false;
 			});
 		};
+		
 		//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
 		$scope.$on('refreshUser', function(event, user) {
 			console.log(user);
@@ -43,7 +45,7 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		
 					
 		/*LEAFLET MARKERS*/
-		$scope.markers = {};
+		//$scope.markers = {};
 		//initialisation des markers lancée par $scope.appInit
 		$scope.getMarkers = function(spots) {
 			//aller voir si markers dans express session
@@ -53,7 +55,7 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		};
 		//mise à jour des markers quand modif admin (add, update, delete places) : lancée de 'places' component
 		$scope.markersRefresh = function(places) {
-			$scope.markers = {};
+			//$scope.markers = {};
 			$scope.markers = places;
 			//enregister $scope.markers dans session express
 			var markers = {};
@@ -65,6 +67,8 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		$scope.$on('position', function(event, position) {
 			$scope.position = position;
 		});
+		
+		
 		
 			
 		/*UTILITAIRES*/
@@ -79,6 +83,12 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		$scope.modalLoad = function(template) {
 			$scope.template = template;
 			$("#myModal").modal('show');
+		}
+		
+		$scope.toggleDiv = function(template) {
+			$scope.template = template;
+			$('#div-user').toggleClass("in");
+			
 		}
 		
 			

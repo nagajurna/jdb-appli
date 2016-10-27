@@ -2,6 +2,6 @@ div(class="hidden-xs")
   ul(class="list-group")
     li(class="list-group-item"): a(href="/#/places") Tous 
     li(class="list-group-item" ng-repeat="game in games")
-      a(href="{{ '/#/places/' + game.pathname }}") {{ game.name }}
+      a(href="{{ '/#/places/game/' + game.pathname }}") {{ game.name }}
   
 

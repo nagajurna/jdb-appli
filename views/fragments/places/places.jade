@@ -3,7 +3,7 @@
   .wrapper
     ul(class="list-group")
       li(ng-repeat='spot in $ctrl.spots' class="list-group-item" id="{{ spot._id }}")
-        p(ng-click="$ctrl.position(spot)"): a(href='') {{ spot.name }}
+        p(ng-click="$ctrl.position(spot)"): a(href="{{ '/#/places/name/' + spot.nameAlpha }}") {{ spot.name }}
         p {{ spot.address  + ' ' + spot.cp + ' ' + spot.city }}
         p
           span(ng-repeat='g in spot.games') {{ g.name + ' ' }}

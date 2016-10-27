@@ -1,0 +1,10 @@
+div(id="div-user")
+  button(type="button" class="close" ng-click="$ctrl.close()" ) &times;
+  h4() {{ $ctrl.title }}
+      
+  div(ng-switch="$ctrl.template")
+    <sign-in ng-switch-when="sign-in" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
+    <sign-up ng-switch-when="sign-up" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-up>
+    <forgot-password ng-switch-when="forgot-password" title="$ctrl.title" template="$ctrl.template"></forgot-password>
+    <profile ng-switch-when="profile" title="$ctrl.title" template="$ctrl.template" user="$ctrl.user"></profile>
+    <reset-password ng-switch-when="reset-password" title="$ctrl.title" template="$ctrl.template" user="$ctrl.user"></reset-password>

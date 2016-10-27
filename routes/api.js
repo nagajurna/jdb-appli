@@ -78,9 +78,9 @@ router.get('/places', function(req, res, next) {
 });
 
 /* GET places/game */
-router.get('/places/:pathname', function(req, res, next) {
-	var gamePathname = req.params.pathname;
-	Game.findOne({pathname: gamePathname}, function(err, game) {
+router.get('/places/game/:name', function(req, res, next) {
+	var name = req.params.name;
+	Game.findOne({pathname: name}, function(err, game) {
 		if(err) return console.log(err);
 		Place
 		.find({ games: game._id })
@@ -126,15 +126,13 @@ router.post('/places/add', function(req, res, next) {
 });
 
 /* GET  place */
-router.get('/place/:id', function(req, res, next) {
-	var id = req.params.id;
-	console.log(id);
+router.get('/places/:name', function(req, res, next) {
+	var name = req.params.name;
 	Place
-	.findOne({_id: id})
+	.findOne({nameAlpha: name})
 	.populate('games')
 	.exec(function(err, place) {
 		if(err) return console.log(err);
-		console.log(place);
 		res.json(place);
 		});
 });

@@ -7,8 +7,14 @@ app.config(['$routeProvider', '$locationProvider',
 			when('/places', {
 				template: '<places on-places="markersRefresh(places)"></places>',
 			}).
-			when('/places/:game', {
+			when('/places/game/:game', {
 				template: '<places-Game on-game="markersRefresh(places)"></places-Game>',
+			}).
+			when('/places/name/:name', {
+				template: '<place></place>',
+			}).
+			when('/places/game/:game/name/:name', {
+				template: '<place></place>',
 			}).
 			when('/forgotPassword/reset', {
 				template: '<forgot-password-reset></forgot-password-reset>'
@@ -37,7 +43,7 @@ app.config(['$routeProvider', '$locationProvider',
 					}
 				}
 			}).
-			when('/admin/games/update/:id', {
+			when('/admin/games/update/:name', {
 				template: '<game-update><game-update>',
 				resolve: {
 					checkusers: function(authService) {
@@ -61,7 +67,7 @@ app.config(['$routeProvider', '$locationProvider',
 					}
 				}
 			}).
-			when('/admin/places/update/:id', {
+			when('/admin/places/update/:name', {
 				template: '<place-update></place-update>',
 				resolve: {
 					checkusers: function(authService) {

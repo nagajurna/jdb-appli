@@ -11,17 +11,18 @@ block content
             li(ng-if='admin') 
               a(href='/#/admin') Espace Admin
             li(ng-if='loggedIn') 
-              a(href='' ng-click="modalLoad('profile')")
+              a(href='' ng-click="toggleDiv('profile')")
                 span(class="glyphicon glyphicon-user")
             li(ng-if='loggedIn') 
               a(href='' ng-click='signout()')
                 span(class="glyphicon glyphicon-log-out")
             li(ng-if='!loggedIn') 
-              a(href='' ng-click="modalLoad('sign-in')") 
+              a(href='' ng-click="toggleDiv('sign-in')") 
                 span(class="glyphicon glyphicon-log-in")
            
         #view(ng-view)
         <modal template='template' user="currentUser"></modal>
+        <div-user template='template' user="currentUser"></div-user>
       .col-sm-9.rightCol
         div(my-leaflet source='markers' position='position')
         div(id="game-bar" games-bar)

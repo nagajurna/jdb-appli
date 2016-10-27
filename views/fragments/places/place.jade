@@ -1,0 +1,8 @@
+.main-wrapper(ng-init="$ctrl.showPlace()")
+  .wrapper
+    a(href="" ng-click="$ctrl.back()") revenir
+    h4 {{ $ctrl.spot.name }}
+    p: span(ng-repeat="game in $ctrl.spot.games") {{ game.name + ' ' }}
+    p {{ $ctrl.spot.address }}
+    p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+

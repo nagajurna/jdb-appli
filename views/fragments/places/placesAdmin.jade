@@ -16,7 +16,7 @@ div(ng-init="$ctrl.showPlaces()")
       p {{spot.name}}
     
     .col-xs-3
-      p: a(href='/#/admin/places/update/{{ spot._id }}') update
+      p: a(href='/#/admin/places/update/{{ spot.nameAlpha }}') update
       
     .col-xs-3
       p: a(href='' ng-click="$ctrl.remove(spot._id)") remove
