@@ -1,0 +1,7 @@
+.dropdown.pull-right
+  button(class="btn dropdown-toggle" type="button" data-toggle="dropdown") Tri par {{ $ctrl.labels[$ctrl.property] + ' ' }}
+    span(class="caret")
+  ul(class="dropdown-menu")
+    li: a(href="" ng-click="$ctrl.sortBy('nameAlpha')") {{ $ctrl.labels['nameAlpha'] }}
+    li: a(href="" ng-click="$ctrl.sortBy('cp')") {{ $ctrl.labels['cp'] }}
+    li: a(href="" ng-click="$ctrl.sortBy('updated')") {{ $ctrl.labels['updated'] }}

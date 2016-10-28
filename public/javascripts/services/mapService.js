@@ -1,5 +1,5 @@
 var mapService = angular.module('app.mapService', [])
-.factory("mapService", function($rootScope, $http, $q, $route, $location,$interval) {
+.factory("mapService", function($rootScope, $http, $q, $route, $location,$interval,$timeout) {
 	
 	var mapService = {};
 	/*setMarkers and getMarkers : save in session last state of markers in case refreshing by user*/
@@ -30,7 +30,7 @@ var mapService = angular.module('app.mapService', [])
 			} else {
 				$location.path(link);
 			}
-		}, 150);
+		}, 200);
 		
 		stopCheck = function() {
 			if(angular.isDefined(check)) {
@@ -46,6 +46,15 @@ var mapService = angular.module('app.mapService', [])
 				scrollTop: offset
 			},500);
 	};
+	
+	var property='nameAlpha';
+	mapService.setOrderByProperty = function(name) {
+		property = name;
+	}
+	
+	mapService.getOrderByProperty = function() {
+		return property;
+	}
 	
 	
 	return mapService;

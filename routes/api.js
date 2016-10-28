@@ -70,6 +70,7 @@ router.delete('/games/delete/:id', function(req, res, next) {
 router.get('/places', function(req, res, next) {
 	Place
 	.find()
+	.sort('nameAlpha')
 	.populate('games')
 	.exec(function(err,docs) {
 		if(err) return console.log(err);
@@ -84,6 +85,7 @@ router.get('/places/game/:name', function(req, res, next) {
 		if(err) return console.log(err);
 		Place
 		.find({ games: game._id })
+		.sort('nameAlpha')
 		.populate('games')
 		.exec(function(err,places) {
 			if(err) return console.log(err);

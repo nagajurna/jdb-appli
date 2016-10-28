@@ -151,11 +151,13 @@ places.component('places', {
 	},
 	controller: function($scope, $http, mapService) {
 		var ctrl = this;
+		ctrl.propertyName = mapService.getOrderByProperty();
 		
 		ctrl.showPlaces = function() {
 			$http.get('/api/places/').
 				then(function(response) {
 					ctrl.spots = response.data;
+					console.log(ctrl.propertyName);
 					ctrl.onPlaces({places: ctrl.spots});
 				});
 			};
@@ -174,10 +176,11 @@ places.component('places', {
 places.component('placesGame', {
 	templateUrl: '/fragments/places/placesGame',
 	bindings: {
-		onGame: '&'
+		onPlaces: '&'
 	},
 	controller: function($scope, $route, $http, mapService) {
 		var ctrl = this;
+		ctrl.propertyName = mapService.getOrderByProperty();
 		
 		ctrl.showGame = function() {
 			$http.get('/api/game/' + $route.current.params.game).
@@ -191,7 +194,7 @@ places.component('placesGame', {
 			$http.get('/api/places/game/'  + $route.current.params.game).
 				then(function(response) {
 					ctrl.spots = response.data;
-					ctrl.onGame({places: ctrl.spots});
+					ctrl.onPlaces({places: ctrl.spots});
 				});
 			};
 			
@@ -204,6 +207,27 @@ places.component('placesGame', {
 		});
 	}
 });
+
+places.component('sortBy', {
+	templateUrl: '/fragments/places/sortBy',
+	bindings: {
+		property: "="
+	},
+	controller: function(mapService) {
+		
+		var ctrl = this;
+		ctrl.sortBy = function(name) {
+			ctrl.property = name;
+			mapService.setOrderByProperty(ctrl.property);
+		}
+		ctrl.labels = {
+			nameAlpha: 'nom',
+			cp: 'code postal',
+			updated: 'date de mise à jour'
+		}
+	}
+});
+
 
 places.component('place', {
 	templateUrl: '/fragments/places/place',

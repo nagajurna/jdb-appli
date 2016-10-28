@@ -8,7 +8,7 @@ app.config(['$routeProvider', '$locationProvider',
 				template: '<places on-places="markersRefresh(places)"></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places-Game on-game="markersRefresh(places)"></places-Game>',
+				template: '<places-Game on-places="markersRefresh(places)"></places-Game>',
 			}).
 			when('/places/name/:name', {
 				template: '<place></place>',

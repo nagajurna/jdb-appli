@@ -1,10 +1,13 @@
 .main-wrapper(ng-init="$ctrl.showPlaces()")
-  p {{ $ctrl.game.name | uppercase }}
+  .clearfix.top-title
+    p(class="pull-left") {{ $ctrl.game.name | uppercase }}
+    <sort-by property="$ctrl.propertyName"></sort-by>
   .wrapper
     ul(class="list-group")
-      li(ng-repeat='spot in $ctrl.spots' class="list-group-item" id="{{ spot._id }}")
+      li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName' class="list-group-item" id="{{ spot._id }}")
         p(ng-click="$ctrl.position(spot)"): a(href="{{ '/#/places/game/' + $ctrl.game.pathname + '/name/' + spot.nameAlpha }}") {{ spot.name }}
         p {{ spot.address  + ' ' + spot.cp + ' ' + spot.city }}
         p
           span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
+        p {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
 

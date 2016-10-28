@@ -79,12 +79,8 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 			return false;
 		};
 		
-		//MODAL TEMPLATES
-		$scope.modalLoad = function(template) {
-			$scope.template = template;
-			$("#myModal").modal('show');
-		}
-		
+		//divUser TEMPLATES
+				
 		$scope.toggleDiv = function(template) {
 			$scope.template = template;
 			$('#div-user').toggleClass("in");
