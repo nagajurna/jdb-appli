@@ -10,59 +10,67 @@ var Place = require('../Models/Place');
 
 /* GET games */
 router.get('/games', function(req, res, next) {
-	Game.find({}, function(err,docs) {
-		if(err) return console.log(err);
-		res.json(docs);
+	
+	Game
+	.find()
+	.sort('pathname')
+	.exec(function(err,games) {
+			if(err) return console.log(err);
+			res.json(games);
 		});
 });
 
 
 /* POST addGame */
-router.post('/games/add', function(req, res, next) {
+router.post('/games', function(req, res, next) {
+	
 	var game = new Game({name: req.body.name, 
 						pathname: req.body.pathname, 
 						_id: new mongoose.Types.ObjectId});
+	
 	game.save(function(err) {
 		if(err) {
 			console.log(err);
 			res.json(err);
 		} else {
-		res.json('ok');
-		console.log(game);}
-		});
+			res.json('ok');
+		}
+	});
 });
 
 /* GET  game */
-router.get('/game/:pathname', function(req, res, next) {
+router.get('/games/:pathname', function(req, res, next) {
+	
 	var pathname = req.params.pathname;
-	Game.findOne({pathname: pathname}, function(err, doc) {
-		if(err) return console.log(err);
-		res.json(doc);
+	
+	Game.findOne({pathname: pathname}, function(err, game) {
+			if(err) return console.log(err);
+			res.json(game);
 		});
 });
 
 /* PUT  game */
-router.put('/games/update/:id', function(req, res, next) {
+router.put('/games/:id', function(req, res, next) {
 	var id = req.params.id;
 	Game.findOne({ _id: id }, function(err, game) {
 		if(err) return console.log(err);
 		game.name = req.body.name;
 		game.pathname = req.body.pathname;
 		game.save(function(err) {
-			if(err) return console.log(err);
-			res.json(game);
+				if(err) return console.log(err);
+				res.json(game);
 			});
 	});
 	
 });
 
 /* DELETE game */
-router.delete('/games/delete/:id', function(req, res, next) {
+router.delete('/games/:id', function(req, res, next) {
 	var id = req.params.id;
 	Game.remove({_id: id }, function(err) {
-		if(err) return console.log(err);
-		res.json('ok');
-	});
+			if(err) return console.log(err);
+			res.json('ok');
+		});
 });
 
 
@@ -72,33 +80,27 @@ router.get('/places', function(req, res, next) {
 	.find()
 	.sort('nameAlpha')
 	.populate('games')
-	.exec(function(err,docs) {
+	.exec(function(err,places) {
 		if(err) return console.log(err);
-		res.json(docs);
+		res.json(places);
 		});
 });
 
 /* GET places/game */
-router.get('/places/game/:name', function(req, res, next) {
-	var name = req.params.name;
-	Game.findOne({pathname: name}, function(err, game) {
-		if(err) return console.log(err);
-		Place
-		.find({ games: game._id })
-		.sort('nameAlpha')
-		.populate('games')
-		.exec(function(err,places) {
+router.get('/places/game/:id', function(req, res, next) {
+	var id = req.params.id;
+	Place
+	.find({ games: id })
+	.sort('nameAlpha')
+	.populate('games')
+	.exec(function(err,places) {
 			if(err) return console.log(err);
 			res.json(places);
-			});
-		
-	});
-	
-	
+		});
 });
 
 /* POST addPlace */
-router.post('/places/add', function(req, res, next) {
+router.post('/places', function(req, res, next) {
 	var games = [];
 	for (key in req.body.games) {
 		if(req.body.games[key]===true) {
@@ -134,13 +136,13 @@ router.get('/places/:name', function(req, res, next) {
 	.findOne({nameAlpha: name})
 	.populate('games')
 	.exec(function(err, place) {
-		if(err) return console.log(err);
-		res.json(place);
+			if(err) return console.log(err);
+			res.json(place);
 		});
 });
 
 /* PUT  place */
-router.put('/places/update/:id', function(req, res, next) {
+router.put('/places/:id', function(req, res, next) {
 	var id = req.params.id;
 	var games = [];
 	for (key in req.body.games) {
@@ -172,7 +174,7 @@ router.put('/places/update/:id', function(req, res, next) {
 });
 
 /* DELETE place */
-router.delete('/places/delete/:id', function(req, res, next) {
+router.delete('/places/:id', function(req, res, next) {
 	var id = req.params.id;
 	Place.remove({_id: id }, function(err) {
 		if(err) return console.log(err);

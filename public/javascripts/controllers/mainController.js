@@ -4,6 +4,7 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		$scope.appInit = function () {
 			$scope.loggedIn = false;
 			$scope.currentUser = null;
+			$scope.markers = {};
 			$scope.getUser();
 			$scope.getMarkers();
 		};
@@ -45,23 +46,16 @@ app.controller("mainController", ['$scope','$http','$location','$route','authSer
 		
 					
 		/*LEAFLET MARKERS*/
-		//$scope.markers = {};
 		//initialisation des markers lancée par $scope.appInit
 		$scope.getMarkers = function(spots) {
 			//aller voir si markers dans express session
 			mapService.getMarkers().then(function(value) {
-				$scope.markers = value.markers.places;
+				$scope.markers = value.markers;
 			});	
 		};
-		//mise à jour des markers quand modif admin (add, update, delete places) : lancée de 'places' component
+		//mise à jour des markers
 		$scope.markersRefresh = function(places) {
-			//$scope.markers = {};
 			$scope.markers = places;
-			//enregister $scope.markers dans session express
-			var markers = {};
-			markers.path = $location.path();
-			markers.places = places;
-			mapService.setMarkers(markers);
 		}
 		
 		$scope.$on('position', function(event, position) {

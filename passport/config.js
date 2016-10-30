@@ -5,13 +5,13 @@ var passport = require('passport');
 	
 //config sessions
 passport.serializeUser(function(user, done) {
-	console.log('serializing user: ', user);
+	//console.log('serializing user: ', user);
    done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
 	User.findOne({ _id: id }, function(err, user) {
-		console.log('deserializing user:',user);
+		//console.log('deserializing user:',user);
 		done(err, user);
 	});
 });

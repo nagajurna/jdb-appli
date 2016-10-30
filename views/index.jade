@@ -9,7 +9,8 @@ block content
             a.navbar-brand(href='/#/') JDB
           ul.nav.navbar-nav.navbar-right
             li(ng-if='admin') 
-              a(href='/#/admin') Espace Admin
+              a(href='/#/admin')
+               span(class="glyphicon glyphicon-king") 
             li(ng-if='loggedIn') 
               a(href='' ng-click="toggleDiv('profile')")
                 span(class="glyphicon glyphicon-user")

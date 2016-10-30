@@ -3,22 +3,24 @@ body {
   margin: 0px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
- /*
-  background-color: #333333;
-*/
- }
+}
 
 /*
 a {
   color: #00B7FF;
 }
 */
+/*
 .row {
 	height: 100%;
 }
+*/
 
 .leftCol {
   height: 100%;
+/*
+  padding-right: 0px;
+*/
 }
 
 #rightCol {
@@ -66,12 +68,14 @@ nav.navbar.navbar-inverse {
 
 .main-wrapper {
 	height: 100%;
+	margin-right: -15px;
 }
 
 .wrapper {
-	height: -webkit-calc(100% - 52px);
+   	height: -webkit-calc(100% - 67px);
 	height: calc(100% - 50px);
 	overflow-y: auto;
+	margin-top: 15px;
 	
 }
 
@@ -116,12 +120,16 @@ nav.navbar.navbar-inverse {
 	vertical-align: middle;
 	margin: 0px;
 }
-/*
-div.navbar-header a.navbar-brand {
-	color: #fff;
+
+.reverse-btn {
+	margin-right: 5px;
 }
 
-.active {
-	color: black;
+.reverse-btn span:after {
+	content: '\25b2';
 }
-*/
+
+.reverse-btn span.reverse:after {
+	content: '\25bc';
+}
+

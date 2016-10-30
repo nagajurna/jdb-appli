@@ -1,22 +1,19 @@
-div(ng-init="$ctrl.showGames()")
-  .row
+.main-wrapper(ng-init="$ctrl.showGames()")
+  .row.top-title
     .col-xs-12
-      h1
-        a(href='/#/admin') Admin
-  .row
-    .col-xs-12
-      h4
-        a(href='/#/admin/games/add') New
+      p GAMES
   
-  .row(ng-repeat='game in $ctrl.games')
-    .col-xs-6
-      p {{game.name | uppercase}} 
+  .wrapper
+    h4: a(href='/#/admin/games/new'):  span(class="glyphicon glyphicon-plus") 
+    ul(class="list-group")
+      li(class="list-group-item" ng-repeat='game in $ctrl.games')
+        .row
+          .col-xs-8
+            p {{game.name | uppercase}} 
         
-    .col-xs-3
-      p 
-        a(href='/#/admin/games/update/{{game.pathname}}') update 
-        
-    .col-xs-3
-      p  
-        a(href='' ng-click="$ctrl.remove(game._id)") remove  
+          .col-xs-2
+            p(class="pull-right"): a(href='/#/admin/games/{{game.pathname}}'): span(class="glyphicon glyphicon-pencil") 
+          
+          .col-xs-2
+            p(class="pull-right"): a(href='' ng-click="$ctrl.delete(game._id)"): span(class="glyphicon glyphicon-trash")  
 

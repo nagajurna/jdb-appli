@@ -1,4 +1,5 @@
 .dropdown.pull-right
+  button(class="btn reverse-btn" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
   button(class="btn dropdown-toggle" type="button" data-toggle="dropdown") Tri par {{ $ctrl.labels[$ctrl.property] + ' ' }}
     span(class="caret")
   ul(class="dropdown-menu")

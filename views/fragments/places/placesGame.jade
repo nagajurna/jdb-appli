@@ -1,13 +1,16 @@
-.main-wrapper(ng-init="$ctrl.showPlaces()")
-  .clearfix.top-title
-    p(class="pull-left") {{ $ctrl.game.name | uppercase }}
-    <sort-by property="$ctrl.propertyName"></sort-by>
+.main-wrapper(ng-init="$ctrl.showPlacesGame()")
+  .row.top-title
+    .col-xs-4
+      p {{ $ctrl.game.name | uppercase }}
+    .col-xs-8
+      <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>
   .wrapper
     ul(class="list-group")
-      li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName' class="list-group-item" id="{{ spot._id }}")
-        p(ng-click="$ctrl.position(spot)"): a(href="{{ '/#/places/game/' + $ctrl.game.pathname + '/name/' + spot.nameAlpha }}") {{ spot.name }}
-        p {{ spot.address  + ' ' + spot.cp + ' ' + spot.city }}
-        p
-          span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
-        p {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
-
+      li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' class="list-group-item" id="{{ spot._id }}")
+        .row
+          .col-xs-12
+            p(ng-click="$ctrl.position(spot)"): a(href="{{ '/#/places/game/' + $ctrl.game.pathname + '/name/' + spot.nameAlpha }}") {{ spot.name }}
+            p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
+            p(class="small"): strong
+              span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
+            p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}

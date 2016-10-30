@@ -22,7 +22,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 			L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
 					attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 					minZoom: 12,
-					maxZoom: 18
+					maxZoom: 18,
 				}).addTo(map);
 				
 			var markers = [];//destiné à recueillir tous les markers
@@ -54,12 +54,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 							games += '<span>' + places[i].games[j].name + virg + '</span>';
 						}
 					
-						
 						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
 										   games + '</br>'
 										  
-						
-						marker.bindPopup(popupContent);
+						var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60)}).
+						setContent(popupContent);
+						marker.bindPopup(popup);
 												
 						var myFunction = function(place) {
 							marker.on('click', function(ev) {
@@ -87,7 +87,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 				if(angular.isDefined(newColl) && !angular.equals(newColl,oldColl)) {
 					removeMarker(markers);//supprimer tous les markers
 					addMarker(newColl);//ajouter markers
-				}
+					mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
+				} 
 			});
 			
 			scope.$watch(attrs.position, function(newPos,oldPos) {
@@ -127,7 +128,7 @@ main.component('home', {
 				};
 				
 			ctrl.showPlaces = function() {
-			$http.get('/api/places/').
+			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.onPlaces({places: ctrl.spots});
@@ -152,12 +153,12 @@ places.component('places', {
 	controller: function($scope, $http, mapService) {
 		var ctrl = this;
 		ctrl.propertyName = mapService.getOrderByProperty();
+		ctrl.reverse = mapService.getReverse();
 		
 		ctrl.showPlaces = function() {
-			$http.get('/api/places/').
+			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
-					console.log(ctrl.propertyName);
 					ctrl.onPlaces({places: ctrl.spots});
 				});
 			};
@@ -181,17 +182,18 @@ places.component('placesGame', {
 	controller: function($scope, $route, $http, mapService) {
 		var ctrl = this;
 		ctrl.propertyName = mapService.getOrderByProperty();
+		ctrl.reverse = mapService.getReverse();
 		
-		ctrl.showGame = function() {
-			$http.get('/api/game/' + $route.current.params.game).
+		ctrl.showPlacesGame = function() {
+			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
+					ctrl.showPlaces(ctrl.game._id);
 				});
 		}
 				
-		ctrl.showPlaces = function() {
-			ctrl.showGame();
-			$http.get('/api/places/game/'  + $route.current.params.game).
+		ctrl.showPlaces = function(gameId) {
+			$http.get('/api/places/game/'  + gameId).
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.onPlaces({places: ctrl.spots});
@@ -211,7 +213,8 @@ places.component('placesGame', {
 places.component('sortBy', {
 	templateUrl: '/fragments/places/sortBy',
 	bindings: {
-		property: "="
+		property: "=",
+		reverse: "="
 	},
 	controller: function(mapService) {
 		
@@ -220,6 +223,12 @@ places.component('sortBy', {
 			ctrl.property = name;
 			mapService.setOrderByProperty(ctrl.property);
 		}
+		
+		ctrl.toggleReverse = function() {
+			ctrl.reverse = (ctrl.reverse===true ? false: true);
+			mapService.setReverse(ctrl.reverse);
+		}
+		
 		ctrl.labels = {
 			nameAlpha: 'nom',
 			cp: 'code postal',
@@ -231,7 +240,7 @@ places.component('sortBy', {
 
 places.component('place', {
 	templateUrl: '/fragments/places/place',
-	controller: function($scope, $route, $http, mapService) {
+	controller: function($scope, $route, $http, mapService, $sce) {
 		
 		var ctrl = this;
 		
@@ -245,6 +254,7 @@ places.component('place', {
 			$http.get('/api/places/'  + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
+					ctrl.spot.description = $sce.trustAsHtml(ctrl.spot.description);
 				});
 			};
 			
@@ -288,20 +298,24 @@ places.directive('gamesBar', function ($http) {
 places.component('placesAdmin', {
 	templateUrl: '/fragments/places/placesAdmin',
 	bindings: {
-		onRefresh: '&'
+		onPlaces: '&'
 	},
-	controller: function($scope, $http) {
+	controller: function($scope, $http, mapService) {
+		
 		var ctrl = this;
+		ctrl.propertyName = mapService.getOrderByProperty();
+		ctrl.reverse = mapService.getReverse();
+		
 		ctrl.showPlaces = function() {
 			$http.get('/api/places').
 				then(function(response) {
 					 ctrl.spots = response.data;
-					 ctrl.onRefresh({places: ctrl.spots});
+					 ctrl.onPlaces({places: ctrl.spots});
 				});
 		};
 		
-		ctrl.remove = function(id) {
-			$http.delete('/api/places/delete/' + id).
+		ctrl.delete = function(id) {
+			$http.delete('/api/places/' + id).
 				then(function(response) {
 					ctrl.showPlaces();
 				});
@@ -309,8 +323,8 @@ places.component('placesAdmin', {
 	}
 });
 
-places.component('placeAdd', {
-	templateUrl: '/fragments/places/placeAdd',
+places.component('placeNew', {
+	templateUrl: '/fragments/places/new',
 	controller: function($http, $location) {
 		var ctrl = this;
 		ctrl.spot = {};
@@ -325,7 +339,7 @@ places.component('placeAdd', {
 		ctrl.add = function() {
 			ctrl.spot.games = ctrl.gameIds;
 			console.log(ctrl.gameIds);
-			$http.post('/api/places/add', ctrl.spot).
+			$http.post('/api/places', ctrl.spot).
 				then(function(response) {
 					if(response.data.saved===false) {
 						console.log(response.data.reason);
@@ -346,7 +360,7 @@ places.component('placeAdd', {
 });
 
 places.component('placeUpdate', {
-	templateUrl: '/fragments/places/placeUpdate',
+	templateUrl: '/fragments/places/update',
 	controller: function($http, $route, $location) {
 		var ctrl = this;
 		ctrl.getGames = function() {
@@ -375,7 +389,7 @@ places.component('placeUpdate', {
 		/* UPDATE PLACE */
 		ctrl.update = function(id) {
 			ctrl.spot.games = ctrl.gameIds;
-			$http.put('/api/places/update/' + id, ctrl.spot).
+			$http.put('/api/places/' + id, ctrl.spot).
 				then(function(response) {
 					console.log(response);
 					ctrl.spot = {};
@@ -391,7 +405,9 @@ var games = angular.module('app.games', []);
 games.component('games', {
 	templateUrl: '/fragments/games/games',
 	controller: function($http) {
+		
 		var ctrl = this;
+		
 		ctrl.showGames = function() {
 			$http.get('/api/games').
 				then(function(response) {
@@ -399,8 +415,8 @@ games.component('games', {
 				});
 			};
 		
-		ctrl.remove = function(id) {
-			$http.delete('/api/games/delete/' + id).
+		ctrl.delete = function(id) {
+			$http.delete('/api/games/' + id).
 				then(function(response) {
 					ctrl.showGames();
 				});
@@ -408,12 +424,12 @@ games.component('games', {
 		}
 });
 
-games.component('gameAdd', {
-	templateUrl: '/fragments/games/gameAdd',
+games.component('gameNew', {
+	templateUrl: '/fragments/games/new',
 	controller: function($http, $location) {
 		var ctrl = this;			
 		ctrl.add = function() {
-			$http.post('/api/games/add', ctrl.game).
+			$http.post('/api/games', ctrl.game).
 				then(function(response) {
 					ctrl.game = {};
 					$location.path('/admin/games');
@@ -423,18 +439,18 @@ games.component('gameAdd', {
 });
 
 games.component('gameUpdate', {
-	templateUrl: '/fragments/games/gameUpdate',
+	templateUrl: '/fragments/games/update',
 	controller: function($http, $route, $location) {
 		var ctrl = this;
 		ctrl.showGame = function() {
-			$http.get('/api/game/' + $route.current.params.name).
+			$http.get('/api/games/' + $route.current.params.name).
 				then(function(response) {
 					ctrl.game = response.data;
 				});
 		};
 			
 		ctrl.update = function(id) {
-			$http.put('/api/games/update/' + id, ctrl.game).
+			$http.put('/api/games/' + id, ctrl.game).
 				then(function(response) {
 					ctrl.game = {};
 					$location.path('/admin/games');
@@ -458,12 +474,12 @@ users.component('divUser', {
 		
 		/* SIZE */
 		/*Init*/
-		var w = $('.leftCol').width();
+		var w = $('.leftCol').width()+15;
 		var h = $('.leftCol').height()-52;
 		$("#div-user").css({"width": w+"px", "height": h+"px"});
 		/*on resize*/
 		$(window).on('resize', function() {
-			var w = $('.leftCol').width();
+			var w = $('.leftCol').width()+15;
 			var h = $('.leftCol').height()-52;
 			$("#div-user").css({"width": w+"px", "height": h+"px"});
 		});
@@ -507,7 +523,6 @@ users.component('signUp', {
 						authService.getUser().then(function(user) {
 							ctrl.onCompleted({action: "hide"});
 							$scope.$emit('refreshUser', user);
-							//$location.path(ctrl.redirect);
 						});
 					}
 				});
@@ -551,8 +566,6 @@ users.component('signIn', {
 						authService.getUser().then(function(user) {
 							ctrl.onCompleted({action: "hide"});
 							$scope.$emit('refreshUser', user);
-							//$location.path(ctrl.redirect);
-							
 						});
 					}
 				});

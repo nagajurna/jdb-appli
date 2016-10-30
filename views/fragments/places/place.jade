@@ -5,4 +5,5 @@
     p: span(ng-repeat="game in $ctrl.spot.games") {{ game.name + ' ' }}
     p {{ $ctrl.spot.address }}
     p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+    p(ng-bind-html="$ctrl.spot.description")
 

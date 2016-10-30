@@ -1,23 +1,23 @@
-div(ng-init="$ctrl.showPlaces()")
-  .row
-    .col-xs-12
-      h1: a(href='/#/admin') Admin
+.main-wrapper(ng-init="$ctrl.showPlaces()")
+  .row.top-title
+    .col-xs-4
+      p PLACES
+    .col-xs-8
+      <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>  
   
-  .row
-    .col-xs-12
-      h2: a.active(href='/#/admin/places') Places
-      
-  .row
-    .col-xs-12
-      h3: a(href='/#/admin/places/add') New
-  
-  .row(ng-repeat='spot in $ctrl.spots')
-    .col-xs-6
-      p {{spot.name}}
-    
-    .col-xs-3
-      p: a(href='/#/admin/places/update/{{ spot.nameAlpha }}') update
-      
-    .col-xs-3
-      p: a(href='' ng-click="$ctrl.remove(spot._id)") remove
+  .wrapper
+    h4: a(href='/#/admin/places/new'): span(class="glyphicon glyphicon-plus") 
+    ul(class="list-group")
+      li(class="list-group-item" ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse')
+        .row
+          .col-xs-8
+            p {{spot.name}}
+            p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
+            p(class="small"): strong
+              span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
+            p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
+          .col-xs-2
+            p(class="pull-right"): a(href='/#/admin/places/name/{{ spot.nameAlpha }}'): span(class="glyphicon glyphicon-pencil")
+          .col-xs-2
+            p(class="pull-right"): a(href='' ng-click="$ctrl.delete(spot._id)"): span(class="glyphicon glyphicon-trash")
 

@@ -35,15 +35,15 @@ app.config(['$routeProvider', '$locationProvider',
 					}
 				}
 			}).
-			when('/admin/games/add', {
-				template: '<game-add><game-add>',
+			when('/admin/games/new', {
+				template: '<game-new><game-new>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();
 					}
 				}
 			}).
-			when('/admin/games/update/:name', {
+			when('/admin/games/:name', {
 				template: '<game-update><game-update>',
 				resolve: {
 					checkusers: function(authService) {
@@ -52,22 +52,22 @@ app.config(['$routeProvider', '$locationProvider',
 				}
 			}).
 			when('/admin/places', {
-				template: '<places-admin on-refresh="markersRefresh(places)"></places-admin>',
+				template: '<places-admin on-places="markersRefresh(places)"></places-admin>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();
 					}
 				}
 			}).
-			when('/admin/places/add', {
-				template: '<place-add></place-add>',
+			when('/admin/places/new', {
+				template: '<place-new></place-new>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();
 					}
 				}
 			}).
-			when('/admin/places/update/:name', {
+			when('/admin/places/name/:name', {
 				template: '<place-update></place-update>',
 				resolve: {
 					checkusers: function(authService) {
