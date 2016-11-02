@@ -1,8 +1,8 @@
 .main-wrapper(ng-init="$ctrl.showPlaces()")
   .row.top-title
-    .col-xs-4
-      p TOUS LES BARS
-    .col-xs-8
+    .col-xs-6
+      p(class="small") TOUS LES BARS
+    .col-xs-6
       <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>
   .wrapper
     ul(class="list-group")

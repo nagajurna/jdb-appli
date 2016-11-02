@@ -113,6 +113,85 @@ var leafletDirective = angular.module('app.leaflet', [])
 //admin module
 var main = angular.module('app.main', []);
 
+main.component('main', {
+	templateUrl: '/fragments/main',
+	controller: function($scope, $http, $location, $route, authService, mapService) {
+			var ctrl = this;
+			ctrl.loggedIn = false;
+			ctrl.currentUser = null;
+			ctrl.markers = {};
+			//INITIALISATION DE APP
+			ctrl.appInit = function () {
+				ctrl.getUser();
+				ctrl.getMarkers();
+			};
+			
+			/*USER*/
+			//initialisation de loggedIn et currentUser lancée par $scope.appInit
+			ctrl.getUser = function() {
+				authService.getUser().then(function(user) {
+					ctrl.loggedIn = user.loggedIn;
+					ctrl.currentUser = user.user;
+					ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+				});
+			};
+			//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
+			$scope.$on('refreshUser', function(event, user) {
+				ctrl.loggedIn = user.loggedIn;
+				ctrl.currentUser = user.user;
+				ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+			});
+			//log out
+			ctrl.signout = function() {
+				$http.get('/users/signout').
+					then(function(response) {
+						ctrl.getUser();
+						$location.path('/');
+					});
+			};
+			
+			/*ROUTES INTERDITES*/
+			$scope.$on('$routeChangeError', function(event, current, previous, rejection) {
+				console.log(rejection);
+				if(rejection.reason==="route.admin.only") {
+					$location.path('/');
+				} else if(rejection.reason==="route.loggedIn.only") {
+					//$location.path('/');
+					//$location.path('/connexion');
+					ctrl.toggleDiv('sign-in');
+					var path = $location.path().replace('/comments/new','');
+					$location.path(path);
+					
+				}
+			});
+			
+			/*LEAFLET MARKERS*/
+			//initialisation des markers lancée par $scope.appInit
+			ctrl.getMarkers = function(spots) {
+				//aller voir si markers dans express session
+				mapService.getMarkers().then(function(value) {
+					ctrl.markers = value.markers;
+				});	
+			};
+			//mise à jour des markers
+			ctrl.markersRefresh = function(places) {
+				ctrl.markers = places;
+			}
+			
+			$scope.$on('position', function(event, position) {
+				ctrl.position = position;
+			});
+			
+			//divUser TEMPLATES		
+			ctrl.toggleDiv = function(template) {
+				ctrl.template = template;
+				$('#div-user').toggleClass("in");
+				
+			}
+	}
+	
+});
+
 main.component('home', {
 		templateUrl: '/fragments/home',
 		bindings: {
@@ -210,37 +289,9 @@ places.component('placesGame', {
 	}
 });
 
-places.component('sortBy', {
-	templateUrl: '/fragments/places/sortBy',
-	bindings: {
-		property: "=",
-		reverse: "="
-	},
-	controller: function(mapService) {
-		
-		var ctrl = this;
-		ctrl.sortBy = function(name) {
-			ctrl.property = name;
-			mapService.setOrderByProperty(ctrl.property);
-		}
-		
-		ctrl.toggleReverse = function() {
-			ctrl.reverse = (ctrl.reverse===true ? false: true);
-			mapService.setReverse(ctrl.reverse);
-		}
-		
-		ctrl.labels = {
-			nameAlpha: 'nom',
-			cp: 'code postal',
-			updated: 'date de mise à jour'
-		}
-	}
-});
-
-
 places.component('place', {
 	templateUrl: '/fragments/places/place',
-	controller: function($scope, $route, $http, mapService, $sce) {
+	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
 		var ctrl = this;
 		
@@ -250,11 +301,24 @@ places.component('place', {
 			ctrl.redirect = "/places"
 		}
 		
+		ctrl.path = '/#' + $location.path() + '/comments/new';
+		
+		ctrl.showComments = function(id) {
+			$http.get('/api/comments/place/' + id).
+				then(function(response) {
+					ctrl.comments = response.data;
+					ctrl.comments.forEach(function(comment) {
+						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+					});
+				});
+		};
+		
 		ctrl.showPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
-					ctrl.spot.description = $sce.trustAsHtml(ctrl.spot.description);
+					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
+					ctrl.showComments(ctrl.spot._id)
 				});
 			};
 			
@@ -270,24 +334,17 @@ places.directive('gamesBar', function ($http) {
 			templateUrl: '/fragments/games/gamesBar',
 			restrict: 'A',
 			link: function(scope, element, attrs) {
-				/* GAMES */
-				scope.showGames = function() {
-					$http.get('/api/games').
-						then(function(response) {
-							scope.games = response.data;
-						})
-					};
-				scope.showGames();
-				
 				/* POSITION : left */
 				/*Init*/
 				var w = $('.rightCol').width();
-				var left = w/2-(768/2);//768=BAR WIDTH
+				var barW = $('#game-bar').width();//bar width
+				var left = w/2-(barW/2);
 				$(element).css("left", left+"px");
 				/*on resize*/
 				$(window).on('resize', function() {
 					var w = $('.rightCol').width();
-					var left = w/2-(768/2);
+					var barW = $('#game-bar').width();//bar width
+					var left = w/2-(barW/2);
 					$(element).css("left", left+"px");
 				});
 			}
@@ -319,6 +376,10 @@ places.component('placesAdmin', {
 				then(function(response) {
 					ctrl.showPlaces();
 				});
+		};
+		
+		ctrl.position = function(spot) {
+			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
 	}
 });
@@ -359,6 +420,53 @@ places.component('placeNew', {
 	}
 });
 
+places.component('placeAdmin', {
+	templateUrl: '/fragments/places/placeAdmin',
+	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
+		
+		var ctrl = this;
+		
+			
+		ctrl.path = $location.path();
+		
+		ctrl.showComments = function(id) {
+			$http.get('/api/admin/comments/place/' + id).
+				then(function(response) {
+					ctrl.comments = response.data;
+					ctrl.comments.forEach(function(comment) {
+						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+					});
+				});
+		};
+		
+		ctrl.deleteComment = function(id) {
+			$http.delete('/api/comments/' + id).
+				then(function(response) {
+					ctrl.showComments(ctrl.spot._id)
+					$location.path(ctrl.path);
+				});
+		};
+		
+		ctrl.toggleVisible = function(comment) {
+			comment.visible = !comment.visible;
+			$http.put('/api/comments/' + comment._id, comment).
+				then(function(response) {
+					$location.path(ctrl.path);
+				});
+		}
+		
+		ctrl.showPlace = function() {
+			$http.get('/api/places/'  + $route.current.params.name).
+				then(function(response) {
+					ctrl.spot = response.data;
+					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
+					ctrl.showComments(ctrl.spot._id)
+				});
+			};
+			
+	}
+});
+
 places.component('placeUpdate', {
 	templateUrl: '/fragments/places/update',
 	controller: function($http, $route, $location) {
@@ -396,6 +504,87 @@ places.component('placeUpdate', {
 					$location.path('/admin/places');
 				});
 			};
+	}
+});
+
+places.component('sortBy', {
+	templateUrl: '/fragments/places/sortBy',
+	bindings: {
+		property: "=",
+		reverse: "="
+	},
+	controller: function(mapService) {
+		
+		var ctrl = this;
+		ctrl.sortBy = function(name) {
+			ctrl.property = name;
+			mapService.setOrderByProperty(ctrl.property);
+		}
+		
+		ctrl.toggleReverse = function() {
+			ctrl.reverse = (ctrl.reverse===true ? false: true);
+			mapService.setReverse(ctrl.reverse);
+		}
+		
+		ctrl.labels = {
+			nameAlpha: 'nom',
+			cp: 'code postal',
+			updated: 'date de mise à jour'
+		}
+	}
+});
+
+places.filter('toHtml', function() {
+	return function(input) {
+		input = input || '';
+		var out = '';
+		out = input.replace(/\n/g, '<br>');
+		return out;
+	};
+	
+});
+
+
+//comments module
+var comments = angular.module('app.comments', []);
+
+comments.component('commentNew', {
+	templateUrl: '/fragments/comments/new',
+	bindings: {
+		user: '<',
+		onAnonymous: '&'
+	},
+	controller: function($http, $route, $location) {
+		
+		var ctrl = this;
+				
+		ctrl.showPlace = function() {
+			$http.get('/api/places/'  + $route.current.params.name).
+				then(function(response) {
+					ctrl.spot = response.data;
+				});
+			};
+			
+		ctrl.add = function() {
+			if(!ctrl.user) {
+				ctrl.onAnonymous({template: 'sign-in'});
+				return
+			}
+			ctrl.comment.author = ctrl.user.id;
+			ctrl.comment.place = ctrl.spot._id;
+			
+			$http.post('/api/comments', ctrl.comment).
+				then(function(response) {
+					ctrl.comment = {};
+					var path = $location.path().replace('/comments/new','');
+			        $location.path(path);
+				});
+		};
+		
+		ctrl.back = function() {
+			var path = $location.path().replace('/comments/new','');
+			$location.path(path);
+		}
 	}
 });
 

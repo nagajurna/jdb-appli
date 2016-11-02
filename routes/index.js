@@ -25,12 +25,6 @@ router.get('/fragments/:repertory/:filename', function(req, res, next) {
 	res.render('fragments/' + repertory + '/' + filename);
 });
 
-/* GET users fragments. */
-//router.get('/fragments/users/:filename', function(req, res, next) {
-	//var filename = req.params.filename;
-	//res.render('fragments/users/' + filename);
-//});
-
 
 
 module.exports = router;

@@ -1,9 +1,22 @@
 .main-wrapper(ng-init="$ctrl.showPlace()")
+  .row.top-title
+    .col-xs-12
+      a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
+      h4(class="text-center") {{ $ctrl.spot.name }}
   .wrapper
-    a(href="" ng-click="$ctrl.back()") revenir
-    h4 {{ $ctrl.spot.name }}
-    p: span(ng-repeat="game in $ctrl.spot.games") {{ game.name + ' ' }}
-    p {{ $ctrl.spot.address }}
-    p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
-    p(ng-bind-html="$ctrl.spot.description")
-
+    div
+      p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
+      p {{ $ctrl.spot.address }}
+      p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+      p: em(ng-bind-html="$ctrl.spot.description")
+      .comments
+        p COMMENTAIRES &ensp;
+          a(href="{{ $ctrl.path }}") <span class="glyphicon glyphicon-plus">
+        ul(class="list-group")
+          li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
+            .row
+              .col-xs-12
+                p(ng-bind-html="comment.text")
+            .row
+              .col-xs-12
+                span(class="pull-right small") {{ comment.author.name  + ', ' + (comment.postedAt | date:'dd-M-yyyy')}}  

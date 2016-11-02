@@ -1,24 +1,24 @@
-div
+div(title="formulaire d'inscription")
   form(novalidate)
     p
       span(ng-bind='$ctrl.form.message')
-    p
-      label name
-      input(type='text' ng-model='$ctrl.user.name')
+    .form-group
+      label(for="name") Nom d'utilisateur
+      input(type='text' class="form-control" id="name" ng-model='$ctrl.user.name')
       span(ng-bind='$ctrl.form.errors.name.message')  
-    p
-      label email
-      input(type='text' ng-model='$ctrl.user.email')
+    .form-group
+      label(for="email") Email
+      input(type='text' class="form-control" id="email" ng-model='$ctrl.user.email')
       span(ng-bind='$ctrl.form.errors.email.message')
-    p
-      label password
-      input(type='password' ng-model='$ctrl.user.password')
+    .form-group
+      label(for="password") Mot de passe
+      input(type='password' class="form-control" id="password" ng-model='$ctrl.user.password')
       span(ng-bind='$ctrl.form.errors.password.message')
-    p
-      label password confirm
-      input(type='password' ng-model='$ctrl.user.passwordConfirm')
+    .form-group
+      label(for="passwordConfirm") Confirmation
+      input(type='password' class="form-control" id="passwordConfirm" ng-model='$ctrl.user.passwordConfirm')
       span(ng-bind='$ctrl.form.errors.passwordConfirm.message')
     p
-      input(type='button' ng-click='$ctrl.signup()' value='valider')
+      input(type='submit' class="btn btn-default" ng-click='$ctrl.signup()' value='valider')
 
     a(href='' ng-click="$ctrl.template ='sign-in'") Connexion

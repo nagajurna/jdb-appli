@@ -3,6 +3,7 @@ var router = express.Router();
 var crypto = require('crypto');
 var base64url = require('base64url');
 var nodemailer = require('nodemailer');
+var Entities = require('html-entities').XmlEntities;
 var infos = require('jdb-infos');
 
 var mongoose = require('mongoose');
@@ -92,9 +93,10 @@ router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		req.logIn(user, function(err) {
 			
 		  if (err) { return next(err); }
+		  entities = new Entities();
 		  var currentUser = {};
 		  currentUser.id = req.user._id;
-		  currentUser.name = req.user.name;
+		  currentUser.name = entities.encode(req.user.name);
 		  currentUser.email = req.user.email;
 		  currentUser.role = req.user.role; 
 		  return res.json({ loggedIn: true, user: currentUser });

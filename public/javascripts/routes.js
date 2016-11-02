@@ -2,19 +2,25 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<home on-places="markersRefresh(places)"></home>',
+				template: '<home on-places="$ctrl.markersRefresh(places)"></home>',
 			}).
 			when('/places', {
-				template: '<places on-places="markersRefresh(places)"></places>',
+				template: '<places on-places="$ctrl.markersRefresh(places)"></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places-Game on-places="markersRefresh(places)"></places-Game>',
+				template: '<places-Game on-places="$ctrl.markersRefresh(places)"></places-Game>',
 			}).
 			when('/places/name/:name', {
 				template: '<place></place>',
 			}).
 			when('/places/game/:game/name/:name', {
 				template: '<place></place>',
+			}).
+			when('/places/name/:name/comments/new', {
+				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.toggleDiv(template)" ></comment-new>',
+			}).
+			when('/places/game/:game/name/:name/comments/new', {
+				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.toggleDiv(template)" ></comment-new>',
 			}).
 			when('/forgotPassword/reset', {
 				template: '<forgot-password-reset></forgot-password-reset>'
@@ -52,7 +58,7 @@ app.config(['$routeProvider', '$locationProvider',
 				}
 			}).
 			when('/admin/places', {
-				template: '<places-admin on-places="markersRefresh(places)"></places-admin>',
+				template: '<places-admin on-places="$ctrl.markersRefresh(places)"></places-admin>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();
@@ -67,8 +73,16 @@ app.config(['$routeProvider', '$locationProvider',
 					}
 				}
 			}).
-			when('/admin/places/name/:name', {
+			when('/admin/places/name/:name/edit', {
 				template: '<place-update></place-update>',
+				resolve: {
+					checkusers: function(authService) {
+						return authService.checkAdmin();
+					}
+				}
+			}).
+			when('/admin/places/name/:name/show', {
+				template: '<place-admin></place-admin>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();
@@ -80,10 +94,6 @@ app.config(['$routeProvider', '$locationProvider',
 			});
 			
 			 //use the HTML5 History API
-			$locationProvider.html5Mode({
-			  enabled: false,
-			  requireBase: false,
-			  rewriteLinks: false
-			});
+			$locationProvider.html5Mode(true);
 		
 	}]);

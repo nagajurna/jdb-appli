@@ -1,7 +1,17 @@
 div(class="hidden-xs")
   ul(class="list-group")
-    li(class="list-group-item"): a(href="/#/places") Tous 
-    li(class="list-group-item" ng-repeat="game in games")
-      a(href="{{ '/#/places/game/' + game.pathname }}") {{ game.name }}
+    li(class="list-group-item"): a(href="/#/places") Tous
+    li(class="list-group-item"): a(href="/#/places/game/baby-foot") Baby-foot
+    li(class="list-group-item"): a(href="/#/places/game/billard") Billard
+    li(class="list-group-item"): a(href="/#/places/game/flechettes") Fléchettes
+    li(class="list-group-item"): a(href="/#/places/game/flipper") Flipper 
+    li(class="list-group-item dropdown")
+      a(href="" class="dropdown-toggle" data-toggle="dropdown") Autres
+      ul(class="dropdown-menu")
+        li: a(href="/#/places/game/board-game") Board game
+        li: a(href="/#/places/game/bowling") Bowling
+        li: a(href="/#/places/game/jeu-video") Jeu vidéo
+        li: a(href="/#/places/game/petanque") Pétanque
+        li: a(href="/#/places/game/ping-pong") Ping-pong
   
 

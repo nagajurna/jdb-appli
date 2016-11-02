@@ -1,0 +1,13 @@
+.main-wrapper(ng-init="$ctrl.showPlace()")
+  .row.top-title
+    .col-xs-12
+      a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
+      h4(class="text-center") {{ $ctrl.spot.name }}
+  .wrapper
+    form(novalidate)
+      .form-group
+        label(for="text") Votre commentaire&nbsp;:
+        textarea(ng-model='$ctrl.comment.text' class="form-control" rows="5" id="text")
+      p
+        input(type='submit' class="btn btn-default" ng-click='$ctrl.add()' value='ajouter')
+      

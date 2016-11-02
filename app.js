@@ -15,25 +15,6 @@ var api = require('./routes/api');
 var users = require('./routes/users')
 
 
-//*****************
-
-//var MongoClient = require('mongodb').MongoClient
-  //, assert = require('assert');
-  
-//// Connection URL 
-//var url = 'mongodb://localhost:27017/jdb';
-//// Use connect method to connect to the Server 
-//MongoClient.connect(url, function(err, db) {
-  //assert.equal(null, err);
-  //console.log("Connected correctly to server");
- 
-  //db.close();
-//});
-
-
-
-
-
 //**************
 
 var app = express();
@@ -63,6 +44,10 @@ var configPassport = require('./passport/config');
 app.use('/', routes);
 app.use('/api', api);
 app.use('/users', users);
+
+app.all('/*', function(req, res) {
+        res.render('index', {title: "JDB"});
+    });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

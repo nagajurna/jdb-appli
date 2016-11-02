@@ -1,11 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var cookieParser = require('cookie-parser');
+var Entities = require('html-entities').XmlEntities;
 
 var mongoose = require('mongoose');
 
 var Game = require('../Models/Game');
 var Place = require('../Models/Place');
+var Comment = require('../Models/Comment');
 
 
 /* GET games */
@@ -126,7 +128,7 @@ router.post('/places', function(req, res, next) {
 		} else {
 			res.json({saved: true});
 		}
-		});
+	});
 });
 
 /* GET  place */
@@ -180,6 +182,81 @@ router.delete('/places/:id', function(req, res, next) {
 		if(err) return console.log(err);
 		res.json('ok');
 	});
+});
+
+
+
+/* GET comments/place */
+router.get('/comments/place/:id', function(req, res, next) {
+	var id = req.params.id;
+	Comment
+	.find({ place: id })
+	.where({visible: true})
+	.sort({ postedAt: -1 })
+	.populate('author')
+	.exec(function(err,comments) {
+			if(err) return console.log(err);
+			res.json(comments);
+		});
+
+});
+/* GET admin/comments/place */
+router.get('/admin/comments/place/:id', function(req, res, next) {
+	var id = req.params.id;
+	Comment
+	.find({ place: id })
+	.sort({ postedAt: -1 })
+	.populate('author')
+	.exec(function(err,comments) {
+			if(err) return console.log(err);
+			res.json(comments);
+		});
+
+});
+
+/* Add comments*/
+router.post('/comments', function(req, res, next) {
+	entities = new Entities();
+	var comment = new Comment({text: entities.encode(req.body.text), 
+						       author: mongoose.Types.ObjectId(req.body.author),
+							   place: mongoose.Types.ObjectId(req.body.place), 
+						       _id: new mongoose.Types.ObjectId});
+	
+	comment.save(function(err) {
+		if(err) {
+			console.log(err);
+			res.json({saved: false, reason: err});
+		} else {
+			res.json({saved: true});
+		}
+	});
+
+});
+
+
+router.put('/comments/:id', function(req, res, next) {
+	var id = req.params.id;
+	var visible = req.body.visible;
+	Comment.findOne({ _id: id }, function (err, comment) {
+		  if (err) return console.log(err);
+		    comment.visible = visible;
+		  comment.save(function(err) {
+			if(err) {
+				console.log(err);
+				res.json({saved: false, reason: err});
+			} else {
+				res.json({saved: true});
+			}
+		});
+	});
+});
+
+router.delete('/comments/:id', function(req, res, next) {
+	var id = req.params.id;
+	Comment.remove({_id: id }, function(err) {
+			if(err) return console.log(err);
+			res.json('ok');
+		});
 });
 
 /*SET MARKERS*/

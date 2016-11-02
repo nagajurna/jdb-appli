@@ -11,13 +11,13 @@
       li(class="list-group-item" ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse')
         .row
           .col-xs-8
-            p {{spot.name}}
+            p(ng-click="$ctrl.position(spot)"): a(href='/#/admin/places/name/{{ spot.nameAlpha }}/show') {{spot.name}}
             p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
             p(class="small"): strong
               span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
             p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
           .col-xs-2
-            p(class="pull-right"): a(href='/#/admin/places/name/{{ spot.nameAlpha }}'): span(class="glyphicon glyphicon-pencil")
+            p(class="pull-right"): a(href='/#/admin/places/name/{{ spot.nameAlpha }}/edit'): span(class="glyphicon glyphicon-pencil")
           .col-xs-2
             p(class="pull-right"): a(href='' ng-click="$ctrl.delete(spot._id)"): span(class="glyphicon glyphicon-trash")
 

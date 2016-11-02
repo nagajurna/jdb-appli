@@ -1,0 +1,31 @@
+.main-wrapper(ng-init="$ctrl.showPlace()")
+  .row.top-title
+    .col-xs-12
+      a(href="/#/admin/places" class="back"): <span class="glyphicon glyphicon-arrow-left">
+      h4(class="text-center") {{ $ctrl.spot.name }}
+  .wrapper
+    div
+      p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
+      p {{ $ctrl.spot.address }}
+      p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+      p: em(ng-bind-html="$ctrl.spot.description")
+      .comments
+        p COMMENTAIRES &ensp;
+        ul(class="list-group")
+          li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
+            p: strong Commentaire : 
+            p(ng-bind-html="comment.text")
+            p
+              span: strong Auteur : 
+              span {{ comment.author.name}}
+            p
+              span: strong Date : 
+              span {{ comment.postedAt }}
+            p
+              .row
+                .col-xs-6
+                  a(href="" ng-click="$ctrl.toggleVisible(comment)")
+                    span(ng-if="comment.visible") Visible
+                    span: strong(ng-if="!comment.visible") Caché
+                .col-xs-6
+                  a(href='' ng-if="!comment.visible" class="pull-right" ng-click="$ctrl.deleteComment(comment._id)"): span(class="glyphicon glyphicon-trash")

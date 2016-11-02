@@ -1,29 +1,24 @@
-extends layout
-
-block content
-  .container-fluid
-    .row.content
-      .col-sm-3.leftCol
-        nav.navbar.navbar-inverse
-          .navbar-header
-            a.navbar-brand(href='/#/') JDB
-          ul.nav.navbar-nav.navbar-right
-            li(ng-if='admin') 
-              a(href='/#/admin')
-               span(class="glyphicon glyphicon-king") 
-            li(ng-if='loggedIn') 
-              a(href='' ng-click="toggleDiv('profile')")
-                span(class="glyphicon glyphicon-user")
-            li(ng-if='loggedIn') 
-              a(href='' ng-click='signout()')
-                span(class="glyphicon glyphicon-log-out")
-            li(ng-if='!loggedIn') 
-              a(href='' ng-click="toggleDiv('sign-in')") 
-                span(class="glyphicon glyphicon-log-in")
-           
-        #view(ng-view)
-        <modal template='template' user="currentUser"></modal>
-        <div-user template='template' user="currentUser"></div-user>
-      .col-sm-9.rightCol
-        div(my-leaflet source='markers' position='position')
-        div(id="game-bar" games-bar)
+doctype html
+html(ng-app="jdbApp")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= title
+    base(href='/')
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.0.1/dist/leaflet.css')
+    link(rel='stylesheet', href='/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='https://unpkg.com/leaflet@1.0.1/dist/leaflet.js')
+    script(src='/angular/angular.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js')
+    script(src='/angular-route/angular-route.min.js')
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+  body()
+    <main></main>
+  script(src='/javascripts/main.js')
+  script(src='/javascripts/routes.js')
+  script(src='/javascripts/components/components.js')
+  script(src='/javascripts/services/authService.js')
+  script(src='/javascripts/services/mapService.js')
+ 

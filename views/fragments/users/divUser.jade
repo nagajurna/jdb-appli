@@ -1,6 +1,7 @@
 div(id="div-user")
-  button(type="button" class="close" ng-click="$ctrl.close()" ) &times;
-  h4() {{ $ctrl.title }}
+  .top-title
+    button(type="button" class="close" ng-click="$ctrl.close()" ) &times;
+    h4() {{ $ctrl.title }}
       
   div(ng-switch="$ctrl.template")
     <sign-in ng-switch-when="sign-in" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
