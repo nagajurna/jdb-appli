@@ -1,4 +1,4 @@
-.main-wrapper(ng-init="$ctrl.showPlaces()")
+.main-wrapper(ng-init="$ctrl.init()")
   .row.top-title
     .col-xs-6
       p(class="small") TOUS LES BARS
@@ -14,3 +14,4 @@
             p(class="small"): strong
               span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
             p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
+            p(class="small" ng-bind="'Commentaires : ' + $ctrl.commentsCount(spot._id)")

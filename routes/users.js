@@ -28,9 +28,9 @@ var credentialsPreCheck = function(req, res, next) {
 		var valError = {};
 		valError = valUser.validateSync();
 		if(!req.body.passwordConfirm) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'champ obligatoire';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Champ obligatoire';
 		} else if(req.body.passwordConfirm !== req.body.password) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'mot de passe différent';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Mot de passe différent';
 		}
 		if(valError.errors.name || valError.errors.email || valError.errors.password  || valError.errors.passwordConfirm) {
 			valError.name = 'ValidationError';
@@ -39,8 +39,8 @@ var credentialsPreCheck = function(req, res, next) {
 	} else if(req.path === '/signin') {
 		var valError = {};
 		valError.errors = {};
-		if(!req.body.email) { valError.errors.email = {} ; valError.errors.email.message = 'champ obligatoire';}
-		if(!req.body.password) { valError.errors.password = {} ; valError.errors.password.message = 'champ obligatoire';}
+		if(!req.body.email) { valError.errors.email = {} ; valError.errors.email.message = 'Champ obligatoire';}
+		if(!req.body.password) { valError.errors.password = {} ; valError.errors.password.message = 'Champ obligatoire';}
 		if( valError.errors.email || valError.errors.password ) {
 			valError.name = 'ValidationError';
 			return res.json({loggedIn: false, reason: valError});
@@ -49,11 +49,11 @@ var credentialsPreCheck = function(req, res, next) {
 		var valUser = new User({password: req.body.password});
 		var valError = {};
 		valError = valUser.validateSync();
-		if(!req.body.passwordCurrent) { valError.errors.passwordCurrent = {} ; valError.errors.passwordCurrent.message = 'champ obligatoire';}
+		if(!req.body.passwordCurrent) { valError.errors.passwordCurrent = {} ; valError.errors.passwordCurrent.message = 'Champ obligatoire';}
 		if(!req.body.passwordConfirm) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'champ obligatoire';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Champ obligatoire';
 		} else if(req.body.passwordConfirm !== req.body.password) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'mot de passe différent';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Mot de passe différent';
 		}
 		if( valError.errors.passwordCurrent || valError.errors.password  || valError.errors.passwordConfirm ) {
 			return res.json({reset: false, reason: valError});
@@ -61,7 +61,7 @@ var credentialsPreCheck = function(req, res, next) {
 	} else if(req.path === '/forgotPassword') {
 		var valError = {};
 		valError.errors = {};
-		if(!req.body.email) { valError.errors.email = {} ; valError.errors.email.message = 'champ obligatoire';}
+		if(!req.body.email) { valError.errors.email = {} ; valError.errors.email.message = 'Champ obligatoire';}
 		if( valError.errors.email) {
 			valError.name = 'ValidationError';
 			return res.json({mailSent: false, reason: valError});
@@ -71,9 +71,9 @@ var credentialsPreCheck = function(req, res, next) {
 		var valError = {};
 		valError = valUser.validateSync();
 		if(!req.body.passwordConfirm) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'champ obligatoire';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Champ obligatoire';
 		} else if(req.body.passwordConfirm !== req.body.password) { 
-			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'mot de passe différent';
+			valError.errors.passwordConfirm = {} ; valError.errors.passwordConfirm.message = 'Mot de passe différent';
 		}
 		if( valError.errors.password  || valError.errors.passwordConfirm ) {
 			return res.json({reset: false, reason: valError});

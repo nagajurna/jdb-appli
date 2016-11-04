@@ -229,18 +229,38 @@ places.component('places', {
 	bindings: {
 		onPlaces: '&'
 	},
-	controller: function($scope, $http, mapService) {
+	controller: function($scope, $http, mapService, $filter) {
 		var ctrl = this;
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
 		
-		ctrl.showPlaces = function() {
+		ctrl.init = function() {
+			ctrl.getPlaces();
+			ctrl.getComments();
+		};
+		
+		ctrl.getPlaces = function() {
 			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.onPlaces({places: ctrl.spots});
 				});
-			};
+		};
+		
+		ctrl.getComments = function() {
+			$http.get('/api/comments').
+				then(function(response) {
+					ctrl.comments = response.data;
+				});
+		};
+		
+		ctrl.commentsCount = function(id) {
+			var count;
+			if($filter('filter')(ctrl.comments, id)) {
+				count = $filter('filter')(ctrl.comments, id).length;
+			}
+			return count;
+		};
 			
 		ctrl.position = function(spot) {
 			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
@@ -258,26 +278,46 @@ places.component('placesGame', {
 	bindings: {
 		onPlaces: '&'
 	},
-	controller: function($scope, $route, $http, mapService) {
+	controller: function($scope, $route, $http, mapService, $filter) {
 		var ctrl = this;
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
 		
-		ctrl.showPlacesGame = function() {
+		ctrl.init = function() {
+			ctrl.getPlacesGame();
+			ctrl.getComments();
+		};
+		
+		ctrl.getPlacesGame = function() {
 			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
-					ctrl.showPlaces(ctrl.game._id);
+					ctrl.getPlaces(ctrl.game._id);
 				});
-		}
+		};
 				
-		ctrl.showPlaces = function(gameId) {
+		ctrl.getPlaces = function(gameId) {
 			$http.get('/api/places/game/'  + gameId).
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.onPlaces({places: ctrl.spots});
 				});
-			};
+		};
+		
+		ctrl.getComments = function() {
+			$http.get('/api/comments').
+				then(function(response) {
+					ctrl.comments = response.data;
+				});
+		};
+		
+		ctrl.commentsCount = function(id) {
+			var count;
+			if($filter('filter')(ctrl.comments, id)) {
+				count = $filter('filter')(ctrl.comments, id).length;
+			}
+			return count;
+		};
 			
 		ctrl.position = function(spot) {
 			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
@@ -303,7 +343,7 @@ places.component('place', {
 		
 		ctrl.path = '/#' + $location.path() + '/comments/new';
 		
-		ctrl.showComments = function(id) {
+		ctrl.getComments = function(id) {
 			$http.get('/api/comments/place/' + id).
 				then(function(response) {
 					ctrl.comments = response.data;
@@ -313,12 +353,12 @@ places.component('place', {
 				});
 		};
 		
-		ctrl.showPlace = function() {
+		ctrl.getPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
 					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
-					ctrl.showComments(ctrl.spot._id)
+					ctrl.getComments(ctrl.spot._id)
 				});
 			};
 			
@@ -363,7 +403,7 @@ places.component('placesAdmin', {
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
 		
-		ctrl.showPlaces = function() {
+		ctrl.getPlaces = function() {
 			$http.get('/api/places').
 				then(function(response) {
 					 ctrl.spots = response.data;
@@ -374,7 +414,7 @@ places.component('placesAdmin', {
 		ctrl.delete = function(id) {
 			$http.delete('/api/places/' + id).
 				then(function(response) {
-					ctrl.showPlaces();
+					ctrl.getPlaces();
 				});
 		};
 		
@@ -388,6 +428,7 @@ places.component('placeNew', {
 	templateUrl: '/fragments/places/new',
 	controller: function($http, $location) {
 		var ctrl = this;
+		ctrl.form= {};
 		ctrl.spot = {};
 		
 		ctrl.getGames = function() {
@@ -399,7 +440,6 @@ places.component('placeNew', {
 		
 		ctrl.add = function() {
 			ctrl.spot.games = ctrl.gameIds;
-			console.log(ctrl.gameIds);
 			$http.post('/api/places', ctrl.spot).
 				then(function(response) {
 					if(response.data.saved===false) {
@@ -407,7 +447,7 @@ places.component('placeNew', {
 						if(response.data.reason.name === 'ValidationError') {
 							ctrl.form.errors = response.data.reason.errors;
 						} else {
-							console.log(response.data.reason);
+							ctrl.form.message = "Problème au moment de l\'enregistrement";
 						}
 					} else {
 						ctrl.spot = {};
@@ -429,7 +469,7 @@ places.component('placeAdmin', {
 			
 		ctrl.path = $location.path();
 		
-		ctrl.showComments = function(id) {
+		ctrl.getComments = function(id) {
 			$http.get('/api/admin/comments/place/' + id).
 				then(function(response) {
 					ctrl.comments = response.data;
@@ -442,7 +482,7 @@ places.component('placeAdmin', {
 		ctrl.deleteComment = function(id) {
 			$http.delete('/api/comments/' + id).
 				then(function(response) {
-					ctrl.showComments(ctrl.spot._id)
+					ctrl.getComments(ctrl.spot._id)
 					$location.path(ctrl.path);
 				});
 		};
@@ -455,12 +495,12 @@ places.component('placeAdmin', {
 				});
 		}
 		
-		ctrl.showPlace = function() {
+		ctrl.getPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
 					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
-					ctrl.showComments(ctrl.spot._id)
+					ctrl.getComments(ctrl.spot._id)
 				});
 			};
 			
@@ -470,7 +510,15 @@ places.component('placeAdmin', {
 places.component('placeUpdate', {
 	templateUrl: '/fragments/places/update',
 	controller: function($http, $route, $location) {
+		
 		var ctrl = this;
+		ctrl.form = {};
+		
+		ctrl.init = function() {
+			ctrl.getGames();
+			ctrl.getPlace();
+		};
+		
 		ctrl.getGames = function() {
 			$http.get('/api/games').
 				then(function(response) {
@@ -478,11 +526,7 @@ places.component('placeUpdate', {
 				});
 			};
 		
-		/* GET PLACE */
-		ctrl.showPlace = function() {
-			/* get games */
-			ctrl.getGames();
-			/* get place*/
+		ctrl.getPlace = function() {
 			$http.get('/api/places/' + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
@@ -494,14 +538,23 @@ places.component('placeUpdate', {
 				});
 			};
 			
-		/* UPDATE PLACE */
 		ctrl.update = function(id) {
 			ctrl.spot.games = ctrl.gameIds;
 			$http.put('/api/places/' + id, ctrl.spot).
 				then(function(response) {
-					console.log(response);
-					ctrl.spot = {};
-					$location.path('/admin/places');
+					if(response.data.saved===false) {
+						console.log(response.data.reason);
+						if(response.data.reason.name === 'ValidationError') {
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = "Problème au moment de l\'enregistrement";
+						}
+					} else {
+						ctrl.spot = {};
+						ctrl.gameIds = {};
+						ctrl.form = {};
+						$location.path('/admin/places');
+					}
 				});
 			};
 	}
@@ -557,8 +610,11 @@ comments.component('commentNew', {
 	controller: function($http, $route, $location) {
 		
 		var ctrl = this;
+		ctrl.path = $location.path().replace('/comments/new','');
+		ctrl.form = {};
+		ctrl.comment = {};
 				
-		ctrl.showPlace = function() {
+		ctrl.getPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
 				then(function(response) {
 					ctrl.spot = response.data;
@@ -575,9 +631,19 @@ comments.component('commentNew', {
 			
 			$http.post('/api/comments', ctrl.comment).
 				then(function(response) {
-					ctrl.comment = {};
-					var path = $location.path().replace('/comments/new','');
-			        $location.path(path);
+					if(response.data.saved===false) {
+						if(response.data.reason.name === "ValidationError")
+						{
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = "Problème au moment de l\'enregistrement";
+						}
+						
+					} else {
+						ctrl.comment = {};
+						ctrl.form = {};
+						$location.path(ctrl.path);
+					}
 				});
 		};
 		
@@ -597,7 +663,7 @@ games.component('games', {
 		
 		var ctrl = this;
 		
-		ctrl.showGames = function() {
+		ctrl.getGames = function() {
 			$http.get('/api/games').
 				then(function(response) {
 					 ctrl.games = response.data;
@@ -607,7 +673,7 @@ games.component('games', {
 		ctrl.delete = function(id) {
 			$http.delete('/api/games/' + id).
 				then(function(response) {
-					ctrl.showGames();
+					ctrl.getGames();
 				});
 			};
 		}
@@ -616,12 +682,26 @@ games.component('games', {
 games.component('gameNew', {
 	templateUrl: '/fragments/games/new',
 	controller: function($http, $location) {
-		var ctrl = this;			
+		
+		var ctrl = this;
+		ctrl.form = {};
+		ctrl.game = {};
+					
 		ctrl.add = function() {
 			$http.post('/api/games', ctrl.game).
 				then(function(response) {
-					ctrl.game = {};
-					$location.path('/admin/games');
+					if(response.data.saved===false) {
+						if(response.data.reason.name==='ValidationError') {
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = 'Problème au moment de l\'enregistrement';
+						}
+						
+					} else {
+						ctrl.form = {};
+						ctrl.game = {};
+						$location.path('/admin/games');
+					}
 				});
 			};
 	}
@@ -630,8 +710,11 @@ games.component('gameNew', {
 games.component('gameUpdate', {
 	templateUrl: '/fragments/games/update',
 	controller: function($http, $route, $location) {
+		
 		var ctrl = this;
-		ctrl.showGame = function() {
+		ctrl.form = {};
+		
+		ctrl.getGame = function() {
 			$http.get('/api/games/' + $route.current.params.name).
 				then(function(response) {
 					ctrl.game = response.data;
@@ -641,8 +724,18 @@ games.component('gameUpdate', {
 		ctrl.update = function(id) {
 			$http.put('/api/games/' + id, ctrl.game).
 				then(function(response) {
-					ctrl.game = {};
-					$location.path('/admin/games');
+					if(response.data.saved===false) {
+						if(response.data.reason.name==='ValidationError') {
+							console.log(response.data);
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = 'Problème au moment de l\enregistrement';
+						}
+					} else {
+						ctrl.form = {};
+						ctrl.game = {};
+						$location.path('/admin/games');
+					}
 				});
 		};
 	}

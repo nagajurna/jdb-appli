@@ -15,7 +15,7 @@ router.get('/games', function(req, res, next) {
 	
 	Game
 	.find()
-	.sort('pathname')
+	.sort({ pathname: 1 })
 	.exec(function(err,games) {
 			if(err) return console.log(err);
 			res.json(games);
@@ -33,9 +33,9 @@ router.post('/games', function(req, res, next) {
 	game.save(function(err) {
 		if(err) {
 			console.log(err);
-			res.json(err);
+			res.json({saved: false, reason: err});
 		} else {
-			res.json('ok');
+			res.json({saved: true});
 		}
 	});
 });
@@ -59,8 +59,12 @@ router.put('/games/:id', function(req, res, next) {
 		game.name = req.body.name;
 		game.pathname = req.body.pathname;
 		game.save(function(err) {
-				if(err) return console.log(err);
-				res.json(game);
+				if(err) {
+					console.log(err);
+					res.json({saved: false, reason: err});
+				} else {
+					res.json({saved: true});
+				}
 			});
 	});
 	
@@ -79,8 +83,22 @@ router.delete('/games/:id', function(req, res, next) {
 /* GET places */
 router.get('/places', function(req, res, next) {
 	Place
+	.find({visible: true})
+	.sort({ nameAlpha: 1 })
+	.select({ name: 1, nameAlpha: 1, address: 1, cp: 1, city: 1, games: 1, lat: 1, lg: 1, updated: 1 })
+	.populate('games')
+	.exec(function(err,places) {
+		if(err) return console.log(err);
+		res.json(places);
+		});
+});
+
+/* GET admin/places */
+router.get('/places', function(req, res, next) {
+	Place
 	.find()
-	.sort('nameAlpha')
+	.sort({ nameAlpha: 1 })
+	.select({ name: 1, nameAlpha: 1, address: 1, cp: 1, city: 1, games: 1, lat: 1, lg: 1, updated: 1 })
 	.populate('games')
 	.exec(function(err,places) {
 		if(err) return console.log(err);
@@ -93,7 +111,7 @@ router.get('/places/game/:id', function(req, res, next) {
 	var id = req.params.id;
 	Place
 	.find({ games: id })
-	.sort('nameAlpha')
+	.sort({ nameAlpha: 1 })
 	.populate('games')
 	.exec(function(err,places) {
 			if(err) return console.log(err);
@@ -167,10 +185,14 @@ router.put('/places/:id', function(req, res, next) {
 	    place.lg = req.body.lg;
 	    place.visible = req.body.visible;
 	    place.updated = Date.now();
+		
 		place.save(function(err) {
-			if(err) return console.log(err);
-			res.json(place);
-			});
+			if(err) {
+				res.json({saved: false, reason: err});
+			} else {
+				res.json({saved: true});
+			}
+		});
 	});
 	
 });
@@ -184,16 +206,25 @@ router.delete('/places/:id', function(req, res, next) {
 	});
 });
 
+/* GET comments (for count) */
+router.get('/comments', function(req, res, next) {
+	Comment
+	.find({visible: true})
+	.select({ place: 1})
+	.exec(function(err,comments) {
+			if(err) return console.log(err);
+			res.json(comments);
+		});
 
+});
 
 /* GET comments/place */
 router.get('/comments/place/:id', function(req, res, next) {
 	var id = req.params.id;
 	Comment
-	.find({ place: id })
-	.where({visible: true})
+	.find({ place: id, visible: true })
 	.sort({ postedAt: -1 })
-	.populate('author')
+	.populate({ path: 'author', select: 'name' })
 	.exec(function(err,comments) {
 			if(err) return console.log(err);
 			res.json(comments);
@@ -214,26 +245,33 @@ router.get('/admin/comments/place/:id', function(req, res, next) {
 
 });
 
-/* Add comments*/
+/* Add comment*/
 router.post('/comments', function(req, res, next) {
-	entities = new Entities();
-	var comment = new Comment({text: entities.encode(req.body.text), 
-						       author: mongoose.Types.ObjectId(req.body.author),
+	
+	var entities = new Entities();
+	var text;
+	if(req.body.text) { 
+		text = entities.encode(req.body.text);
+	} else {
+		text = req.body.text;
+	}
+	var comment = new Comment({text: text, 
+							   author: mongoose.Types.ObjectId(req.body.author),
 							   place: mongoose.Types.ObjectId(req.body.place), 
-						       _id: new mongoose.Types.ObjectId});
+							   _id: new mongoose.Types.ObjectId});
 	
 	comment.save(function(err) {
 		if(err) {
-			console.log(err);
 			res.json({saved: false, reason: err});
 		} else {
 			res.json({saved: true});
 		}
 	});
 
+
 });
 
-
+/* update comment (toggleVisible)*/
 router.put('/comments/:id', function(req, res, next) {
 	var id = req.params.id;
 	var visible = req.body.visible;
@@ -251,6 +289,7 @@ router.put('/comments/:id', function(req, res, next) {
 	});
 });
 
+/* Remove comment */
 router.delete('/comments/:id', function(req, res, next) {
 	var id = req.params.id;
 	Comment.remove({_id: id }, function(err) {

@@ -1,27 +1,31 @@
 .container-fluid(ng-init="$ctrl.appInit()")
   .row.content
     .col-sm-4.col-md-3.leftCol
-      nav.navbar.navbar-inverse
+      nav.navbar.navbar-inverse.hidden-xs
         .navbar-header
-          button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar")
+          a.navbar-brand(href='/#/') JDB
+        ul.nav.navbar-nav.navbar-right
+          li(ng-if='$ctrl.admin') 
+            a(href='/#/admin')
+              span(class="glyphicon glyphicon-king") 
+          li(ng-if='$ctrl.loggedIn') 
+            a(href='' ng-click="$ctrl.toggleDiv('profile')")
+              span(class="glyphicon glyphicon-user")
+          li(ng-if='$ctrl.loggedIn') 
+            a(href='' ng-click='$ctrl.signout()')
+              span(class="glyphicon glyphicon-log-out")
+          li(ng-if='!$ctrl.loggedIn') 
+            a(href='' ng-click="$ctrl.toggleDiv('sign-in')") 
+              span(class="glyphicon glyphicon-log-in")
+              
+      nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
+        .navbar-header
+          button(type="button" class="navbar-toggle")
             span(class="icon-bar")
             span(class="icon-bar")
             span(class="icon-bar")
           a.navbar-brand(href='/#/') JDB
-        .collapse.navbar-collapse#myNavbar
-          ul.nav.navbar-nav.navbar-right
-            li(ng-if='$ctrl.admin') 
-              a(href='/#/admin')
-                span(class="glyphicon glyphicon-king") 
-            li(ng-if='$ctrl.loggedIn') 
-              a(href='' ng-click="$ctrl.toggleDiv('profile')")
-                span(class="glyphicon glyphicon-user")
-            li(ng-if='$ctrl.loggedIn') 
-              a(href='' ng-click='$ctrl.signout()')
-                span(class="glyphicon glyphicon-log-out")
-            li(ng-if='!$ctrl.loggedIn') 
-              a(href='' ng-click="$ctrl.toggleDiv('sign-in')") 
-                span(class="glyphicon glyphicon-log-in")
+        
            
       #view(ng-view)
       <div-user template='$ctrl.template' user="$ctrl.currentUser"></div-user>

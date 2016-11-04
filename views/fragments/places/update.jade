@@ -1,44 +1,61 @@
-div(ng-init="$ctrl.showPlace()")
-  h1 Modifier {{ $ctrl.spot.name }}
+.main-wrapper(ng-init="$ctrl.init()")
+  p MODIFIER {{ $ctrl.spot.name }}
 
   a(href='/#/admin/places') Retour admin
 
-  form(novalidate)
-    p
-      label name
-      input(type='text' ng-model='$ctrl.spot.name')
-    p
-      label NameAlpha
-      input(type='text' ng-model='$ctrl.spot.nameAlpha')
-    p
-      label Address
-      input(type='text' ng-model='$ctrl.spot.address')
-    p
-      label cp
-      input(type='text' ng-model='$ctrl.spot.cp')
-    p
-      label City
-      input(type='text' ng-model='$ctrl.spot.city')
-    p
-      label Tel
-      input(type='text' ng-model='$ctrl.spot.tel')
-    p
-      label Horaires
-      input(type='text' ng-model='$ctrl.spot.horaires')
-    p
-      label Description
-      textarea(ng-model='$ctrl.spot.description')  
-    p
-      label latitude
-      input(type='text' ng-model='$ctrl.spot.lat')
-    p
-      label longitude
-      input(type='text' ng-model='$ctrl.spot.lg')
-    p(ng-repeat='game in $ctrl.games')
-      label {{game.name}}
-      input(type='checkbox' ng-model="$ctrl.gameIds[game._id]")
-    p  
-      label visible
-      input(type='checkbox' ng-model='$ctrl.spot.visible')  
-    p
-      input(type='button' ng-click='$ctrl.update($ctrl.spot._id)' value='modifier')
+  .wrapper
+    form(novalidate)
+      p(ng-bind='$ctrl.form.message' class='small error-message')
+      .form-group
+        label(for='name') Name
+        input(type='text' class='form-control' ng-model='$ctrl.spot.name' id='name')
+        p(ng-bind='$ctrl.form.errors.name.message' class='small error-message')
+      .form-group
+        label(for='nameAlpha') NameAlpha
+        input(type='text' class='form-control' ng-model='$ctrl.spot.nameAlpha' id='nameAlpha')
+        p(ng-bind='$ctrl.form.errors.nameAlpha.message' class='small error-message')
+      .form-group
+        label(for='address') Address
+        input(type='text' class='form-control' ng-model='$ctrl.spot.address' id='address')
+        p(ng-bind='$ctrl.form.errors.address.message' class='small error-message')
+      .form-group
+        label(for='cp') Cp
+        input(type='text' class='form-control' ng-model='$ctrl.spot.cp' id='cp')
+        p(ng-bind='$ctrl.form.errors.cp.message' class='small error-message')
+      .form-group
+        label(for='city') City
+        input(type='text' class='form-control' ng-model='$ctrl.spot.city' id='city')
+        p(ng-bind='$ctrl.form.errors.city.message' class='small error-message')
+      .form-group
+        label(for='tel') Tel
+        input(type='text' class='form-control' ng-model='$ctrl.spot.tel' id='tel')
+        p(ng-bind='$ctrl.form.errors.tel.message' class='small error-message')
+      .form-group
+        label(for='horaires') Horaires
+        input(type='text' class='form-control' ng-model='$ctrl.spot.horaires' id='horaires')
+        p(ng-bind='$ctrl.form.errors.horaires.message' class='small error-message')
+      .form-group
+        label(for='description') Description
+        textarea(class='form-control' rows='5' ng-model='$ctrl.spot.description' id='description')
+        p(ng-bind='$ctrl.form.errors.description.message' class='small error-message')  
+      .form-group
+        label(for='lat') Latitude
+        input(type='text' class='form-control' ng-model='$ctrl.spot.lat' id='lat')
+        p(ng-bind='$ctrl.form.errors.lat.message' class='small error-message')
+      .form-group
+        label(for='lg') Longitude
+        input(type='text' class='form-control' ng-model='$ctrl.spot.lg' id='lg')
+        p(ng-bind='$ctrl.form.errors.lg.message' class='small error-message')
+      p: strong Jeux
+      .checkbox(ng-repeat='game in $ctrl.games')
+        label
+         input(type='checkbox' ng-model="$ctrl.gameIds[game._id]")
+         {{game.name}}
+      p(ng-bind='$ctrl.form.errors.games.message' class='small error-message')
+      .checkbox  
+        label
+         input(type='checkbox' ng-model='$ctrl.spot.visible')
+         span Visible  
+      p(ng-bind='$ctrl.form.errors.visible.message' class='small error-message') 
+      p
+        input(type='submit' class='btn btn-default' ng-click='$ctrl.update($ctrl.spot._id)' value='modifier')

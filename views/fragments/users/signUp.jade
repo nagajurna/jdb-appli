@@ -1,23 +1,22 @@
 div(title="formulaire d'inscription")
   form(novalidate)
-    p
-      span(ng-bind='$ctrl.form.message')
+    p(ng-bind='$ctrl.form.message' class='small error-message')
     .form-group
       label(for="name") Nom d'utilisateur
       input(type='text' class="form-control" id="name" ng-model='$ctrl.user.name')
-      span(ng-bind='$ctrl.form.errors.name.message')  
+      p(ng-bind='$ctrl.form.errors.name.message' class='small error-message')  
     .form-group
       label(for="email") Email
       input(type='text' class="form-control" id="email" ng-model='$ctrl.user.email')
-      span(ng-bind='$ctrl.form.errors.email.message')
+      p(ng-bind='$ctrl.form.errors.email.message' class='small error-message')
     .form-group
       label(for="password") Mot de passe
       input(type='password' class="form-control" id="password" ng-model='$ctrl.user.password')
-      span(ng-bind='$ctrl.form.errors.password.message')
+      p(ng-bind='$ctrl.form.errors.password.message' class='small error-message')
     .form-group
       label(for="passwordConfirm") Confirmation
       input(type='password' class="form-control" id="passwordConfirm" ng-model='$ctrl.user.passwordConfirm')
-      span(ng-bind='$ctrl.form.errors.passwordConfirm.message')
+      p(ng-bind='$ctrl.form.errors.passwordConfirm.message' class='small error-message')
     p
       input(type='submit' class="btn btn-default" ng-click='$ctrl.signup()' value='valider')
 

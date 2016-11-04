@@ -1,15 +1,14 @@
 div(title="formulaire de connexion")
   form(novalidate)
-    p
-      span(ng-bind='$ctrl.form.message')
+    p(ng-bind='$ctrl.form.message' class='small error-message')
     .form-group
       label(for="email") Email
       input(type='text' class="form-control" id="email" ng-model='$ctrl.user.email')
-      p(ng-bind='$ctrl.form.errors.email.message') 
+      p(ng-bind='$ctrl.form.errors.email.message' class='small error-message') 
     .form-group
       label(for="password") Password
       input(type='password'  class="form-control" id="password" ng-model='$ctrl.user.password')
-      p(ng-bind='$ctrl.form.errors.password.message')
+      p(ng-bind='$ctrl.form.errors.password.message' class='small error-message')
     .form-group
       a(href='' title="Mot de passe oublié" ng-click="$ctrl.template='forgot-password'") Mot de passe oublié ?
     p

@@ -3,9 +3,9 @@ var Schema = mongoose.Schema;
 
 var bCrypt = require('bcrypt');
 
-var requiredMessage = "champ obligatoire";
-var emailMatch = [/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, "adresse invalide"];
-var passwordMin = [3, "mot de passe trop court (3 lettres minimum)"];
+var requiredMessage = "Champ obligatoire";
+var emailMatch = [/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, "Adresse invalide"];
+var passwordMin = [3, "Mot de passe trop court (3 lettres minimum)"];
 
 var userSchema = new Schema({
 	_id: Schema.Types.ObjectId,

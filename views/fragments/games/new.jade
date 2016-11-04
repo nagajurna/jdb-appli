@@ -1,15 +1,19 @@
-div
-  h1 Ajouter un jeu
+.main-wrapper
+  p AJOUTER UN JEU
 
   a(href='/#/admin/games') Retour admin/jeu
 
-  form(novalidate)
-    p
-      label name
-      input(type='text' ng-model='$ctrl.game.name')  
-    p
-      label pathname
-      input(type='text' ng-model='$ctrl.game.pathname')
-    p
-      input(type='button' ng-click='$ctrl.add()' value='ajouter')
+  .wrapper
+    form(novalidate)
+      p(ng-bind='$ctrl.form.message' class='small error-message')
+        .form-group
+          label(for='name') Name
+          input(type='text' class='form-control' ng-model='$ctrl.game.name' id='name')
+          p(ng-bind='$ctrl.form.errors.name.message' class='small error-message')  
+        .form-group
+          label(for='pathname') Pathname
+          input(type='text' class='form-control' ng-model='$ctrl.game.pathname' id='pathname')
+          p(ng-bind='$ctrl.form.errors.pathname.message' class='small error-message')
+        p
+          input(type='submit' class='btn btn-default' ng-click='$ctrl.add()' value='Ajouter')
 
