@@ -23,6 +23,7 @@
     "html-entities": "^1.2.0",
     "jade": "~1.11.0",
     "jquery": "^2.2.3",
+    "leaflet": "^1.0.1",
     "mongodb": "^2.1.10",
     "mongoose": "^4.4.14",
     "morgan": "~1.6.1",

@@ -1,14 +1,14 @@
 .main-wrapper(ng-init="$ctrl.getPlace()")
-  .row.top-title
-    .col-xs-12
-      a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
-      h4(class="text-center") {{ $ctrl.spot.name }}
+  .top-title
+    a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
   .wrapper
     div
+      h4 {{ $ctrl.spot.name }}
       p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
       p {{ $ctrl.spot.address }}
       p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
       p: em(ng-bind-html="$ctrl.spot.description")
+      <hr>
       .comments
         p COMMENTAIRES &ensp;
           a(href="{{ $ctrl.path }}") <span class="glyphicon glyphicon-plus">

@@ -1,7 +1,7 @@
 .dropdown.pull-right
-  button(class="btn dropdown-toggle" type="button" data-toggle="dropdown") Tri 
+  button(class="btn btn-sm dropdown-toggle" type="button" data-toggle="dropdown") Tri&ensp;
     span(class="caret")
-  button(class="btn reverse-btn" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
+  button(class="btn btn-sm reverse-btn" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
   ul(class="dropdown-menu")
     li: a(href="" ng-click="$ctrl.sortBy('nameAlpha')" ng-class="{sorted: $ctrl.property==='nameAlpha'}") {{ $ctrl.labels['nameAlpha'] }}
     li: a(href="" ng-click="$ctrl.sortBy('cp')"  ng-class="{sorted: $ctrl.property==='cp'}") {{ $ctrl.labels['cp'] }}

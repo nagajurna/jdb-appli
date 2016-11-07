@@ -1,7 +1,7 @@
 .main-wrapper(ng-init="$ctrl.init()")
-  .row.top-title
+  .row.top-title.hidden-xs
     .col-xs-6
-      p(class="small") {{ $ctrl.game.name | uppercase }}
+      p(title='title' class="list-title") {{ $ctrl.title }}
     .col-xs-6
       <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>
   .wrapper

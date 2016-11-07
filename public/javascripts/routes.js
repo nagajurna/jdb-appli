@@ -2,25 +2,25 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<home on-places="$ctrl.markersRefresh(places)"></home>',
+				template: '<home title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></home>',
 			}).
 			when('/places', {
-				template: '<places on-places="$ctrl.markersRefresh(places)"></places>',
+				template: '<places title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places-Game on-places="$ctrl.markersRefresh(places)"></places-Game>',
+				template: '<places-Game title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></places-Game>',
 			}).
 			when('/places/name/:name', {
-				template: '<place></place>',
+				template: '<place title="$ctrl.title"></place>',
 			}).
 			when('/places/game/:game/name/:name', {
-				template: '<place></place>',
+				template: '<place title="$ctrl.title"></place>',
 			}).
 			when('/places/name/:name/comments/new', {
-				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.toggleDiv(template)" ></comment-new>',
+				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
 			}).
 			when('/places/game/:game/name/:name/comments/new', {
-				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.toggleDiv(template)" ></comment-new>',
+				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
 			}).
 			when('/forgotPassword/reset', {
 				template: '<forgot-password-reset></forgot-password-reset>'

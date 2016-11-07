@@ -1,14 +1,14 @@
 doctype html
-html(ng-app="jdbApp")
+html()
   head
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     title= title
     base(href='/')
-    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.0.1/dist/leaflet.css')
+    link(rel='stylesheet', href='/leaflet/dist/leaflet.css')
     link(rel='stylesheet', href='/bootstrap/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://unpkg.com/leaflet@1.0.1/dist/leaflet.js')
+    script(src='/leaflet/dist/leaflet.js')
     script(src='/angular/angular.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js')
     script(src='/angular-route/angular-route.min.js')
@@ -19,5 +19,5 @@ html(ng-app="jdbApp")
     script(src='/javascripts/components/components.js')
     script(src='/javascripts/services/authService.js')
     script(src='/javascripts/services/mapService.js')
-  body()
+  body(ng-app="jdbApp")
     <main></main>

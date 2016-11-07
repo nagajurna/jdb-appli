@@ -5,11 +5,20 @@ body {
   height: 100%;
 }
 
-/*
+
 a {
-  color: #00B7FF;
+  color: #757575;
 }
-*/
+
+a:hover {
+	color: #ff5722;
+	text-decoration: none;
+}
+
+a:active {
+	color: #ff5722
+}
+
 /*
 .row {
 	height: 100%;
@@ -36,7 +45,44 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 	margin-right: -15px;
 	margin-left: -15px;
 	padding-right: 0px;
+	
+	
 }
+
+div.navbar-header, nav.navbar.navbar-inverse.navbar {
+	background-color: #43a047;
+	border-color: #43a047;
+}
+
+div.navbar-header button.navbar-toggle {
+	border-color: #43a047;
+}
+
+/* MODAL*/
+/*
+div.modal-header, div.modal-footer {
+	background-color: #388e3c;
+}
+*/
+
+div.modal-content {
+	border-radius: 0px;
+}
+
+/*
+div.modal.fade.in {
+	background-color: #388e3c;
+}
+*/
+.navbar-header a.navbar-brand, .nav span.glyphicon {
+	color: #fff;
+}
+
+/*
+.modal-title, .navbar-header a.navbar-brand, .nav span.glyphicon {
+	color: #fff;
+}
+*/
 
 @media only screen and (min-width: 768px) {
 	nav.navbar.navbar-inverse {
@@ -47,26 +93,64 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 	}
 }
 
+.menu-title {
+	padding: 15px;
+	height: 50px;
+	display: inline-block;
+	line-height: 20px;
+	float: right;
+	color: #fff;
+}
+
 #game-bar {
 	position: absolute;
-	top: 20px;
+	top: 12px;
 	height: 30px;
 	z-index: 1000;
-	background: #fff;
 	padding: 5px;
 	padding-left: 0px;
 	padding-right: 0px;
+	
+}
+
+#game-bar a {
+	color: #43a047;
+	font-weight: 500;
+}
+
+#game-bar a:hover {
+	color: #ff5722;
+	text-decoration: none;
+}
+
+#game-bar a.active {
+	color: #ff5722;
+	text-decoration: none;
 }
 
 #game-bar ul {
 	padding: 0;
 	margin: 0;
+	
 }
 
 #game-bar > div > ul > li {
 	display: inline;
 	padding-left: 10px;
 	padding-right: 10px;
+	background-color: #fff;
+	border-radius: 0px;
+	border-color: #43a047;
+	border-top: none;
+	border-bottom: none;
+}
+
+#game-bar > div > ul > li:first-child {
+	border-left: none;
+}
+
+#game-bar > div > ul > li:last-child {
+	border-right: none;
 }
 
 #view {
@@ -176,13 +260,14 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 	bottom: 0px;
 }
 
-.top-title {
-	padding-bottom: 15px;
-}
 
 .top-title > * {
-	line-height: 35px;
+	line-height: 30px;
 	vertical-align: middle;
+	margin: 0px;
+}
+
+.top-title p {
 	margin: 0px;
 }
 
@@ -202,9 +287,11 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 	font-weight: 700;
 }
 
+/*
 .back {
 	position: absolute;
 }
+*/
 
 .comments {
 	margin-top: 30px;
@@ -219,3 +306,20 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 	height: 14px;
 	color: red;
 }
+
+.popup div {
+	border-radius: 0px;
+}
+
+.popup a {
+	color: #43a047;
+}
+
+.popup a:hover {
+	color: #ff5722;
+}
+
+.popup a:active {
+	color: #ff5722;
+}
+

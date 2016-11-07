@@ -18,20 +18,29 @@ var leafletDirective = angular.module('app.leaflet', [])
 				center: [48.8660601,2.3565281],
 				zoom: 13
 			});
+			//icon
+			var GreenIcon = L.Icon.Default.extend({
+				options: {
+					iconUrl: 'marker-icon-green.png'
+					}
+				});
 			
+			var greenIcon = new GreenIcon();	
+			//layer
 			L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
 					attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 					minZoom: 12,
 					maxZoom: 18,
 				}).addTo(map);
-				
+			//markers	
 			var markers = [];//destiné à recueillir tous les markers
 			addMarker = function(places) {
+				
 				markers = [];//supprime précédents markers
 				for(i=0; i<places.length; i++)
 				{
 					if(places[i].lat!=null) {
-						var marker = L.marker([places[i].lat, places[i].lg]).addTo(map);
+						var marker = L.marker([places[i].lat, places[i].lg], {icon: greenIcon}).addTo(map);
 						
 						var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
 						if($route.current.params.game) {
@@ -57,7 +66,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
 										   games + '</br>'
 										  
-						var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60)}).
+						var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
 						setContent(popupContent);
 						marker.bindPopup(popup);
 												
@@ -114,7 +123,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 var main = angular.module('app.main', []);
 
 main.component('main', {
-	templateUrl: '/fragments/main',
+	templateUrl: '/fragments/main/main',
 	controller: function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.loggedIn = false;
@@ -155,13 +164,6 @@ main.component('main', {
 				console.log(rejection);
 				if(rejection.reason==="route.admin.only") {
 					$location.path('/');
-				} else if(rejection.reason==="route.loggedIn.only") {
-					//$location.path('/');
-					//$location.path('/connexion');
-					ctrl.toggleDiv('sign-in');
-					var path = $location.path().replace('/comments/new','');
-					$location.path(path);
-					
 				}
 			});
 			
@@ -182,23 +184,25 @@ main.component('main', {
 				ctrl.position = position;
 			});
 			
-			//divUser TEMPLATES		
-			ctrl.toggleDiv = function(template) {
+			ctrl.modalLoad = function(template) {
 				ctrl.template = template;
-				$('#div-user').toggleClass("in");
-				
-			}
+				$("#myModal").modal({show: true});
+			}	
 	}
 	
 });
 
 main.component('home', {
-		templateUrl: '/fragments/home',
+		templateUrl: '/fragments/main/home',
 		bindings: {
+			title: '=',
 			onPlaces: '&'
 		},
 		controller: function($http) {
+			
 			var ctrl = this;
+			ctrl.title = '';
+			
 			ctrl.showGames = function() {
 				$http.get('/api/games').
 					then(function(response) {
@@ -221,16 +225,54 @@ main.component('admin', {
 		templateUrl: '/fragments/admin/admin'
 });
 
+main.component('menuSm', {
+		templateUrl: '/fragments/main/menu',
+		bindings: {
+			title: '=',
+			template: '=',
+			onCompleted: '&'
+		},
+		controller: function() {
+			
+			var ctrl = this;
+			ctrl.title = "Menu";
+			
+			ctrl.close = function() {
+				ctrl.onCompleted({action: "hide"});
+			};
+		}
+});
+
+main.component('modal', {
+	templateUrl: '/fragments/main/modal',
+	bindings: {
+		template: '=',
+		user: '<'
+	},
+	controller: function() {
+		
+		var ctrl = this;
+		
+		ctrl.title = "";
+		
+		ctrl.close = function(action) {
+			$("#myModal").modal(action);
+		};
+	}
+});
+
 //places module
 var places = angular.module('app.places', []);
 
 places.component('places', {
 	templateUrl: '/fragments/places/places',
 	bindings: {
+		title: '=',
 		onPlaces: '&'
 	},
 	controller: function($scope, $http, mapService, $filter) {
 		var ctrl = this;
+		ctrl.title = 'Tous les bars';
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
 		
@@ -276,10 +318,12 @@ places.component('places', {
 places.component('placesGame', {
 	templateUrl: '/fragments/places/placesGame',
 	bindings: {
+		title: '=',
 		onPlaces: '&'
 	},
 	controller: function($scope, $route, $http, mapService, $filter) {
 		var ctrl = this;
+		
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
 		
@@ -292,6 +336,7 @@ places.component('placesGame', {
 			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
+					ctrl.title = ctrl.game.name;
 					ctrl.getPlaces(ctrl.game._id);
 				});
 		};
@@ -331,15 +376,31 @@ places.component('placesGame', {
 
 places.component('place', {
 	templateUrl: '/fragments/places/place',
+	bindings: {
+		title: '='
+	},
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
 		var ctrl = this;
 		
+		ctrl.getGame = function() {
+			$http.get('/api/games/' + $route.current.params.game).
+				then(function(response) {
+					ctrl.game = response.data;
+					ctrl.title = ctrl.game.name;
+				});
+		};
+		
 		if($route.current.params.game) {
 			ctrl.redirect = "/places/game/" + $route.current.params.game
+			ctrl.getGame();
 		} else {
-			ctrl.redirect = "/places"
+			ctrl.redirect = "/places";
+			ctrl.title = "Tous les bars";
 		}
+		
+		
+		
 		
 		ctrl.path = '/#' + $location.path() + '/comments/new';
 		
@@ -368,7 +429,7 @@ places.component('place', {
 	}
 });
 
-places.directive('gamesBar', function ($http) {
+places.directive('gamesBar', function ($http, $route) {
 	
 	return {
 			templateUrl: '/fragments/games/gamesBar',
@@ -387,6 +448,11 @@ places.directive('gamesBar', function ($http) {
 					var left = w/2-(barW/2);
 					$(element).css("left", left+"px");
 				});
+				
+				scope.isActive = function(game) {
+					if(game==='tous' && !$route.current.params.game) return true;
+					return game===$route.current.params.game;
+				}
 			}
 		};
 		
@@ -744,35 +810,35 @@ games.component('gameUpdate', {
 //users module	
 var users = angular.module('app.users', []);
 
-users.component('divUser', {
-	templateUrl: '/fragments/users/divUser',
-	bindings: {
-		template: '=',
-		user: '<'
-	},
-	controller: function() {
+//users.component('divUser', {
+	//templateUrl: '/fragments/users/divUser',
+	//bindings: {
+		//template: '=',
+		//user: '<'
+	//},
+	//controller: function() {
 		
-		var ctrl = this;	
+		//var ctrl = this;	
 		
-		/* SIZE */
-		/*Init*/
-		var w = $('.leftCol').width()+15;
-		var h = $('.leftCol').height()-52;
-		$("#div-user").css({"width": w+"px", "height": h+"px"});
-		/*on resize*/
-		$(window).on('resize', function() {
-			var w = $('.leftCol').width()+15;
-			var h = $('.leftCol').height()-52;
-			$("#div-user").css({"width": w+"px", "height": h+"px"});
-		});
+		///* SIZE */
+		///*Init*/
+		//var w = $('.leftCol').width()+15;
+		//var h = $('.leftCol').height()-52;
+		//$("#div-user").css({"width": w+"px", "height": h+"px"});
+		///*on resize*/
+		//$(window).on('resize', function() {
+			//var w = $('.leftCol').width()+15;
+			//var h = $('.leftCol').height()-52;
+			//$("#div-user").css({"width": w+"px", "height": h+"px"});
+		//});
 		
-		ctrl.close = function(action) {
-			$('#div-user').toggleClass("in");
-		}
+		//ctrl.close = function(action) {
+			//$('#div-user').toggleClass("in");
+		//}
 			
-	}
+	//}
 	
-});
+//});
 
 users.component('signUp', {
 	templateUrl: '/fragments/users/signUp',
@@ -810,9 +876,6 @@ users.component('signUp', {
 				});
 		};
 		
-		ctrl.modalLoad = function(template) {
-			ctrl.template = template;
-		};
 	}
 });
 
@@ -851,12 +914,7 @@ users.component('signIn', {
 						});
 					}
 				});
-		};
-		
-		ctrl.modalLoad = function(template) {
-			ctrl.template = template;
-		};	
-		
+		};		
 		
 	}
 });
@@ -946,9 +1004,6 @@ users.component('forgotPassword', {
 				});
 		};
 		
-		ctrl.modalLoad = function(template) {
-			ctrl.template = template;
-		};	
 	}
 });
 

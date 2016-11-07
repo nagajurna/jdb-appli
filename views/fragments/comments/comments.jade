@@ -1,6 +1,0 @@
-div(ng-init="$ctrl.showComments()")
-  p: a(href="{{ $ctrl.path }}") ajouter un commentaire
-  p {{ $ctrl.place._id }}
-  div(ng-repeat="comment in $ctrl.comments")
-    p {{ comment.text }}
-    p {{ comment.author }}
