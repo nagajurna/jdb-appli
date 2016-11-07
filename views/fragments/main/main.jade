@@ -1,0 +1,40 @@
+.container-fluid(ng-init="$ctrl.appInit()")
+  .row.content
+    .col-sm-4.col-md-3.leftCol
+      
+      //navbar for large devices
+      nav.navbar.navbar-inverse.hidden-xs
+        .navbar-header
+          a.navbar-brand(href='/#/') JDB
+        ul.nav.navbar-nav.navbar-right
+          li(ng-if='$ctrl.admin') 
+            a(href='/#/admin')
+              span(class="glyphicon glyphicon-king") 
+          li(ng-if='$ctrl.loggedIn') 
+            a(href='' ng-click="$ctrl.modalLoad('profile')")
+              span(class="glyphicon glyphicon-user")
+          li(ng-if='$ctrl.loggedIn') 
+            a(href='' ng-click='$ctrl.signout()')
+              span(class="glyphicon glyphicon-log-out")
+          li(ng-if='!$ctrl.loggedIn') 
+            a(href='' ng-click="$ctrl.modalLoad('sign-in')") 
+              span(class="glyphicon glyphicon-log-in")
+      
+      //navbar for small devices        
+      nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
+        .navbar-header
+          button(type="button" class="navbar-toggle" ng-click="$ctrl.modalLoad('menu')")
+            span(class="icon-bar")
+            span(class="icon-bar")
+            span(class="icon-bar")
+          
+          span.menu-title {{ $ctrl.title }}
+          a.navbar-brand(href='/#/') JDB
+        
+           
+      #view(ng-view)
+      <div-user template='$ctrl.template' user="$ctrl.currentUser"></div-user>
+      <modal template='$ctrl.template' user="$ctrl.currentUser"></modal>
+    .col-sm-8.col-md-9.rightCol.hidden-xs
+      div(my-leaflet source='$ctrl.markers' position='$ctrl.position')
+      div(id="game-bar" games-bar)
