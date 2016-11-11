@@ -37,13 +37,24 @@ var leafletDirective = angular.module('app.leaflet', [])
 				}).addTo(map);
 				
 				//icon
-				var GreenIcon = L.Icon.Default.extend({
-					options: {
-						iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png'
-						}
-					});
+				//var GreenIcon = L.Icon.Default.extend({
+					//options: {
+						//iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png'
+						//}
+					//});
 				
-				var greenIcon = new GreenIcon();
+				//var greenIcon = new GreenIcon();
+				
+				var greenIcon = L.icon({
+					iconUrl:       '../../../../images/leaflet-icon/marker-icon-green.png',
+					iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png',
+					shadowUrl:     '../../../../images/leaflet-icon/marker-shadow.png',
+					iconSize:    [25, 41],
+					iconAnchor:  [12, 41],
+					popupAnchor: [1, -34],
+					tooltipAnchor: [16, -28],
+					shadowSize:  [41, 41]
+				});
 					
 				//layer
 				L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {

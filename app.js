@@ -29,9 +29,7 @@ app.use('/angular-route', express.static(__dirname + '/node_modules/angular-rout
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
 app.use('/leaflet', express.static(__dirname + '/node_modules/leaflet/'));
-//app.use('/icon', express.static(__dirname + '/public/images/leaflet-icon/'));
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
