@@ -39,7 +39,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 				//icon
 				var GreenIcon = L.Icon.Default.extend({
 					options: {
-						iconUrl: 'marker-icon-green.png'
+						iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png'
 						}
 					});
 				
