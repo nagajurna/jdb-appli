@@ -3,39 +3,477 @@ var leafletDirective = angular.module('app.leaflet', [])
 	.directive('myLeaflet', function($route, mapService) {
 			
 		function initialize(scope, element, attrs) {
-			var wh = window.innerHeight;
-			$('.content').css({'height': wh + 'px'});
-			$(element).css({'height': wh + 'px'});
-						
-			$(window).on('resize', function() {
+			//if(window.innerWidth < 768) { 
+				//return 
+			 //} else {
 				
 				var wh = window.innerHeight;
 				$('.content').css({'height': wh + 'px'});
 				$(element).css({'height': wh + 'px'});
-			});
-			//var map = L.map(element[0]).setView([48.8660601,2.3565281], 13);
-			var map = L.map(element[0], {
-				center: [48.8660601,2.3565281],
-				zoom: 13
-			});
-			//icon
-			var GreenIcon = L.Icon.Default.extend({
-				options: {
-					iconUrl: 'marker-icon-green.png'
-					}
-				});
+			 //}
 			
-			var greenIcon = new GreenIcon();	
-			//layer
-			L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
-					attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-					minZoom: 12,
-					maxZoom: 18,
+						
+			$(window).on('resize', function() {
+				//if(window.innerWidth < 768) { 
+					//return 
+				 //} else {
+					 
+					var wh = window.innerHeight;
+					$('.content').css({'height': wh + 'px'});
+					$(element).css({'height': wh + 'px'});
+				 //}
+			});
+			
+	
+				//var map = L.map(element[0]).setView([48.8660601,2.3565281], 13);
+				var map = L.map(element[0], {
+					center: [48.8660601,2.3565281],
+					zoom: 13,
+					zoomControl: false
+				});
+				
+				L.control.zoom({
+					 position:'bottomleft'
 				}).addTo(map);
-			//markers	
+				
+				//icon
+				var GreenIcon = L.Icon.Default.extend({
+					options: {
+						iconUrl: 'marker-icon-green.png'
+						}
+					});
+				
+				var greenIcon = new GreenIcon();
+					
+				//layer
+				L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
+						attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+						minZoom: 12,
+						maxZoom: 18,
+					}).addTo(map);
+				//markers	
+				var markers = [];//destiné à recueillir tous les markers
+				addMarker = function(places) {
+					
+					markers = [];//supprime précédents markers
+					for(i=0; i<places.length; i++)
+					{
+						if(places[i].lat!=null) {
+							var marker = L.marker([places[i].lat, places[i].lg], {icon: greenIcon}).addTo(map);
+							
+							var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
+							if($route.current.params.game) {
+								link1 = "/#/places/game/" + $route.current.params.game + "/name/" + places[i].nameAlpha;
+								link2 = "/places/game/" + $route.current.params.game;
+							} else {
+								link1 = "/#/places/name/" + places[i].nameAlpha;
+								link2 = "/places";
+							}
+							
+							var games ='';
+							var virg;
+							for(j=0; j<places[i].games.length; j++)
+							{
+								j<places[i].games.length-1 ? virg = ', ' : virg = '';
+								if(j==0)
+								{
+									places[i].games[j].name = places[i].games[j].name.replace(/^./, places[i].games[j].name.charAt(0).toUpperCase());
+								}
+								games += '<span>' + places[i].games[j].name + virg + '</span>';
+							}
+						
+							var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
+											   games + '</br>'
+											  
+							var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
+							setContent(popupContent);
+							marker.bindPopup(popup);
+													
+							var myFunction = function(place) {
+								marker.on('click', function(ev) {
+									mapService.setScrollPosition(link2, place._id)
+								});
+							};
+							myFunction(places[i]);
+							
+							markers.push(marker);//chaque marker est ajouté à markers
+								
+						}
+					}
+				}
+				
+				
+				
+				removeMarker = function(markers) {
+					for(i=0; i<markers.length; i++)
+					{
+						map.removeLayer(markers[i]);
+					}
+				}
+				
+				scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
+					if(angular.isDefined(newColl) && !angular.equals(newColl,oldColl)) {
+						removeMarker(markers);//supprimer tous les markers
+						addMarker(newColl);//ajouter markers
+						mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
+					} 
+				});
+				
+				scope.$watch(attrs.position, function(newPos,oldPos) {
+					if(angular.isDefined(newPos)) {
+						var bounds = map.getBounds();
+						if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
+							map.flyTo(L.latLng(newPos.lat,newPos.lg));
+						}
+						if(markers[newPos.index]) {
+							markers[newPos.index].openPopup();
+						}
+					}
+				});	
+			
+		};
+		
+		return {
+			restrict: 'AE',
+			link: initialize,
+		};
+	});
+
+//admin module
+var main = angular.module('app.main', []);
+
+main.component('main', {
+	templateUrl: '/fragments/main/main',
+	controller: function($scope, $http, $location, $route, authService, mapService) {
+			var ctrl = this;
+			ctrl.view = 'list';
+			//ctrl.btnViews = false;
+			ctrl.loggedIn = false;
+			ctrl.currentUser = null;
+			ctrl.markers = {};
+			//INITIALISATION DE APP
+			ctrl.appInit = function () {
+				ctrl.getUser();
+				ctrl.getMarkers();
+			};
+			
+			/*USER*/
+			//initialisation de loggedIn et currentUser lancée par $scope.appInit
+			ctrl.getUser = function() {
+				authService.getUser().then(function(user) {
+					ctrl.loggedIn = user.loggedIn;
+					ctrl.currentUser = user.user;
+					ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+				});
+			};
+			//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
+			$scope.$on('refreshUser', function(event, user) {
+				ctrl.loggedIn = user.loggedIn;
+				ctrl.currentUser = user.user;
+				ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+			});
+			//log out
+			ctrl.signout = function() {
+				$http.get('/users/signout').
+					then(function(response) {
+						ctrl.getUser();
+						$location.path('/');
+					});
+			};
+			
+			/*ROUTES INTERDITES*/
+			$scope.$on('$routeChangeError', function(event, current, previous, rejection) {
+				if(rejection.reason==="route.admin.only") {
+					$location.path('/');
+				}
+			});
+			
+			ctrl.views = function() {
+				if($location.path()==='/places' || ($route.current.params.game && !$route.current.params.name)) {
+					ctrl.btnViews = true;
+				} else {
+					ctrl.btnViews = false;
+				}
+				console.log(ctrl.btnViews);
+			}
+			
+			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+				ctrl.views();
+			});
+			
+			/*LEAFLET MARKERS*/
+			//initialisation des markers lancée par $scope.appInit
+			ctrl.getMarkers = function(spots) {
+				//aller voir si markers dans express session
+				mapService.getMarkers().then(function(value) {
+					ctrl.markers = value.markers;
+				});	
+			};
+			//mise à jour des markers
+			//ctrl.markersRefresh = function(places) {
+				////if(ctrl.view='map') { return }
+				//console.log('refresh');
+				//ctrl.markers = places;
+			//}
+			
+			$scope.$on('position', function(event, position) {
+				ctrl.position = position;
+			});
+			
+			ctrl.modalLoad = function(template) {
+				ctrl.template = template;
+				$("#myModal").modal({show: true});
+			}
+			
+			ctrl.toggleView = function() {
+				ctrl.view = (ctrl.view==='list' ? ctrl.view = 'map' : ctrl.view = 'list');
+				mapService.setView(mapService.centerDefault,mapService.zoomDefault);
+				mapService.setSelectedMarker(null);
+			}
+			
+			$(window).on('resize', function() {
+				if(window.innerWidth > 768) {
+					$scope.$apply(function() { 
+						ctrl.view='list';
+					});
+				 } 
+			});
+			
+	
+	}
+	
+});
+
+main.component('home', {
+		templateUrl: '/fragments/main/home',
+		bindings: {
+			title: '=',
+			markers: '='
+		},
+		controller: function($http) {
+			
+			var ctrl = this;
+			ctrl.title = '';
+			
+			ctrl.showGames = function() {
+				$http.get('/api/games').
+					then(function(response) {
+						 ctrl.games = response.data;
+					});
+				};
+				
+			ctrl.showPlaces = function() {
+			$http.get('/api/places').
+				then(function(response) {
+					ctrl.spots = response.data;
+					ctrl.markers = ctrl.spots;
+					//ctrl.onPlaces({places: ctrl.spots});
+				});
+			};
+			ctrl.showPlaces();
+		}
+});
+
+main.component('admin', {
+		templateUrl: '/fragments/admin/admin'
+});
+
+main.component('menuSm', {
+		templateUrl: '/fragments/main/menu',
+		bindings: {
+			title: '=',
+			template: '=',
+			onCompleted: '&'
+		},
+		controller: function(mapService) {
+			
+			var ctrl = this;
+			ctrl.title = "Menu";
+			
+			ctrl.close = function() {
+				mapService.setView(mapService.centerDefault,mapService.zoomDefault);
+				mapService.setSelectedMarker(null);
+				ctrl.onCompleted({action: "hide"});
+			};
+		}
+});
+
+main.component('modal', {
+	templateUrl: '/fragments/main/modal',
+	bindings: {
+		template: '=',
+		user: '<'
+	},
+	controller: function() {
+		
+		var ctrl = this;
+		
+		ctrl.title = "";
+		
+		ctrl.close = function(action) {
+			$("#myModal").modal(action);
+		};
+	}
+});
+
+//places module
+var places = angular.module('app.places', []);
+
+places.component('places', {
+	templateUrl: '/fragments/places/places',
+	bindings: {
+		view: '=',
+		title: '=',
+		markers: '='
+	},
+	controller: function($scope, $route, $http, mapService) {
+		var ctrl = this;
+				
+		ctrl.init = function() {
+			if($route.current.params.game) {
+				ctrl.getGamePlaces();
+				ctrl.link = "/places/game/" + $route.current.params.game + "/name/"
+			} else {
+				ctrl.getPlaces();
+				ctrl.link = "/places/name/";
+			}
+		};
+		
+		ctrl.getPlaces = function() {
+			$http.get('/api/places').
+				then(function(response) {
+					ctrl.spots = response.data;
+					ctrl.markers = ctrl.spots;
+					ctrl.title = 'Tous les bars';
+				});
+		};
+		
+		ctrl.getGamePlaces = function() {
+			$http.get('/api/games/' + $route.current.params.game).
+				then(function(response) {
+					ctrl.game = response.data;
+					ctrl.title = ctrl.game.name;
+					return ctrl.game;
+				})
+				.then(function(game) {
+					$http.get('/api/places/game/'  + game._id).
+						then(function(response) {
+							ctrl.spots = response.data;
+							ctrl.markers = ctrl.spots;
+						});
+				});
+		};
+				
+		
+		
+		
+		//ctrl.getComments = function() {
+			//$http.get('/api/comments').
+				//then(function(response) {
+					//ctrl.comments = response.data;
+				//});
+		//};
+		
+		//ctrl.commentsCount = function(id) {
+			//var count;
+			//if($filter('filter')(ctrl.comments, id)) {
+				//count = $filter('filter')(ctrl.comments, id).length;
+			//}
+			//return count;
+		//};
+			
+		//ctrl.position = function(spot) {
+			//$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		//};
+		
+		
+		//$scope.$on('item', function(ev,data) {
+			//mapService.getScrollPosition(data);
+		//});
+	}
+});
+
+places.component('placesList', {
+	templateUrl: '/fragments/places/placesList',
+	bindings: {
+		spots: '<',
+		title: '<',
+		link: '<'
+	},
+	controller: function($rootScope, $scope, $http, mapService, $filter) {
+		var ctrl = this;
+		ctrl.propertyName = mapService.getOrderByProperty();
+		ctrl.reverse = mapService.getReverse();
+		
+		ctrl.getComments = function() {
+			$http.get('/api/comments').
+				then(function(response) {
+					ctrl.comments = response.data;
+				});
+		};
+		
+		ctrl.getComments();
+		
+		ctrl.commentsCount = function(id) {
+			var count;
+			if($filter('filter')(ctrl.comments, id)) {
+				count = $filter('filter')(ctrl.comments, id).length;
+			}
+			return count;
+		};
+			
+		//marker in view and popup open
+		ctrl.position = function(spot) {
+			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		};
+		
+		//scroll to place
+		$scope.$on('item', function(ev,data) {
+			mapService.scroll(data);
+		});
+	}
+});
+
+places.directive('placesMap', function($route, mapService) {
+	function initialize(scope, element, attrs) {
+		if(window.innerWidth >= 768) { return }
+		var wh = window.innerHeight;
+		$('.content').css({'height': wh + 'px'});
+		$(element).css({'height': '100%', 'width': ''});
+		//icon
+		var GreenIcon = L.Icon.Default.extend({
+			options: {
+				iconUrl: 'marker-icon-green.png'
+				}
+			});
+		
+		var greenIcon = new GreenIcon();
+		
+		//var map = L.map(element[0]).setView([48.8660601,2.3565281], 13);
+		var center, zoom;
+		if(mapService.getView().center) {
+			center = mapService.getView().center;
+			zoom = mapService.getView().zoom;
+		} else {
+			center = mapService.centerDefault;
+			zoom = mapService.zoomDefault;
+		}
+		var map = L.map(element[0], {
+				center: center,
+				zoom: zoom,
+				zoomControl: false
+			});
+			
+		L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
+			//attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			minZoom: 12,
+			maxZoom: 18,
+		}).addTo(map);
+
+		//markers	
 			var markers = [];//destiné à recueillir tous les markers
 			addMarker = function(places) {
-				
+							
 				markers = [];//supprime précédents markers
 				for(i=0; i<places.length; i++)
 				{
@@ -72,7 +510,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 												
 						var myFunction = function(place) {
 							marker.on('click', function(ev) {
-								mapService.setScrollPosition(link2, place._id)
+								mapService.setSelectedMarker(ev.target);
 							});
 						};
 						myFunction(places[i]);
@@ -93,286 +531,99 @@ var leafletDirective = angular.module('app.leaflet', [])
 			}
 			
 			scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
-				if(angular.isDefined(newColl) && !angular.equals(newColl,oldColl)) {
+				if(angular.isDefined(newColl)) {
 					removeMarker(markers);//supprimer tous les markers
 					addMarker(newColl);//ajouter markers
 					mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
 				} 
 			});
 			
-			scope.$watch(attrs.position, function(newPos,oldPos) {
-				if(angular.isDefined(newPos)) {
-					var bounds = map.getBounds();
-					if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
-						map.flyTo(L.latLng(newPos.lat,newPos.lg));
-					}
-					markers[newPos.index].openPopup();
-				}
+			//scope.$watch(attrs.position, function(newPos,oldPos) {
+				//if(angular.isDefined(newPos)) {
+					//var bounds = map.getBounds();
+					//if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
+						//map.flyTo(L.latLng(newPos.lat,newPos.lg));
+					//}
+					//markers[newPos.index].openPopup();
+				//}
+			//});
+			
+			map.on('moveend', function() {
+				mapService.setView(map.getCenter(),map.getZoom());
 			});
 			
-			
-		};
-		
-		return {
-			restrict: 'AE',
-			link: initialize,
-		};
-	});
-
-//admin module
-var main = angular.module('app.main', []);
-
-main.component('main', {
-	templateUrl: '/fragments/main/main',
-	controller: function($scope, $http, $location, $route, authService, mapService) {
-			var ctrl = this;
-			ctrl.loggedIn = false;
-			ctrl.currentUser = null;
-			ctrl.markers = {};
-			//INITIALISATION DE APP
-			ctrl.appInit = function () {
-				ctrl.getUser();
-				ctrl.getMarkers();
-			};
-			
-			/*USER*/
-			//initialisation de loggedIn et currentUser lancée par $scope.appInit
-			ctrl.getUser = function() {
-				authService.getUser().then(function(user) {
-					ctrl.loggedIn = user.loggedIn;
-					ctrl.currentUser = user.user;
-					ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
-				});
-			};
-			//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
-			$scope.$on('refreshUser', function(event, user) {
-				ctrl.loggedIn = user.loggedIn;
-				ctrl.currentUser = user.user;
-				ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
-			});
-			//log out
-			ctrl.signout = function() {
-				$http.get('/users/signout').
-					then(function(response) {
-						ctrl.getUser();
-						$location.path('/');
-					});
-			};
-			
-			/*ROUTES INTERDITES*/
-			$scope.$on('$routeChangeError', function(event, current, previous, rejection) {
-				console.log(rejection);
-				if(rejection.reason==="route.admin.only") {
-					$location.path('/');
-				}
-			});
-			
-			/*LEAFLET MARKERS*/
-			//initialisation des markers lancée par $scope.appInit
-			ctrl.getMarkers = function(spots) {
-				//aller voir si markers dans express session
-				mapService.getMarkers().then(function(value) {
-					ctrl.markers = value.markers;
-				});	
-			};
-			//mise à jour des markers
-			ctrl.markersRefresh = function(places) {
-				ctrl.markers = places;
+			if(mapService.getSelectedMarker()) {
+				mapService.getSelectedMarker().getPopup().openOn(map);
 			}
-			
-			$scope.$on('position', function(event, position) {
-				ctrl.position = position;
-			});
-			
-			ctrl.modalLoad = function(template) {
-				ctrl.template = template;
-				$("#myModal").modal({show: true});
-			}	
-	}
+
 	
+	
+	};
+	
+	return {
+		restrict: 'AE',
+		link: initialize,
+	}
 });
 
-main.component('home', {
-		templateUrl: '/fragments/main/home',
-		bindings: {
-			title: '=',
-			onPlaces: '&'
-		},
-		controller: function($http) {
-			
-			var ctrl = this;
-			ctrl.title = '';
-			
-			ctrl.showGames = function() {
-				$http.get('/api/games').
-					then(function(response) {
-						 ctrl.games = response.data;
-					});
-				};
+//places.component('placesGame', {
+	//templateUrl: '/fragments/places/placesGame',
+	//bindings: {
+		//title: '=',
+		//onPlaces: '&'
+	//},
+	//controller: function($scope, $route, $http, mapService, $filter) {
+		//var ctrl = this;
+		
+		//ctrl.propertyName = mapService.getOrderByProperty();
+		//ctrl.reverse = mapService.getReverse();
+		
+		//ctrl.init = function() {
+			//ctrl.getGame();
+			//ctrl.getComments();
+		//};
+		
+		//ctrl.getGame = function() {
+			//$http.get('/api/games/' + $route.current.params.game).
+				//then(function(response) {
+					//ctrl.game = response.data;
+					//ctrl.title = ctrl.game.name;
+					//ctrl.getGamePlaces(ctrl.game._id);
+				//});
+		//};
 				
-			ctrl.showPlaces = function() {
-			$http.get('/api/places').
-				then(function(response) {
-					ctrl.spots = response.data;
-					ctrl.onPlaces({places: ctrl.spots});
-				});
-			};
-			ctrl.showPlaces();
-		}
-});
-
-main.component('admin', {
-		templateUrl: '/fragments/admin/admin'
-});
-
-main.component('menuSm', {
-		templateUrl: '/fragments/main/menu',
-		bindings: {
-			title: '=',
-			template: '=',
-			onCompleted: '&'
-		},
-		controller: function() {
+		//ctrl.getGamePlaces = function(gameId) {
+			//$http.get('/api/places/game/'  + gameId).
+				//then(function(response) {
+					//ctrl.spots = response.data;
+					//ctrl.onPlaces({places: ctrl.spots});
+				//});
+		//};
+		
+		//ctrl.getComments = function() {
+			//$http.get('/api/comments').
+				//then(function(response) {
+					//ctrl.comments = response.data;
+				//});
+		//};
+		
+		//ctrl.commentsCount = function(id) {
+			//var count;
+			//if($filter('filter')(ctrl.comments, id)) {
+				//count = $filter('filter')(ctrl.comments, id).length;
+			//}
+			//return count;
+		//};
 			
-			var ctrl = this;
-			ctrl.title = "Menu";
-			
-			ctrl.close = function() {
-				ctrl.onCompleted({action: "hide"});
-			};
-		}
-});
-
-main.component('modal', {
-	templateUrl: '/fragments/main/modal',
-	bindings: {
-		template: '=',
-		user: '<'
-	},
-	controller: function() {
+		//ctrl.position = function(spot) {
+			//$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		//};
 		
-		var ctrl = this;
-		
-		ctrl.title = "";
-		
-		ctrl.close = function(action) {
-			$("#myModal").modal(action);
-		};
-	}
-});
-
-//places module
-var places = angular.module('app.places', []);
-
-places.component('places', {
-	templateUrl: '/fragments/places/places',
-	bindings: {
-		title: '=',
-		onPlaces: '&'
-	},
-	controller: function($scope, $http, mapService, $filter) {
-		var ctrl = this;
-		ctrl.title = 'Tous les bars';
-		ctrl.propertyName = mapService.getOrderByProperty();
-		ctrl.reverse = mapService.getReverse();
-		
-		ctrl.init = function() {
-			ctrl.getPlaces();
-			ctrl.getComments();
-		};
-		
-		ctrl.getPlaces = function() {
-			$http.get('/api/places').
-				then(function(response) {
-					ctrl.spots = response.data;
-					ctrl.onPlaces({places: ctrl.spots});
-				});
-		};
-		
-		ctrl.getComments = function() {
-			$http.get('/api/comments').
-				then(function(response) {
-					ctrl.comments = response.data;
-				});
-		};
-		
-		ctrl.commentsCount = function(id) {
-			var count;
-			if($filter('filter')(ctrl.comments, id)) {
-				count = $filter('filter')(ctrl.comments, id).length;
-			}
-			return count;
-		};
-			
-		ctrl.position = function(spot) {
-			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		};
-		
-		
-		$scope.$on('item', function(ev,data) {
-			mapService.getScrollPosition(data);
-		});
-	}
-});
-
-places.component('placesGame', {
-	templateUrl: '/fragments/places/placesGame',
-	bindings: {
-		title: '=',
-		onPlaces: '&'
-	},
-	controller: function($scope, $route, $http, mapService, $filter) {
-		var ctrl = this;
-		
-		ctrl.propertyName = mapService.getOrderByProperty();
-		ctrl.reverse = mapService.getReverse();
-		
-		ctrl.init = function() {
-			ctrl.getPlacesGame();
-			ctrl.getComments();
-		};
-		
-		ctrl.getPlacesGame = function() {
-			$http.get('/api/games/' + $route.current.params.game).
-				then(function(response) {
-					ctrl.game = response.data;
-					ctrl.title = ctrl.game.name;
-					ctrl.getPlaces(ctrl.game._id);
-				});
-		};
-				
-		ctrl.getPlaces = function(gameId) {
-			$http.get('/api/places/game/'  + gameId).
-				then(function(response) {
-					ctrl.spots = response.data;
-					ctrl.onPlaces({places: ctrl.spots});
-				});
-		};
-		
-		ctrl.getComments = function() {
-			$http.get('/api/comments').
-				then(function(response) {
-					ctrl.comments = response.data;
-				});
-		};
-		
-		ctrl.commentsCount = function(id) {
-			var count;
-			if($filter('filter')(ctrl.comments, id)) {
-				count = $filter('filter')(ctrl.comments, id).length;
-			}
-			return count;
-		};
-			
-		ctrl.position = function(spot) {
-			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		};
-		
-		$scope.$on('item', function(ev,data) {
-			mapService.getScrollPosition(data);
-		});
-	}
-});
+		//$scope.$on('item', function(ev,data) {
+			//mapService.getScrollPosition(data);
+		//});
+	//}
+//});
 
 places.component('place', {
 	templateUrl: '/fragments/places/place',
@@ -439,13 +690,13 @@ places.directive('gamesBar', function ($http, $route) {
 				/*Init*/
 				var w = $('.rightCol').width();
 				var barW = $('#game-bar').width();//bar width
-				var left = w/2-(barW/2);
+				var left = w/2-(barW/2)+15;
 				$(element).css("left", left+"px");
 				/*on resize*/
 				$(window).on('resize', function() {
 					var w = $('.rightCol').width();
 					var barW = $('#game-bar').width();//bar width
-					var left = w/2-(barW/2);
+					var left = w/2-(barW/2)+15;
 					$(element).css("left", left+"px");
 				});
 				

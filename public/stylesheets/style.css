@@ -102,6 +102,12 @@ div.modal.fade.in {
 	color: #fff;
 }
 
+button.menu-title {
+	background-color: #43a047;
+	border: none;
+}
+
+
 #game-bar {
 	position: absolute;
 	top: 12px;
@@ -154,8 +160,7 @@ div.modal.fade.in {
 }
 
 #view {
-	height: auto;
-	
+	height: 100%;
 }
 
 .main-wrapper {
@@ -199,6 +204,10 @@ div.modal.fade.in {
 	margin-right: 0px;
 }
 
+.wrapper > ul li:last-child {
+		margin-bottom: 700px;
+	}
+
 @media only screen and (min-width: 768px) {
 	#view {
 		height: -webkit-calc(100% - 100px);
@@ -231,9 +240,11 @@ div.modal.fade.in {
 		margin-right: 10px;
 	}
 
+/*
 	.wrapper > ul li:last-child {
 		margin-bottom: 700px;
 	}
+*/
 }
 
 .wrapper-strict {
@@ -260,15 +271,21 @@ div.modal.fade.in {
 	bottom: 0px;
 }
 
+.top-title {
+	
+}
 
 .top-title > * {
 	line-height: 30px;
 	vertical-align: middle;
 	margin: 0px;
+	
 }
 
 .top-title p {
 	margin: 0px;
+	
+	
 }
 
 .reverse-btn {

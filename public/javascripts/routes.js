@@ -2,13 +2,13 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<home title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></home>',
+				template: '<home title="$ctrl.title" markers="$ctrl.markers"></home>',
 			}).
 			when('/places', {
-				template: '<places title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></places>',
+				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places-Game title="$ctrl.title" on-places="$ctrl.markersRefresh(places)"></places-Game>',
+				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places-Game>',
 			}).
 			when('/places/name/:name', {
 				template: '<place title="$ctrl.title"></place>',

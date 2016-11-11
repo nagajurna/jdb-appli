@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var base64url = require('base64url');
 var nodemailer = require('nodemailer');
 var Entities = require('html-entities').XmlEntities;
-var infos = require('jdb-infos');
+//var infos = require('jdb-infos');
 
 var mongoose = require('mongoose');
 var User = require('../Models/User');
@@ -161,15 +161,15 @@ router.post('/forgotPassword', [xsrfCheck,credentialsPreCheck], function(req, re
 			var transporter = nodemailer.createTransport({
 				service: 'Gmail',
 				auth: {
-					user: infos.mail, // votre adresse mail
-					pass: infos.password // mot de passe
+					user: process.env.MAIL_ADDRESS, // votre adresse mail
+					pass: process.env.MAIL_PASSWORD // mot de passe
 				}
 			});
 			var htmlMessage = '<p>' + user.name + ', cliquez sur ce lien suivant afin de créer un nouveau mot de passe :</p>' +
 							  '<p><a href="http://localhost:3000/#/forgotPassword/reset?mail=' + user.email + '&token=' + user.token + '">créer un nouveau mot de passe</a></p>'
 			var mailOptions = {
-				from: '<' + infos.mail + '>', // expéditeur
-				to: infos.mail, // destinataire
+				from: '<' + process.env.MAIL_ADDRESS + '>', // expéditeur
+				to: process.env.MAIL_ADDRESS, // destinataire
 				subject: 'Reset Password',
 				html: htmlMessage
 			};

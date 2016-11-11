@@ -19,6 +19,30 @@ var mapService = angular.module('app.mapService', [])
 			return defer.promise;
 		};
 		
+	mapService.setSelectedMarker = function(index) {
+		mapService.selectedMarker = index;
+	}
+	
+	mapService.getSelectedMarker = function() {
+		return mapService.selectedMarker;
+	}
+		
+	mapService.centerDefault = [48.8660601,2.3565281];
+	mapService.zoomDefault = 12;
+	
+	mapService.setView = function(center, zoom) {
+		mapService.center = center;
+		mapService.zoom = zoom;
+	};
+	
+	mapService.getView = function() {
+		var map = {};
+		map.center = mapService.center;
+		map.zoom = mapService.zoom;
+		return map;
+	}
+	
+	
 	mapService.setScrollPosition = function(link, id) {
 		//$interval to make sure $location is correct before broadcasting event
 		var check, stopCheck;
@@ -38,13 +62,40 @@ var mapService = angular.module('app.mapService', [])
 				check = undefined;
 			}
 		};
+		
+		
 	}
 	
-	mapService.getScrollPosition = function(data) {
-		var offset = $('.wrapper').scrollTop() + $('#' + data.index).offset().top-$('.wrapper').offset().top;
-		$('.wrapper').animate({
-				scrollTop: offset
-			},500);
+	mapService.getScrollPosition = function() {
+		return mapService.scrollPosition;
+	}
+	
+	mapService.scroll = function(data) {
+		if(window.innerWidth >= 768) {
+			$('#' + data.index).ready(function() {
+				$timeout(function() {
+					var offset = $('.wrapper').scrollTop() + $('#' + data.index).offset().top-$('.wrapper').offset().top;
+					$('.wrapper').animate({
+							scrollTop: offset
+						},500);
+				},200);
+			});
+		} else {
+			$('#' + data.index).ready(function() {
+				$timeout(function() {
+					if(!$('#' + data.index).offset()) { return }
+					var offset = $(window).scrollTop() + $('#' + data.index).offset().top-52;
+					$('html, body').animate({
+							scrollTop: offset
+						},500);
+			},200);
+			});
+			
+		}
+		//var offset = $('.wrapper').scrollTop() + $('#' + data.index).offset().top-$('.wrapper').offset().top;
+		//$('.wrapper').animate({
+				//scrollTop: offset
+			//},500);
 	};
 	
 	var property='cp';

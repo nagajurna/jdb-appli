@@ -1,6 +1,6 @@
 .container-fluid(ng-init="$ctrl.appInit()")
   .row.content
-    .col-sm-4.col-md-3.leftCol
+    .col-sm-4.col-lg-3.leftCol
       
       //navbar for large devices
       nav.navbar.navbar-inverse.hidden-xs
@@ -23,18 +23,20 @@
       //navbar for small devices        
       nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
         .navbar-header
-          button(type="button" class="navbar-toggle" ng-click="$ctrl.modalLoad('menu')")
-            span(class="icon-bar")
-            span(class="icon-bar")
-            span(class="icon-bar")
+          button(type="button" class="menu-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
           
           span.menu-title {{ $ctrl.title }}
+          
+          button(type="button" class="menu-title" ng-if="$ctrl.btnViews" ng-click="$ctrl.toggleView()")
+            span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
+            span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
+          
           a.navbar-brand(href='/#/') JDB
         
            
       #view(ng-view)
       <div-user template='$ctrl.template' user="$ctrl.currentUser"></div-user>
       <modal template='$ctrl.template' user="$ctrl.currentUser"></modal>
-    .col-sm-8.col-md-9.rightCol.hidden-xs
+    .col-sm-8.col-lg-9.rightCol.hidden-xs
       div(my-leaflet source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar)
