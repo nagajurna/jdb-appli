@@ -37,24 +37,25 @@ var leafletDirective = angular.module('app.leaflet', [])
 				}).addTo(map);
 				
 				//icon
-				//var GreenIcon = L.Icon.Default.extend({
-					//options: {
-						//iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png'
-						//}
-					//});
+				var GreenIcon = L.Icon.Default.extend({
+					options: {
+						iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png',
+						iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png'
+						}
+					});
 				
-				//var greenIcon = new GreenIcon();
+				var greenIcon = new GreenIcon();
 				
-				var greenIcon = L.icon({
-					iconUrl:       '../../../../images/leaflet-icon/marker-icon-green.png',
-					iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png',
-					shadowUrl:     '../../../../images/leaflet-icon/marker-shadow.png',
-					iconSize:    [25, 41],
-					iconAnchor:  [12, 41],
-					popupAnchor: [1, -34],
-					tooltipAnchor: [16, -28],
-					shadowSize:  [41, 41]
-				});
+				//var greenIcon = L.icon({
+					//iconUrl:       '../../../../images/leaflet-icon/marker-icon-green.png',
+					//iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png',
+					//shadowUrl:     '../../../../images/leaflet-icon/marker-shadow.png',
+					//iconSize:    [25, 41],
+					//iconAnchor:  [12, 41],
+					//popupAnchor: [1, -34],
+					//tooltipAnchor: [16, -28],
+					//shadowSize:  [41, 41]
+				//});
 					
 				//layer
 				L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
@@ -93,7 +94,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 								games += '<span>' + places[i].games[j].name + virg + '</span>';
 							}
 						
-							var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
+							var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" ><strong>' + places[i].name + '</strong></a></br>' +
 											   games + '</br>'
 											  
 							var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
@@ -158,7 +159,6 @@ main.component('main', {
 	controller: function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.view = 'list';
-			//ctrl.btnViews = false;
 			ctrl.loggedIn = false;
 			ctrl.currentUser = null;
 			ctrl.markers = {};
@@ -205,7 +205,7 @@ main.component('main', {
 				} else {
 					ctrl.btnViews = false;
 				}
-				console.log(ctrl.btnViews);
+				
 			}
 			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
@@ -454,11 +454,23 @@ places.directive('placesMap', function($route, mapService) {
 		//icon
 		var GreenIcon = L.Icon.Default.extend({
 			options: {
-				iconUrl: 'marker-icon-green.png'
+				iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png',
+				iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png'
 				}
 			});
 		
 		var greenIcon = new GreenIcon();
+		
+		//var greenIcon = L.icon({
+					//iconUrl:       '../../../../images/leaflet-icon/marker-icon-green.png',
+					//iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-green.png',
+					//shadowUrl:     '../../../../images/leaflet-icon/marker-shadow.png',
+					//iconSize:    [25, 41],
+					//iconAnchor:  [12, 41],
+					//popupAnchor: [1, -34],
+					//tooltipAnchor: [16, -28],
+					//shadowSize:  [41, 41]
+				//});
 		
 		//var map = L.map(element[0]).setView([48.8660601,2.3565281], 13);
 		var center, zoom;
@@ -512,7 +524,7 @@ places.directive('placesMap', function($route, mapService) {
 							games += '<span>' + places[i].games[j].name + virg + '</span>';
 						}
 					
-						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" >' + places[i].name + '</a></br>' +
+						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" ><strong>' + places[i].name + '</strong></a></br>' +
 										   games + '</br>'
 										  
 						var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
