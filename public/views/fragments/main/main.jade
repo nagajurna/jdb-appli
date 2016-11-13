@@ -5,10 +5,10 @@
       //navbar for large devices
       nav.navbar.navbar-inverse.hidden-xs
         .navbar-header
-          a.navbar-brand(href='/#/') JDB
+          a.navbar-brand(href='/') JDB
         ul.nav.navbar-nav.navbar-right
           li(ng-if='$ctrl.admin') 
-            a(href='/#/admin')
+            a(href='/admin')
               span(class="glyphicon glyphicon-king") 
           li(ng-if='$ctrl.loggedIn') 
             a(href='' ng-click="$ctrl.modalLoad('profile')")

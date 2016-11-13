@@ -8,7 +8,7 @@
     li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' class="list-group-item" id="{{ spot._id }}")
       .row
         .col-xs-12
-          p(ng-click="$ctrl.position(spot)"): a(href="{{ $ctrl.link + spot.nameAlpha }}") {{ spot.name }}
+          p(ng-click="$ctrl.position(spot)" class="name"): a(href="{{ $ctrl.link + spot.nameAlpha }}") {{ spot.name }}
           p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
           p(class="small"): strong
             span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
