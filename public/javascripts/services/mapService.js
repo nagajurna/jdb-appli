@@ -1,5 +1,5 @@
 var mapService = angular.module('app.mapService', [])
-.factory("mapService", function($rootScope, $http, $q, $route, $location,$interval,$timeout) {
+.factory("mapService", function($rootScope, $http, $q, $route, $location, $interval, $timeout) {
 	
 	var mapService = {};
 	/*setMarkers and getMarkers : save in session last state of markers in case refreshing by user*/
@@ -40,6 +40,10 @@ var mapService = angular.module('app.mapService', [])
 		map.center = mapService.center;
 		map.zoom = mapService.zoom;
 		return map;
+	}
+	
+	mapService.backToText = function() {
+		$rootScope.$broadcast('backToText', {placeview: 'text'});
 	}
 	
 	

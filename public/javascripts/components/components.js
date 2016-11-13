@@ -226,7 +226,7 @@ main.component('main', {
 			//TOGGLE PLACE VIEWS
 			// buttons for placeToggleView
 			ctrl.placeViews = function() {
-				if($route.current.params.name) {
+				if(ctrl.view==='list' && $route.current.params.name) {
 					ctrl.btnPlaceViews = true;
 				} else {
 					ctrl.btnPlaceViews = false;
@@ -236,6 +236,12 @@ main.component('main', {
 			ctrl.placeToggleView = function() {
 				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
 			}
+			//on placeToggleView from map
+			$scope.$on('backToText', function(event,data) {
+				$scope.$apply(function() {
+					ctrl.placeToggleView();
+				});
+			});
 			
 			
 			$(window).on('resize', function() {
@@ -424,11 +430,25 @@ places.component('placesList', {
 
 places.directive('placesMap', function($route, mapService) {
 	function initialize(scope, element, attrs) {
+		//SIZE
 		if(window.innerWidth >= 768) { return }
 		var wh = window.innerHeight;
 		$('.content').css({'height': wh + 'px'});
 		$(element).css({'height': '100%', 'width': ''});
-		//icon
+		
+		//MAP		
+		var map = L.map(element[0], {
+				zoomControl: false
+			});
+		
+		//LAYER
+		L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
+			//attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			minZoom: 12,
+			maxZoom: 18,
+		}).addTo(map);
+		
+		//ICONS
 		var GreenIcon = L.Icon.Default.extend({
 			options: {
 				iconUrl: '../../../../images/leaflet-icon/marker-icon-green.png',
@@ -438,104 +458,134 @@ places.directive('placesMap', function($route, mapService) {
 		
 		var greenIcon = new GreenIcon();
 		
-		var center, zoom;
-		if(mapService.getView().center) {
-			center = mapService.getView().center;
-			zoom = mapService.getView().zoom;
-		} else {
-			center = mapService.centerDefault;
-			zoom = mapService.zoomDefault;
-		}
-		var map = L.map(element[0], {
-				center: center,
-				zoom: zoom,
-				zoomControl: false
+		var OrangeIcon = L.Icon.Default.extend({
+			options: {
+				iconUrl: '../../../../images/leaflet-icon/marker-icon-orange.png',
+				iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-orange.png'
+				}
 			});
-			
-		L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
-			//attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			minZoom: 12,
-			maxZoom: 18,
-		}).addTo(map);
-
-		//markers	
-			var markers = [];//destiné à recueillir tous les markers
-			addMarker = function(places) {
-							
-				markers = [];//supprime précédents markers
-				for(i=0; i<places.length; i++)
-				{
-					if(places[i].lat!=null) {
-						var marker = L.marker([places[i].lat, places[i].lg], {icon: greenIcon}).addTo(map);
+		
+		var orangeIcon = new OrangeIcon();
+		
+		//MARKERS	
+		var markers = [];//destiné à recueillir tous les markers
+		
+		addMarker = function(places) {
 						
-						var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
-						if($route.current.params.game) {
-							link1 = "/#/places/game/" + $route.current.params.game + "/name/" + places[i].nameAlpha;
-							link2 = "/places/game/" + $route.current.params.game;
-						} else {
-							link1 = "/#/places/name/" + places[i].nameAlpha;
-							link2 = "/places";
-						}
-						
-						var games ='';
-						var virg;
-						for(j=0; j<places[i].games.length; j++)
-						{
-							j<places[i].games.length-1 ? virg = ', ' : virg = '';
-							if(j==0)
-							{
-								places[i].games[j].name = places[i].games[j].name.replace(/^./, places[i].games[j].name.charAt(0).toUpperCase());
-							}
-							games += '<span>' + places[i].games[j].name + virg + '</span>';
-						}
-					
-						var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" ><strong>' + places[i].name + '</strong></a></br>' +
-										   games + '</br>'
-										  
-						var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
-						setContent(popupContent);
-						marker.bindPopup(popup);
-												
-						var myFunction = function(place) {
-							marker.on('click', function(ev) {
-								mapService.setSelectedMarker(ev.target);
-							});
-						};
-						myFunction(places[i]);
-						
-						markers.push(marker);//chaque marker est ajouté à markers
-							
+			markers = [];//supprime précédents markers
+			for(i=0; i<places.length; i++)
+			{
+				if(places[i].lat!=null) {
+					var marker = L.marker([places[i].lat, places[i].lg], {icon: greenIcon}).addTo(map);
+					//POP-UP
+					//Pop-up content
+					var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
+					if($route.current.params.game) {
+						link1 = "/#/places/game/" + $route.current.params.game + "/name/" + places[i].nameAlpha;
+						link2 = "/places/game/" + $route.current.params.game;
+					} else {
+						link1 = "/#/places/name/" + places[i].nameAlpha;
+						link2 = "/places";
 					}
+					
+					var games ='';
+					var virg;
+					for(j=0; j<places[i].games.length; j++)
+					{
+						j<places[i].games.length-1 ? virg = ', ' : virg = '';
+						if(j==0)
+						{
+							places[i].games[j].name = places[i].games[j].name.replace(/^./, places[i].games[j].name.charAt(0).toUpperCase());
+						}
+						games += '<span>' + places[i].games[j].name + virg + '</span>';
+					}
+				
+					var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" class="popup-link"><strong>' + places[i].name + '</strong></a></br>' +
+									   games + '</br>'
+					
+					//Pop-up				  
+					var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
+					setContent(popupContent);
+					marker.bindPopup(popup);
+										
+					//Marker on click						
+					var myFunction = function(place) {
+						marker.on('click', function(ev) {
+							if(attrs.position) {
+								mapService.setSelectedMarker(ev.target);
+							}
+						});
+					}(places[i]);
+					//myFunction(places[i]);
+					
+					markers.push(marker);//chaque marker est ajouté à markers
+						
 				}
 			}
-			
-			
-			
-			removeMarker = function(markers) {
-				for(i=0; i<markers.length; i++)
-				{
-					map.removeLayer(markers[i]);
-				}
+		}
+		
+		removeMarker = function(markers) {
+			for(i=0; i<markers.length; i++)
+			{
+				map.removeLayer(markers[i]);
 			}
+		}
 			
-			scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
-				if(angular.isDefined(newColl)) {
-					removeMarker(markers);//supprimer tous les markers
-					addMarker(newColl);//ajouter markers
-					mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
-				} 
+		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
+			if(angular.isDefined(newColl)) {
+				removeMarker(markers);//supprimer tous les markers
+				addMarker(newColl);//ajouter markers
+				mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
+			} 
+		});
+		//place backToText
+		map.on('popupopen', function() {  
+		  $('.popup-link').click(function(e){
+			  if(attrs.selected) {
+				mapService.backToText();
+			  }
+		  });
+		});
+			
+		//MAP CENTER AND ZOOM
+		var center, zoom;
+		if(!attrs.selected) {
+			if(mapService.getView().center) {
+				center = mapService.getView().center;
+				zoom = mapService.getView().zoom;
+			} else {
+				center = mapService.centerDefault;
+				zoom = mapService.zoomDefault;
+			}
+			map.setView(center, zoom);
+		} else {
+			scope.$watch(attrs.selected, function(newSelected,oldSelected) {
+				if(newSelected) {
+					center = L.latLng(newSelected.lat,newSelected.lg);
+					zoom = 16;
+					map.setView(center, zoom);
+					//Marker open pop-up
+					markers[newSelected.index].setIcon(orangeIcon);
+					//markers[newSelected.index].openPopup();
+				}
 			});
+		}
+		
+		//LARGE DEVICES : relation map/list
+		if(attrs.position) {
+			scope.$watch(attrs.position, function(newPos,oldPos) {
+				if(angular.isDefined(newPos)) {
+					var bounds = map.getBounds();
+					if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
+						map.flyTo(L.latLng(newPos.lat,newPos.lg));
+					}
+					markers[newPos.index].openPopup();
+				}
+			});
+		}
 			
-			//scope.$watch(attrs.position, function(newPos,oldPos) {
-				//if(angular.isDefined(newPos)) {
-					//var bounds = map.getBounds();
-					//if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
-						//map.flyTo(L.latLng(newPos.lat,newPos.lg));
-					//}
-					//markers[newPos.index].openPopup();
-				//}
-			//});
-			
+		//SMALL DEVICES : keep track of map state
+		if(!attrs.selected && !attrs.position) {
 			map.on('moveend', function() {
 				mapService.setView(map.getCenter(),map.getZoom());
 			});
@@ -543,6 +593,7 @@ places.directive('placesMap', function($route, mapService) {
 			if(mapService.getSelectedMarker()) {
 				mapService.getSelectedMarker().getPopup().openOn(map);
 			}
+		}
 
 	
 	
@@ -579,8 +630,8 @@ places.component('place', {
 			for(var i=0; i<spots.length; i++) {
 			  if(spots[i]['nameAlpha']===pathname) {
 				  ctrl.spot = spots[i];
+				  ctrl.spot.index = i;
 				  ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
-				  console.log(ctrl.spot);
 				  break;
 			  }
 			}
