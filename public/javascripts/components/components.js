@@ -137,6 +137,7 @@ main.component('main', {
 	controller: function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.view = 'list';
+			ctrl.placeview = 'text';
 			ctrl.loggedIn = false;
 			ctrl.currentUser = null;
 			ctrl.markers = {};
@@ -181,17 +182,11 @@ main.component('main', {
 				}
 			});
 			
-			ctrl.views = function() {
-				if($location.path()==='/places' || ($route.current.params.game && !$route.current.params.name)) {
-					ctrl.btnViews = true;
-				} else {
-					ctrl.btnViews = false;
-				}
-				
-			}
+			
 			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
 				ctrl.views();
+				ctrl.placeViews();
 			});
 			
 			/*LEAFLET MARKERS*/
@@ -212,20 +207,42 @@ main.component('main', {
 				$("#myModal").modal({show: true});
 			}
 			
+			//TOGGLE VIEWS
+			//button for toggleView
+			ctrl.views = function() {
+				if($location.path()==='/places' || ($route.current.params.game && !$route.current.params.name)) {
+					ctrl.btnViews = true;
+				} else {
+					ctrl.btnViews = false;
+				}
+			}
+			//toggleView()
 			ctrl.toggleView = function() {
 				ctrl.view = (ctrl.view==='list' ? ctrl.view = 'map' : ctrl.view = 'list');
 				mapService.setView(mapService.centerDefault,mapService.zoomDefault);
 				mapService.setSelectedMarker(null);
 			}
 			
-			ctrl.placeToggleView = function() {
-				ctrl.placeView = (ctrl.placeView==='text' ? ctrl.placeView = 'map' : ctrl.placeView = 'text');
+			//TOGGLE PLACE VIEWS
+			// buttons for placeToggleView
+			ctrl.placeViews = function() {
+				if($route.current.params.name) {
+					ctrl.btnPlaceViews = true;
+				} else {
+					ctrl.btnPlaceViews = false;
+				}
 			}
+			//placeToggleView()
+			ctrl.placeToggleView = function() {
+				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
+			}
+			
 			
 			$(window).on('resize', function() {
 				if(window.innerWidth > 768) {
 					$scope.$apply(function() { 
 						ctrl.view='list';
+						ctrl.placeView='text';
 					});
 				 } 
 			});
@@ -361,33 +378,6 @@ places.component('places', {
 						});
 				});
 		};
-				
-		
-		
-		
-		//ctrl.getComments = function() {
-			//$http.get('/api/comments').
-				//then(function(response) {
-					//ctrl.comments = response.data;
-				//});
-		//};
-		
-		//ctrl.commentsCount = function(id) {
-			//var count;
-			//if($filter('filter')(ctrl.comments, id)) {
-				//count = $filter('filter')(ctrl.comments, id).length;
-			//}
-			//return count;
-		//};
-			
-		//ctrl.position = function(spot) {
-			//$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		//};
-		
-		
-		//$scope.$on('item', function(ev,data) {
-			//mapService.getScrollPosition(data);
-		//});
 	}
 });
 
@@ -564,94 +554,68 @@ places.directive('placesMap', function($route, mapService) {
 	}
 });
 
-//places.component('placesGame', {
-	//templateUrl: '/fragments/places/placesGame',
-	//bindings: {
-		//title: '=',
-		//onPlaces: '&'
-	//},
-	//controller: function($scope, $route, $http, mapService, $filter) {
-		//var ctrl = this;
-		
-		//ctrl.propertyName = mapService.getOrderByProperty();
-		//ctrl.reverse = mapService.getReverse();
-		
-		//ctrl.init = function() {
-			//ctrl.getGame();
-			//ctrl.getComments();
-		//};
-		
-		//ctrl.getGame = function() {
-			//$http.get('/api/games/' + $route.current.params.game).
-				//then(function(response) {
-					//ctrl.game = response.data;
-					//ctrl.title = ctrl.game.name;
-					//ctrl.getGamePlaces(ctrl.game._id);
-				//});
-		//};
-				
-		//ctrl.getGamePlaces = function(gameId) {
-			//$http.get('/api/places/game/'  + gameId).
-				//then(function(response) {
-					//ctrl.spots = response.data;
-					//ctrl.onPlaces({places: ctrl.spots});
-				//});
-		//};
-		
-		//ctrl.getComments = function() {
-			//$http.get('/api/comments').
-				//then(function(response) {
-					//ctrl.comments = response.data;
-				//});
-		//};
-		
-		//ctrl.commentsCount = function(id) {
-			//var count;
-			//if($filter('filter')(ctrl.comments, id)) {
-				//count = $filter('filter')(ctrl.comments, id).length;
-			//}
-			//return count;
-		//};
-			
-		//ctrl.position = function(spot) {
-			//$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		//};
-		
-		//$scope.$on('item', function(ev,data) {
-			//mapService.getScrollPosition(data);
-		//});
-	//}
-//});
-
 places.component('place', {
 	templateUrl: '/fragments/places/place',
 	bindings: {
+		view: '<',
+		placeview: '=',
 		title: '='
 	},
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
 		var ctrl = this;
 		
-		ctrl.getGame = function() {
+		
+		ctrl.init = function() {
+			if($route.current.params.game) {
+				ctrl.getGamePlaces();
+			} else {
+				ctrl.getPlaces();
+			}
+		};
+		
+		ctrl.getPlace = function(spots) {
+			var pathname = $route.current.params.name;
+			for(var i=0; i<spots.length; i++) {
+			  if(spots[i]['nameAlpha']===pathname) {
+				  ctrl.spot = spots[i];
+				  ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
+				  console.log(ctrl.spot);
+				  break;
+			  }
+			}
+			return ctrl.spot;
+		}
+		
+		ctrl.getPlaces = function() {
+			$http.get('/api/places').
+				then(function(response) {
+					ctrl.spots = response.data;
+					ctrl.markers = ctrl.spots;
+					ctrl.title = 'Tous les bars';
+					ctrl.spot = ctrl.getPlace(ctrl.spots);
+					ctrl.comments = ctrl.getComments(ctrl.spot._id)
+					
+				});
+		};
+		
+		ctrl.getGamePlaces = function() {
 			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
 					ctrl.title = ctrl.game.name;
+					return ctrl.game;
+				})
+				.then(function(game) {
+					$http.get('/api/places/game/'  + game._id).
+						then(function(response) {
+							ctrl.spots = response.data;
+							ctrl.markers = ctrl.spots;
+							ctrl.spot = ctrl.getPlace(ctrl.spots);
+							ctrl.comments = ctrl.getComments(ctrl.spot._id)
+						});
 				});
 		};
-		
-		if($route.current.params.game) {
-			ctrl.redirect = "/places/game/" + $route.current.params.game
-			ctrl.getGame();
-		} else {
-			ctrl.redirect = "/places";
-			ctrl.title = "Tous les bars";
-		}
-		
-		
-		
-		
-		ctrl.path = $location.path() + '/comments/new';
 		
 		ctrl.getComments = function(id) {
 			$http.get('/api/comments/place/' + id).
@@ -660,18 +624,31 @@ places.component('place', {
 					ctrl.comments.forEach(function(comment) {
 						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
 					});
+					return ctrl.comments;
 				});
 		};
 		
-		ctrl.getPlace = function() {
-			$http.get('/api/places/'  + $route.current.params.name).
-				then(function(response) {
-					ctrl.spot = response.data;
-					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
-					ctrl.getComments(ctrl.spot._id)
-				});
-			};
-			
+	}
+});
+
+places.component('placeText', {
+	templateUrl: '/fragments/places/placeText',
+	bindings: {
+		spot: '<',
+		comments: '<'
+	},
+	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
+		
+		var ctrl = this;
+		
+		if($route.current.params.game) {
+			ctrl.redirect = "/places/game/" + $route.current.params.game
+		} else {
+			ctrl.redirect = "/places";
+		}
+		
+		ctrl.newCommentPath = $location.path() + '/comments/new';
+		
 		ctrl.back = function() {
 			mapService.setScrollPosition(ctrl.redirect,ctrl.spot._id);
 		};

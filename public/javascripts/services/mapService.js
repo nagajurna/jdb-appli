@@ -54,7 +54,7 @@ var mapService = angular.module('app.mapService', [])
 			} else {
 				$location.path(link);
 			}
-		}, 200);
+		}, 100);
 		
 		stopCheck = function() {
 			if(angular.isDefined(check)) {
@@ -78,7 +78,7 @@ var mapService = angular.module('app.mapService', [])
 					$('.wrapper').animate({
 							scrollTop: offset
 						},500);
-				},200);
+				},500);
 			});
 		} else {
 			$('#' + data.index).ready(function() {

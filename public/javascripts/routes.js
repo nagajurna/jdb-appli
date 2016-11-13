@@ -11,10 +11,10 @@ app.config(['$routeProvider', '$locationProvider',
 				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places-Game>',
 			}).
 			when('/places/name/:name', {
-				template: '<place title="$ctrl.title"></place>',
+				template: '<place title="$ctrl.title" placeview="$ctrl.placeview"></place>',
 			}).
 			when('/places/game/:game/name/:name', {
-				template: '<place title="$ctrl.title"></place>',
+				template: '<place title="$ctrl.title" placeview="$ctrl.placeview"></place>',
 			}).
 			when('/places/name/:name/comments/new', {
 				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',

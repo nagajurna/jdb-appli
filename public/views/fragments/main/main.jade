@@ -31,6 +31,10 @@
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           
+          button(type="button" class="menu-title" ng-if="$ctrl.btnPlaceViews" ng-click="$ctrl.placeToggleView()")
+            span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.placeview==='text'")
+            span(class="glyphicon glyphicon-list" ng-if="$ctrl.placeview==='map'")
+          
           a.navbar-brand(href='/#/') JDB
         
            

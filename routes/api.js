@@ -98,7 +98,6 @@ router.get('/places', function(req, res, next) {
 	Place
 	.find()
 	.sort({ nameAlpha: 1 })
-	.select({ name: 1, nameAlpha: 1, address: 1, cp: 1, city: 1, games: 1, lat: 1, lg: 1, updated: 1 })
 	.populate('games')
 	.exec(function(err,places) {
 		if(err) return console.log(err);

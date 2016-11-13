@@ -1,22 +1,3 @@
-.main-wrapper(ng-init="$ctrl.getPlace()")
-  .top-title
-    a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
-  .wrapper
-    div
-      h4 {{ $ctrl.spot.name }}
-      p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
-      p {{ $ctrl.spot.address }}
-      p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
-      p: em(ng-bind-html="$ctrl.spot.description")
-      <hr>
-      .comments
-        p COMMENTAIRES &ensp;
-          a(href="{{ $ctrl.path }}") <span class="glyphicon glyphicon-plus">
-        ul(class="list-group")
-          li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
-            .row
-              .col-xs-12
-                p(ng-bind-html="comment.text")
-            .row
-              .col-xs-12
-                span(class="pull-right small") {{ comment.author.name  + ', ' + (comment.postedAt | date:'dd-M-yyyy')}}  
+.main-wrapper(ng-switch="$ctrl.placeview" ng-init="$ctrl.init()")
+  <place-text ng-switch-when="text" title="$ctrl.title" spot="$ctrl.spot" comments="$ctrl.comments"></place-text>
+  div(places-map id="map" ng-switch-when="map" source='$ctrl.markers')
