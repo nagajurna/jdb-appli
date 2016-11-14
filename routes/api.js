@@ -18,6 +18,7 @@ router.get('/games', function(req, res, next) {
 	.sort({ pathname: 1 })
 	.exec(function(err,games) {
 			if(err) return console.log(err);
+			res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.json(games);
 		});
 });
@@ -32,7 +33,6 @@ router.post('/games', function(req, res, next) {
 	
 	game.save(function(err) {
 		if(err) {
-			console.log(err);
 			res.json({saved: false, reason: err});
 		} else {
 			res.json({saved: true});
@@ -88,6 +88,7 @@ router.get('/places', function(req, res, next) {
 	.populate('games')
 	.exec(function(err,places) {
 		if(err) return console.log(err);
+		res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		res.json(places);
 		});
 });
@@ -100,6 +101,7 @@ router.get('/places', function(req, res, next) {
 	.populate('games')
 	.exec(function(err,places) {
 		if(err) return console.log(err);
+		res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		res.json(places);
 		});
 });
@@ -113,6 +115,7 @@ router.get('/places/game/:id', function(req, res, next) {
 	.populate('games')
 	.exec(function(err,places) {
 			if(err) return console.log(err);
+			res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.json(places);
 		});
 });
@@ -211,6 +214,7 @@ router.get('/comments', function(req, res, next) {
 	.select({ place: 1})
 	.exec(function(err,comments) {
 			if(err) return console.log(err);
+			res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.json(comments);
 		});
 
@@ -225,6 +229,7 @@ router.get('/comments/place/:id', function(req, res, next) {
 	.populate({ path: 'author', select: 'name' })
 	.exec(function(err,comments) {
 			if(err) return console.log(err);
+			res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.json(comments);
 		});
 
@@ -238,6 +243,7 @@ router.get('/admin/comments/place/:id', function(req, res, next) {
 	.populate('author')
 	.exec(function(err,comments) {
 			if(err) return console.log(err);
+			res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.json(comments);
 		});
 
