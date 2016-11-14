@@ -27,7 +27,7 @@ var mapService = angular.module('app.mapService', [])
 		return mapService.selectedMarker;
 	}
 		
-	mapService.centerDefault = [48.8660601,2.3565281];
+	mapService.centerDefault = [48.8560601,2.3465281];
 	mapService.zoomDefault = 13;
 	mapService.zoomDefaultSm = 12;
 	

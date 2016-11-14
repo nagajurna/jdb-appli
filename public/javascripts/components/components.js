@@ -3,7 +3,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 	.directive('leafletMap', function($route, mapService) {
 			
 		function initialize(scope, element, attrs) {
-		/* 3 differents classes (= 3 different us
+		/* 3 differents classes (= 3 different uses)
 		 * class = "map-lg"
 		 * class = "map-sm"
 		 * class = "map-sm-place"
@@ -52,18 +52,18 @@ var leafletDirective = angular.module('app.leaflet', [])
 		var orangeIcon = new OrangeIcon();
 		
 		//MARKERS	
-		var markers = [];//destiné à recueillir tous les markers
+		var markers = [];//will receive all markers
 		
 		addMarker = function(places) {
 						
-			markers = [];//supprime précédents markers
+			markers = [];//suppress previous markers
 			for(i=0; i<places.length; i++)
 			{
 				if(places[i].lat!=null) {
 					var marker = L.marker([places[i].lat, places[i].lg], {icon: greenIcon}).addTo(map);
 					//POP-UP
 					//Pop-up content
-					var link1, link2;//ATTENTION, si même collection pour différents jeux: liens faux
+					var link1, link2;//ATTENTION, if same collection for differents games: links incorrect
 					if($route.current.params.game) {
 						link1 = "/#/places/game/" + $route.current.params.game + "/name/" + places[i].nameAlpha;
 						link2 = "/places/game/" + $route.current.params.game;
@@ -103,7 +103,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 						});
 					}(places[i]);
 					
-					markers.push(marker);//chaque marker est ajouté à markers
+					markers.push(marker);//each marker added to markers
 						
 				}
 			}
@@ -118,9 +118,9 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//GET ARRAY FOR MARKERS	
 		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
 			if(angular.isDefined(newColl)) {
-				removeMarker(markers);//supprimer tous les markers
-				addMarker(newColl);//ajouter markers
-				mapService.setMarkers(newColl);//enregistrer places dans session (en cas de page refresh)
+				removeMarker(markers);//suppress all previous markers
+				addMarker(newColl);//add new markers
+				mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
 			} 
 		});
 		//place backToText
@@ -191,7 +191,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 	}
 });
 
-//admin module
+//main module
 var main = angular.module('app.main', []);
 
 main.component('main', {
@@ -243,9 +243,6 @@ main.component('main', {
 					$location.path('/');
 				}
 			});
-			
-			
-			
 			
 			/*LEAFLET MARKERS*/
 			//initialisation des markers lancée par $scope.appInit
@@ -397,6 +394,35 @@ main.component('modal', {
 			$("#myModal").modal(action);
 		};
 	}
+});
+
+main.directive('gamesBar', function ($http, $route) {
+	
+	return {
+			templateUrl: '/fragments/games/gamesBar',
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				/* POSITION : left */
+				/*Init*/
+				var w = $('.rightCol').width();
+				var barW = $('#game-bar').width();//bar width
+				var left = w/2-(barW/2)+15;
+				$(element).css("left", left+"px");
+				/*on resize*/
+				$(window).on('resize', function() {
+					var w = $('.rightCol').width();
+					var barW = $('#game-bar').width();//bar width
+					var left = w/2-(barW/2)+15;
+					$(element).css("left", left+"px");
+				});
+				
+				scope.isActive = function(game) {
+					if(game==='tous' && !$route.current.params.game) return true;
+					return game===$route.current.params.game;
+				}
+			}
+		};
+		
 });
 
 //places module
@@ -595,34 +621,7 @@ places.component('placeText', {
 	}
 });
 
-places.directive('gamesBar', function ($http, $route) {
-	
-	return {
-			templateUrl: '/fragments/games/gamesBar',
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				/* POSITION : left */
-				/*Init*/
-				var w = $('.rightCol').width();
-				var barW = $('#game-bar').width();//bar width
-				var left = w/2-(barW/2)+15;
-				$(element).css("left", left+"px");
-				/*on resize*/
-				$(window).on('resize', function() {
-					var w = $('.rightCol').width();
-					var barW = $('#game-bar').width();//bar width
-					var left = w/2-(barW/2)+15;
-					$(element).css("left", left+"px");
-				});
-				
-				scope.isActive = function(game) {
-					if(game==='tous' && !$route.current.params.game) return true;
-					return game===$route.current.params.game;
-				}
-			}
-		};
-		
-});
+
 
 places.component('placesAdmin', {
 	templateUrl: '/fragments/places/placesAdmin',
@@ -975,36 +974,6 @@ games.component('gameUpdate', {
 
 //users module	
 var users = angular.module('app.users', []);
-
-//users.component('divUser', {
-	//templateUrl: '/fragments/users/divUser',
-	//bindings: {
-		//template: '=',
-		//user: '<'
-	//},
-	//controller: function() {
-		
-		//var ctrl = this;	
-		
-		///* SIZE */
-		///*Init*/
-		//var w = $('.leftCol').width()+15;
-		//var h = $('.leftCol').height()-52;
-		//$("#div-user").css({"width": w+"px", "height": h+"px"});
-		///*on resize*/
-		//$(window).on('resize', function() {
-			//var w = $('.leftCol').width()+15;
-			//var h = $('.leftCol').height()-52;
-			//$("#div-user").css({"width": w+"px", "height": h+"px"});
-		//});
-		
-		//ctrl.close = function(action) {
-			//$('#div-user').toggleClass("in");
-		//}
-			
-	//}
-	
-//});
 
 users.component('signUp', {
 	templateUrl: '/fragments/users/signUp',
