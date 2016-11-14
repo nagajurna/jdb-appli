@@ -28,7 +28,8 @@ var mapService = angular.module('app.mapService', [])
 	}
 		
 	mapService.centerDefault = [48.8660601,2.3565281];
-	mapService.zoomDefault = 12;
+	mapService.zoomDefault = 13;
+	mapService.zoomDefaultSm = 12;
 	
 	mapService.setView = function(center, zoom) {
 		mapService.center = center;

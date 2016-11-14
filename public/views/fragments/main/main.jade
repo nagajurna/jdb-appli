@@ -38,5 +38,5 @@
       <div-user template='$ctrl.template' user="$ctrl.currentUser"></div-user>
       <modal template='$ctrl.template' user="$ctrl.currentUser"></modal>
     .col-sm-8.col-lg-9.rightCol.hidden-xs
-      div(my-leaflet source='$ctrl.markers' position='$ctrl.position')
+      div(leaflet-map class="map-lg" source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar)

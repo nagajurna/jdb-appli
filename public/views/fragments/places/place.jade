@@ -1,3 +1,3 @@
 .main-wrapper(ng-switch="$ctrl.placeview" ng-init="$ctrl.init()")
   <place-text ng-switch-when="text" view="$ctrl.view" spot="$ctrl.spot" comments="$ctrl.comments"></place-text>
-  div(places-map id="map" ng-switch-when="map" source='$ctrl.markers' selected='$ctrl.spot')
+  div(leaflet-map class="map-sm-place" ng-switch-when="map" source='$ctrl.markers' selected='$ctrl.spot')
