@@ -228,7 +228,6 @@ main.component('main', {
 				$http.get('/users/signout').
 					then(function(response) {
 						ctrl.getUser();
-						$location.path('/');
 					});
 			};
 			
