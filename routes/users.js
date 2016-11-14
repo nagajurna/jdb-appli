@@ -98,7 +98,8 @@ router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		  currentUser.id = req.user._id;
 		  currentUser.name = entities.encode(req.user.name);
 		  currentUser.email = req.user.email;
-		  currentUser.role = req.user.role; 
+		  currentUser.role = req.user.role;
+		  res.set('Cache-Control', 'no-cache, no-store, must-revalidate'); 
 		  return res.json({ loggedIn: true, user: currentUser });
 		});
 	  })(req, res, next);
@@ -118,7 +119,8 @@ router.post('/signin', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		  currentUser.id = req.user._id;
 		  currentUser.name = req.user.name;
 		  currentUser.email = req.user.email;
-		  currentUser.role = req.user.role; 
+		  currentUser.role = req.user.role;
+		  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		  return res.json({loggedIn: true, user: currentUser });
 		});
 	  })(req, res, next);
@@ -130,7 +132,7 @@ router.put('/resetPassword', [xsrfCheck,credentialsPreCheck], function(req, res,
 		if (err) { return next(err); }
 		
 		if (!user) { return res.json(info); }
-		
+		res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		return res.json({reset: true, message: 'Votre mot de passe a été modifié' });
 		
 	  })(req, res, next);
@@ -216,8 +218,8 @@ router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(re
 			  console.log(err);
 			  return res.json({reset: false, reason: err});
 			} else {
-			  console.log('password changed');
-			  return res.json({reset: true, message: 'password changed'});
+			  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+			  return res.json({reset: true, message: 'Votre mot de passe a été modifié'});
 			}
 		 });
 		
@@ -226,6 +228,7 @@ router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(re
 	
 router.get('/signout', function(req, res){
   req.logout();
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   return res.json({loggedIn: false, user: null});
 });
 
@@ -235,9 +238,11 @@ router.get('/check', function(req, res){
 	  currentUser.id = req.user._id;
 	  currentUser.name = req.user.name;
 	  currentUser.email = req.user.email;
-	  currentUser.role = req.user.role; 
+	  currentUser.role = req.user.role;
+	  res.set('Cache-Control', 'no-cache, no-store, must-revalidate'); 
 	  return res.json({ loggedIn: true, user: currentUser }) 
 	} else {
+	  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 	  return res.json({ loggedIn: false, user: null });
 	}
 });

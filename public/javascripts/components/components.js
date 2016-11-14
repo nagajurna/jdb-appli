@@ -372,7 +372,8 @@ main.component('menuSm', {
 			
 			ctrl.signout = function() {
 				$scope.$emit('signout');
-				ctrl.onCompleted({action: "hide"});
+				$("#myModal").modal('hide');
+				//ctrl.onCompleted({action: "hide"});
 			}
 		}
 });
