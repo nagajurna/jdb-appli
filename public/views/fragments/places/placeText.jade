@@ -1,5 +1,10 @@
 .top-title
-  a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
+  .row
+    .col-xs-6
+      a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
+    .col-xs-6
+      a(href="" ng-if="$ctrl.view==='list'" ng-click="$ctrl.placeToggleView()" class="visible-xs pull-right")
+        span(class="glyphicon glyphicon-map-marker")
 .wrapper(ng-init="$ctrl.getPlace()")
   div
     h4 {{ $ctrl.spot.name }}
@@ -9,7 +14,7 @@
     p: em(ng-bind-html="$ctrl.spot.description")
     <hr>
     .comments
-      p COMMENTAIRES &ensp;
+      p Commentaires {{ ' (' + $ctrl.comments.length + ')&ensp;' }}
         a(href="{{ $ctrl.newCommentPath }}") <span class="glyphicon glyphicon-plus">
       ul(class="list-group")
         li(ng-repeat="comment in $ctrl.comments" class="list-group-item")

@@ -1,6 +1,10 @@
 .main-wrapper(ng-init="$ctrl.getPlace()")
   .top-title
-    a(href="" ng-click="$ctrl.back()" class="back") {{ $ctrl.spot.name }}
+    .row
+      .col-xs-3
+        a(href="" ng-click="$ctrl.back()" class="back"): <span class="glyphicon glyphicon-arrow-left">
+      .col-xs-9
+        p(class="pull-right") {{ $ctrl.spot.name }}
   .wrapper
     form(novalidate)
       p(ng-bind='$ctrl.form.message')

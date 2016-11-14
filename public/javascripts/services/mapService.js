@@ -42,6 +42,10 @@ var mapService = angular.module('app.mapService', [])
 		return map;
 	}
 	
+	mapService.goToMap = function() {
+		$rootScope.$broadcast('goToMap', {placeview: 'map'});
+	}
+	
 	mapService.backToText = function() {
 		$rootScope.$broadcast('backToText', {placeview: 'text'});
 	}
@@ -82,7 +86,7 @@ var mapService = angular.module('app.mapService', [])
 					$('.wrapper').animate({
 							scrollTop: offset
 						},500);
-				},500);
+				},400);
 			});
 		} else {
 			$('#' + data.index).ready(function() {
@@ -92,7 +96,7 @@ var mapService = angular.module('app.mapService', [])
 					$('html, body').animate({
 							scrollTop: offset
 						},500);
-			},200);
+			},400);
 			});
 			
 		}

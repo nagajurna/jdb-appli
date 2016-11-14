@@ -1,8 +1,9 @@
-.row.top-title.hidden-xs
-  .col-xs-6
-    p {{ $ctrl.title }}
-  .col-xs-6
-    <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>
+.top-title.hidden-xs
+  .row
+    .col-xs-6
+      p: strong {{ $ctrl.title }}
+    .col-xs-6
+      <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>
 .wrapper
   ul(class="list-group")
     li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' class="list-group-item" id="{{ spot._id }}")

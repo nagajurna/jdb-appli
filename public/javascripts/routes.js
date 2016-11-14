@@ -2,19 +2,19 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<home title="$ctrl.title" markers="$ctrl.markers"></home>',
+				template: '<home title="$ctrl.title" markers="$ctrl.markers" ></home>',
 			}).
 			when('/places', {
-				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places>',
+				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers" ></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places-Game>',
+				template: '<places title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers" ></places-Game>',
 			}).
 			when('/places/name/:name', {
-				template: '<place title="$ctrl.title" placeview="$ctrl.placeview"></place>',
+				template: '<place title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
 			}).
 			when('/places/game/:game/name/:name', {
-				template: '<place title="$ctrl.title" placeview="$ctrl.placeview"></place>',
+				template: '<place title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
 			}).
 			when('/places/name/:name/comments/new', {
 				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
@@ -58,7 +58,7 @@ app.config(['$routeProvider', '$locationProvider',
 				}
 			}).
 			when('/admin/places', {
-				template: '<places-admin on-places="$ctrl.markersRefresh(places)"></places-admin>',
+				template: '<places-admin markers="$ctrl.markers"></places-admin>',
 				resolve: {
 					checkusers: function(authService) {
 						return authService.checkAdmin();

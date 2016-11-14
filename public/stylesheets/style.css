@@ -28,10 +28,8 @@ a:active {
 */
 
 .leftCol {
-  height: 100%;
-/*
-  padding-right: 0px;
-*/
+	height: 100%;
+	
 }
 
 #rightCol {
@@ -40,6 +38,11 @@ a:active {
 	margin-left: 0px;
 	padding-left: 0px;
 */
+}
+
+#map, my-leaflet {
+	margin-left: -15px;
+	margin-right: -15px;
 }
 
 nav.navbar.navbar-inverse.navbar.fixed-top {
@@ -54,6 +57,7 @@ nav.navbar.navbar-inverse.navbar.fixed-top {
 div.navbar-header, nav.navbar.navbar-inverse.navbar {
 	background-color: #43a047;
 	border-color: #43a047;
+	margin-bottom: 0px;
 }
 
 div.navbar-header button.navbar-toggle {
@@ -123,7 +127,7 @@ button.menu-title {
 
 #game-bar a {
 	color: #43a047;
-	font-weight: 500;
+	font-weight: 700;
 }
 
 #game-bar a:hover {
@@ -168,7 +172,7 @@ button.menu-title {
 .main-wrapper {
 	height: 100%;
 	margin-right: 0px;
-	padding-top: 65px;
+	padding-top: 50px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -226,7 +230,7 @@ button.menu-title {
 		height: -webkit-calc(100% - 67px);
 		height: calc(100% - 67px);
 		overflow-y: auto;
-		margin-top: 15px;
+		margin-top: 10px;
 		
 	}
 	
@@ -273,21 +277,31 @@ button.menu-title {
 	bottom: 0px;
 }
 
-.top-title {
+.top-title  div.row {
+/*
+	border-bottom: 1px solid #e0e0e0;
+*/
 	
 }
 
-.top-title > * {
-	line-height: 30px;
+.top-title button  {
+	border: none;
+	background: none;
+	height: 50px;
+}
+
+.top-title > div.row div.col-xs-6, .top-title > div.row div.col-xs-3, .top-title > div.row div.col-xs-9, .top-title div.dropdown {
+	line-height: 50px;
 	vertical-align: middle;
 	margin: 0px;
-	
+	height: 50px;
 }
 
 .top-title p {
-	margin: 0px;
-	
-	
+	line-height: 50px;
+	margin-top: 3px;
+	margin-bottom: 0px;
+	vertical-align: middle;
 }
 
 .reverse-btn {

@@ -184,10 +184,6 @@ main.component('main', {
 			
 			
 			
-			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-				ctrl.views();
-				ctrl.placeViews();
-			});
 			
 			/*LEAFLET MARKERS*/
 			//initialisation des markers lancée par $scope.appInit
@@ -207,6 +203,11 @@ main.component('main', {
 				$("#myModal").modal({show: true});
 			}
 			
+			
+			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+				ctrl.views();
+			});
+			
 			//TOGGLE VIEWS
 			//button for toggleView
 			ctrl.views = function() {
@@ -218,20 +219,14 @@ main.component('main', {
 			}
 			//toggleView()
 			ctrl.toggleView = function() {
-				ctrl.view = (ctrl.view==='list' ? ctrl.view = 'map' : ctrl.view = 'list');
+				ctrl.view = (ctrl.view==='list' ? 'map' : 'list');
+				if(ctrl.view==='map') {
+					ctrl.placeview = 'text';
+				}
 				mapService.setView(mapService.centerDefault,mapService.zoomDefault);
 				mapService.setSelectedMarker(null);
 			}
 			
-			//TOGGLE PLACE VIEWS
-			// buttons for placeToggleView
-			ctrl.placeViews = function() {
-				if(ctrl.view==='list' && $route.current.params.name) {
-					ctrl.btnPlaceViews = true;
-				} else {
-					ctrl.btnPlaceViews = false;
-				}
-			}
 			//placeToggleView()
 			ctrl.placeToggleView = function() {
 				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
@@ -241,6 +236,11 @@ main.component('main', {
 				$scope.$apply(function() {
 					ctrl.placeToggleView();
 				});
+			});
+			
+			//on placeToggleView from map
+			$scope.$on('goToMap', function(event,data) {
+				ctrl.placeToggleView();
 			});
 			
 			
@@ -444,7 +444,7 @@ places.directive('placesMap', function($route, mapService) {
 		//LAYER
 		L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
 			//attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			minZoom: 12,
+			minZoom: 11,
 			maxZoom: 18,
 		}).addTo(map);
 		
@@ -511,12 +511,11 @@ places.directive('placesMap', function($route, mapService) {
 					//Marker on click						
 					var myFunction = function(place) {
 						marker.on('click', function(ev) {
-							if(attrs.position) {
+							if(!attrs.selected) {
 								mapService.setSelectedMarker(ev.target);
 							}
 						});
 					}(places[i]);
-					//myFunction(places[i]);
 					
 					markers.push(marker);//chaque marker est ajouté à markers
 						
@@ -566,7 +565,7 @@ places.directive('placesMap', function($route, mapService) {
 					map.setView(center, zoom);
 					//Marker open pop-up
 					markers[newSelected.index].setIcon(orangeIcon);
-					//markers[newSelected.index].openPopup();
+					markers[newSelected.index].openPopup();
 				}
 			});
 		}
@@ -609,13 +608,12 @@ places.component('place', {
 	templateUrl: '/fragments/places/place',
 	bindings: {
 		view: '<',
-		placeview: '=',
+		placeview: '<',
 		title: '='
 	},
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
 		var ctrl = this;
-		
 		
 		ctrl.init = function() {
 			if($route.current.params.game) {
@@ -685,6 +683,7 @@ places.component('place', {
 places.component('placeText', {
 	templateUrl: '/fragments/places/placeText',
 	bindings: {
+		view: '<',
 		spot: '<',
 		comments: '<'
 	},
@@ -703,6 +702,10 @@ places.component('placeText', {
 		ctrl.back = function() {
 			mapService.setScrollPosition(ctrl.redirect,ctrl.spot._id);
 		};
+		
+		ctrl.placeToggleView = function() {
+			mapService.goToMap();
+		}
 	}
 });
 
@@ -738,7 +741,7 @@ places.directive('gamesBar', function ($http, $route) {
 places.component('placesAdmin', {
 	templateUrl: '/fragments/places/placesAdmin',
 	bindings: {
-		onPlaces: '&'
+		markers: '='
 	},
 	controller: function($scope, $http, mapService) {
 		
@@ -750,7 +753,7 @@ places.component('placesAdmin', {
 			$http.get('/api/places').
 				then(function(response) {
 					 ctrl.spots = response.data;
-					 ctrl.onPlaces({places: ctrl.spots});
+					 ctrl.markers = ctrl.spots;
 				});
 		};
 		
