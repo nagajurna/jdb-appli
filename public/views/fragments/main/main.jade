@@ -24,12 +24,14 @@
       nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
         .navbar-header
           button(type="button" class="menu-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
-          
+         
           span.menu-title {{ $ctrl.title }}
           
           button(type="button" class="menu-title" ng-if="$ctrl.btnViews" ng-click="$ctrl.toggleView()")
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
+          
+          span.menu-title {{ $ctrl.currentuser.name }}
           
           a.navbar-brand(href='/#/') JDB
         
