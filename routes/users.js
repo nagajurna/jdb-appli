@@ -131,7 +131,7 @@ router.put('/resetPassword', [xsrfCheck,credentialsPreCheck], function(req, res,
 		
 		if (!user) { return res.json(info); }
 		
-		return res.json({reset: true, message: 'password changed' });
+		return res.json({reset: true, message: 'Votre mot de passe a été modifié' });
 		
 	  })(req, res, next);
 });

@@ -9,8 +9,8 @@ div(id="myModal" class="modal fade" role="dialog")
           <sign-in ng-switch-when="sign-in" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
           <sign-up ng-switch-when="sign-up" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-up>
           <forgot-password ng-switch-when="forgot-password" title="$ctrl.title" template="$ctrl.template"></forgot-password>
-          <profile ng-switch-when="profile" title="$ctrl.title" template="$ctrl.template" user="$ctrl.user"></profile>
-          <reset-password ng-switch-when="reset-password" title="$ctrl.title" template="$ctrl.template" user="$ctrl.user"></reset-password>
-          <menu-sm ng-switch-when="menu" title="$ctrl.title" template="$ctrl.template" user="$ctrl.user" on-completed="$ctrl.close(action)" ></menu-sm>
+          <profile ng-switch-when="profile" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser"></profile>
+          <reset-password ng-switch-when="reset-password" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser"></reset-password>
+          <menu-sm ng-switch-when="menu" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser" on-completed="$ctrl.close(action)" ></menu-sm>
       .modal-footer
         button(type="button" class="btn btn-default" data-dismiss="modal") Fermer

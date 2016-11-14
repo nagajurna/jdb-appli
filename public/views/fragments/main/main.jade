@@ -10,13 +10,13 @@
           li(ng-if='$ctrl.admin') 
             a(href='/admin')
               span(class="glyphicon glyphicon-king") 
-          li(ng-if='$ctrl.loggedIn') 
+          li(ng-if='$ctrl.currentuser') 
             a(href='' ng-click="$ctrl.modalLoad('profile')")
               span(class="glyphicon glyphicon-user")
-          li(ng-if='$ctrl.loggedIn') 
+          li(ng-if='$ctrl.currentuser') 
             a(href='' ng-click='$ctrl.signout()')
               span(class="glyphicon glyphicon-log-out")
-          li(ng-if='!$ctrl.loggedIn') 
+          li(ng-if='!$ctrl.currentuser') 
             a(href='' ng-click="$ctrl.modalLoad('sign-in')") 
               span(class="glyphicon glyphicon-log-in")
       
@@ -35,8 +35,7 @@
         
            
       #view(ng-view)
-      <div-user template='$ctrl.template' user="$ctrl.currentUser"></div-user>
-      <modal template='$ctrl.template' user="$ctrl.currentUser"></modal>
+      <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
     .col-sm-8.col-lg-9.rightCol.hidden-xs
       div(leaflet-map class="map-lg" source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar)

@@ -17,10 +17,10 @@ app.config(['$routeProvider', '$locationProvider',
 				template: '<place title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
 			}).
 			when('/places/name/:name/comments/new', {
-				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
+				template: '<comment-new currentuser="$ctrl.currentuser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
 			}).
 			when('/places/game/:game/name/:name/comments/new', {
-				template: '<comment-new user="$ctrl.currentUser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
+				template: '<comment-new currentuser="$ctrl.currentuser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',
 			}).
 			when('/forgotPassword/reset', {
 				template: '<forgot-password-reset></forgot-password-reset>'

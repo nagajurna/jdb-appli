@@ -326,6 +326,11 @@ button.menu-title {
 	color: red;
 }
 
+.success-message {
+	height: 14px;
+	color: #43a047;
+}
+
 .popup div {
 	border-radius: 0px;
 }

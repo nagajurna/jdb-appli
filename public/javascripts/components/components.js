@@ -199,8 +199,8 @@ main.component('main', {
 			var ctrl = this;
 			ctrl.view = 'list';
 			ctrl.placeview = 'text';
-			ctrl.loggedIn = false;
-			ctrl.currentUser = null;
+			//ctrl.loggedIn = false;
+			ctrl.currentuser = null;
 			ctrl.markers = {};
 			//INITIALISATION DE APP
 			ctrl.appInit = function () {
@@ -212,16 +212,16 @@ main.component('main', {
 			//initialisation de loggedIn et currentUser lancée par $scope.appInit
 			ctrl.getUser = function() {
 				authService.getUser().then(function(user) {
-					ctrl.loggedIn = user.loggedIn;
-					ctrl.currentUser = user.user;
-					ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+					//ctrl.loggedIn = user.loggedIn;
+					ctrl.currentuser = user.user;
+					ctrl.admin = (ctrl.currentuser && ctrl.currentuser.role==="ADMIN") ? true : false;
 				});
 			};
 			//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
 			$scope.$on('refreshUser', function(event, user) {
-				ctrl.loggedIn = user.loggedIn;
-				ctrl.currentUser = user.user;
-				ctrl.admin = (ctrl.loggedIn && ctrl.currentUser.role==="ADMIN") ? true : false;
+				//ctrl.loggedIn = user.loggedIn;
+				ctrl.currentuser = user.user;
+				ctrl.admin = (ctrl.currentuser && ctrl.currentuser.role==="ADMIN") ? true : false;
 			});
 			//log out
 			ctrl.signout = function() {
@@ -357,7 +357,7 @@ main.component('menuSm', {
 			title: '=',
 			template: '=',
 			onCompleted: '&',
-			user: '<'
+			currentuser: '<'
 		},
 		controller: function($scope, mapService) {
 			
@@ -381,7 +381,7 @@ main.component('modal', {
 	templateUrl: '/fragments/main/modal',
 	bindings: {
 		template: '=',
-		user: '<'
+		currentuser: '<'
 	},
 	controller: function() {
 		
@@ -834,7 +834,7 @@ var comments = angular.module('app.comments', []);
 comments.component('commentNew', {
 	templateUrl: '/fragments/comments/new',
 	bindings: {
-		user: '<',
+		currentuser: '<',
 		onAnonymous: '&'
 	},
 	controller: function($http, $route, $location) {
@@ -852,11 +852,12 @@ comments.component('commentNew', {
 			};
 			
 		ctrl.add = function() {
-			if(!ctrl.user) {
+			if(!ctrl.currentuser) {
+				console.log(ctrl.currentuser);
 				ctrl.onAnonymous({template: 'sign-in'});
 				return
 			}
-			ctrl.comment.author = ctrl.user.id;
+			ctrl.comment.author = ctrl.currentuser.id;
 			ctrl.comment.place = ctrl.spot._id;
 			
 			$http.post('/api/comments', ctrl.comment).
@@ -1003,8 +1004,8 @@ users.component('signUp', {
 						ctrl.user = {};
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
-							ctrl.onCompleted({action: "hide"});
 							$scope.$emit('refreshUser', user);
+							ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
@@ -1043,8 +1044,8 @@ users.component('signIn', {
 						ctrl.user = {};
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
-							ctrl.onCompleted({action: "hide"});
 							$scope.$emit('refreshUser', user);
+							ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
@@ -1056,7 +1057,7 @@ users.component('signIn', {
 users.component('profile', {
 	templateUrl: '/fragments/users/profile',
 	bindings: {
-		user: '<',
+		currentuser: '<',
 		title: '=',
 		template: '='
 	},
@@ -1069,7 +1070,7 @@ users.component('profile', {
 users.component('resetPassword', {
 	templateUrl: '/fragments/users/resetPassword',
 	bindings: {
-		user: '<',
+		currentuser: '<',
 		title: '=',
 		template: '='
 	},
@@ -1080,7 +1081,7 @@ users.component('resetPassword', {
 		ctrl.form = {};
 				
 		ctrl.resetPassword = function() {
-			ctrl.user.email = ctrl.user.email;
+			ctrl.user.email = ctrl.currentuser.email;
 			$http.put('/users/resetPassword', ctrl.user).
 				then(function(response) {
 					console.log(response.data);
@@ -1096,7 +1097,7 @@ users.component('resetPassword', {
 					} else if(response.data.reset===true) {
 						ctrl.user = {};
 						ctrl.form = {};
-						ctrl.form.message = response.data.message;
+						ctrl.form.success = response.data.message;
 					}
 				});
 		};

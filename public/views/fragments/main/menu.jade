@@ -14,11 +14,16 @@
 hr    
 .row
   .col-xs-6
-    p: a(href='' ng-click="$ctrl.template='sign-in'") Connexion
+    p(ng-if='!$ctrl.currentuser'): a(href='' ng-click="$ctrl.template='sign-in'") Connexion
   .col-xs-6
-    p: a(href='' ng-click="$ctrl.template='sign-up'") Inscription
+    p(ng-if='!$ctrl.currentuser'): a(href='' ng-click="$ctrl.template='sign-up'") Inscription
 .row
   .col-xs-6
-    p(ng-if='$ctrl.user'): a(href='' ng-click='$ctrl.signout()') Déconnexion
+    p(ng-if='$ctrl.currentuser'): a(href='' ng-click="$ctrl.template='profile'") Profil
   .col-xs-6
-    p(ng-if='$ctrl.user && $ctrl.user.role==="ADMIN"'): a(href='/admin' ng-click="$ctrl.close()") Administration
+    p(ng-if='$ctrl.currentuser'): a(href='' ng-click='$ctrl.signout()') Déconnexion
+   
+.row
+  .col-xs-6
+    p(ng-if='$ctrl.currentuser && $ctrl.currentuser.role==="ADMIN"'): a(href='/admin' ng-click="$ctrl.close()") Administration
+  .col-xs-6   
