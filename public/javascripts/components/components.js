@@ -11,7 +11,6 @@ var leafletDirective = angular.module('app.leaflet', [])
 		
 		
 		//SIZE
-		//if(window.innerWidth >= 768) { return }
 		$(element).css({'height': '100vh'});
 		
 		//MAP		
@@ -472,6 +471,11 @@ places.component('places', {
 						});
 				});
 		};
+		
+		//scroll to place
+		$scope.$on('item', function(ev,data) {
+			mapService.scroll(data);
+		});
 	}
 });
 
@@ -506,13 +510,8 @@ places.component('placesList', {
 			
 		//marker in view and popup open
 		ctrl.position = function(spot) {
-			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
-		
-		//scroll to place
-		$scope.$on('item', function(ev,data) {
-			mapService.scroll(data);
-		});
 	}
 });
 
