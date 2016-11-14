@@ -1005,7 +1005,8 @@ users.component('signUp', {
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							ctrl.onCompleted({action: "hide"});
+							$("#myModal").modal('hide');
+							//ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
@@ -1045,7 +1046,8 @@ users.component('signIn', {
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							ctrl.onCompleted({action: "hide"});
+							$("#myModal").modal('hide');
+							//ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
