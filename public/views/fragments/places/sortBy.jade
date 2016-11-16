@@ -1,8 +1,13 @@
 .dropdown.pull-right
-  button(class="dropdown-toggle" type="button" data-toggle="dropdown") Tri&ensp;
+  button(class="dropdown-toggle hidden-xs" type="button" data-toggle="dropdown") Tri&ensp;
     span(class="caret")
-  button(class="reverse-btn" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
+  button(class="dropdown-toggle visible-xs menu-left-title" type="button" data-toggle="dropdown") Tri&ensp;
+    span(class="caret")
+    
+  button(class="reverse-btn hidden-xs" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
+  button(class="reverse-btn visible-xs menu-left-title" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
+  
   ul(class="dropdown-menu")
-    li: a(href="" ng-click="$ctrl.sortBy('nameAlpha')" ng-class="{sorted: $ctrl.property==='nameAlpha'}") {{ $ctrl.labels['nameAlpha'] }}
-    li: a(href="" ng-click="$ctrl.sortBy('cp')"  ng-class="{sorted: $ctrl.property==='cp'}") {{ $ctrl.labels['cp'] }}
-    li: a(href="" ng-click="$ctrl.sortBy('updated')"  ng-class="{sorted: $ctrl.property==='updated'}") {{ $ctrl.labels['updated'] }}
+    li: a(href="" ng-click="$ctrl.sortBy('nameAlpha')" ng-class="{sorted: $ctrl.propertyName==='nameAlpha'}") {{ $ctrl.labels['nameAlpha'] }}
+    li: a(href="" ng-click="$ctrl.sortBy('cp')"  ng-class="{sorted: $ctrl.propertyName==='cp'}") {{ $ctrl.labels['cp'] }}
+    li: a(href="" ng-click="$ctrl.sortBy('updated')"  ng-class="{sorted: $ctrl.propertyName==='updated'}") {{ $ctrl.labels['updated'] }}

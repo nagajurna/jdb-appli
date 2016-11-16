@@ -110,24 +110,5 @@ var mapService = angular.module('app.mapService', [])
 		};
 	};
 	
-	var property='cp';
-	mapService.setOrderByProperty = function(name) {
-		property = name;
-	}
-	
-	mapService.getOrderByProperty = function() {
-		return property;
-	}
-	
-	var reverse = false;
-	mapService.setReverse = function(bool) {
-		reverse = bool;
-	}
-	
-	mapService.getReverse = function() {
-		return reverse;
-	}
-	
-	
 	return mapService;
 });

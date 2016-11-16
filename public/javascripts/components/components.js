@@ -274,18 +274,22 @@ main.component('main', {
 			
 			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+				//buttons toggleView and sort-by : display or not
 				ctrl.views();
-				ctrl.logo = ( $location.path()==='/' ? 'JDB' : '' );
-				ctrl.hide = ( $location.path()==='/' ? false : true );
+				//logo : display or not
+				ctrl.logo = ( $location.path()==='/' ? 'JDB' : null );
+				ctrl.hideLogo = !ctrl.logo;
 			});
 			
 			//TOGGLE VIEWS
-			//button for toggleView
+			//menus button for toggleView and sort-by
 			ctrl.views = function() {
 				if($location.path()==='/places' || ($route.current.params.game && !$route.current.params.name)) {
 					ctrl.btnViews = true;
+					ctrl.hideSort = (ctrl.view==='map' ? true : false);
 				} else {
 					ctrl.btnViews = false;
+					ctrl.hideSort = true;
 				}
 			}
 			//toggleView()
@@ -294,6 +298,7 @@ main.component('main', {
 				if(ctrl.view==='map') {
 					ctrl.placeview = 'text';
 				}
+				ctrl.hideSort = (ctrl.view==='map' ? true : false);
 				mapService.setView(null,null);
 				mapService.setSelectedMarker(null);
 			}
@@ -323,10 +328,7 @@ main.component('main', {
 					});
 				 } 
 			});
-			
-	
 	}
-	
 });
 
 main.component('home', {
@@ -385,8 +387,7 @@ main.component('menuSm', {
 			
 			ctrl.signout = function() {
 				$scope.$emit('signout');
-				$("#myModal").modal('hide');
-				//ctrl.onCompleted({action: "hide"});
+				ctrl.onCompleted({action: "hide"});
 			}
 		}
 });
@@ -450,7 +451,7 @@ places.component('places', {
 	},
 	controller: function($scope, $route, $http, mapService) {
 		var ctrl = this;
-				
+						
 		ctrl.init = function() {
 			if($route.current.params.game) {
 				ctrl.getGamePlaces();
@@ -459,6 +460,8 @@ places.component('places', {
 				ctrl.getPlaces();
 				ctrl.link = "/places/name/";
 			}
+			
+			
 		};
 		
 		ctrl.getPlaces = function() {
@@ -502,8 +505,18 @@ places.component('placesList', {
 	},
 	controller: function($rootScope, $scope, $http, $location, mapService, $filter) {
 		var ctrl = this;
-		ctrl.propertyName = mapService.getOrderByProperty();
-		ctrl.reverse = mapService.getReverse();
+		//init sorting : propertyName and reverse be the same as in placesList component
+		ctrl.propertyName = 'cp';
+		ctrl.reverse = false;
+		$rootScope.$broadcast('InitSortProperty', {property: ctrl.propertyName});
+		$rootScope.$broadcast('InitReverse', {reverse: ctrl.reverse});
+		
+		$scope.$on('sortProperty', function(event, data) {
+			ctrl.propertyName = data.property;
+		});
+		$scope.$on('sortOrder', function(event, data) {
+			ctrl.reverse = data.reverse;
+		});
 		
 		ctrl.getComments = function() {
 			$http.get('/api/comments').
@@ -523,10 +536,6 @@ places.component('placesList', {
 		};
 			
 		//marker in view and popup open
-		ctrl.position = function(spot) {
-			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		};
-		
 		ctrl.goToPlace = function(spot) {
 			$location.path(ctrl.link + spot.nameAlpha);
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
@@ -815,21 +824,26 @@ places.component('placeUpdate', {
 
 places.component('sortBy', {
 	templateUrl: '/fragments/places/sortBy',
-	bindings: {
-		property: "=",
-		reverse: "="
-	},
-	controller: function(mapService) {
+	controller: function($rootScope, $scope, mapService) {
 		
 		var ctrl = this;
+		//init: propertyName and reverse be the same as in placesList component
+		$scope.$on('InitSortProperty', function(event, data) {
+			ctrl.propertyName = data.property;
+		});
+		
+		$scope.$on('InitReverse', function(event, data) {
+			ctrl.reverse = data.reverse;
+		});
+				
 		ctrl.sortBy = function(name) {
-			ctrl.property = name;
-			mapService.setOrderByProperty(ctrl.property);
+			ctrl.propertyName = name;
+			$rootScope.$broadcast('sortProperty', {property: name});
 		}
 		
 		ctrl.toggleReverse = function() {
 			ctrl.reverse = (ctrl.reverse===true ? false: true);
-			mapService.setReverse(ctrl.reverse);
+			$rootScope.$broadcast('sortOrder', {reverse: ctrl.reverse});
 		}
 		
 		ctrl.labels = {
@@ -1028,8 +1042,8 @@ users.component('signUp', {
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							$("#myModal").modal('hide');
-							//ctrl.onCompleted({action: "hide"});
+							//$("#myModal").modal('hide');
+							ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
@@ -1069,8 +1083,8 @@ users.component('signIn', {
 						ctrl.form = {};
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							$("#myModal").modal('hide');
-							//ctrl.onCompleted({action: "hide"});
+							//$("#myModal").modal('hide');
+							ctrl.onCompleted({action: "hide"});
 						});
 					}
 				});
@@ -1155,7 +1169,7 @@ users.component('forgotPassword', {
 						} else if (response.data.reason.name === 'AuthentificationError') {
 							ctrl.form.message = response.data.reason.message;
 						} else {
-							ctrl.form.message = 'Désolé, votre demande n\a pas pu aboutir. Veuillez recommencez.';
+							ctrl.form.message = 'Désolé, votre demande n\'a pas pu aboutir. Veuillez recommencer.';
 						}
 					} else if(response.data.mailSent===true) {
 						ctrl.mailSent = response.data.mailSent;

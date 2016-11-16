@@ -57,7 +57,7 @@ div.navbar-header button.navbar-toggle {
 	color: #fff;
 }
 
-a.navbar-brand.hide {
+.hide {
 	display: none;
 }
 
@@ -68,6 +68,10 @@ a.navbar-brand.hide {
 		margin-right: -30px;
 		padding-right: 15px;
 	}
+}
+
+.menu-left {
+	float: left;
 }
 
 .menu-left-title, .menu-right-title {

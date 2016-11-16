@@ -5,7 +5,7 @@ app.config(['$routeProvider', '$locationProvider',
 				template: '<home title="$ctrl.title" markers="$ctrl.markers" ></home>',
 			}).
 			when('/places', {
-				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers" ></places>',
+				template: '<places title="$ctrl.title" view="$ctrl.view" markers="$ctrl.markers"></places>',
 			}).
 			when('/places/game/:game', {
 				template: '<places title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers" ></places-Game>',

@@ -168,7 +168,7 @@ router.post('/forgotPassword', [xsrfCheck,credentialsPreCheck], function(req, re
 				}
 			});
 			var htmlMessage = '<p>' + user.name + ', cliquez sur ce lien suivant afin de créer un nouveau mot de passe :</p>' +
-							  '<p><a href="http://localhost:3000/#/forgotPassword/reset?mail=' + user.email + '&token=' + user.token + '">créer un nouveau mot de passe</a></p>'
+							  '<p><a href="http://localhost:5000/#/forgotPassword/reset?mail=' + user.email + '&token=' + user.token + '">créer un nouveau mot de passe</a></p>'
 			var mailOptions = {
 				from: '<' + process.env.MAIL_ADDRESS + '>', // expéditeur
 				to: process.env.MAIL_ADDRESS, // destinataire
@@ -208,7 +208,7 @@ router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(re
 		if(req.body.token !== user.token) {
 			var error = {};
 			error.name = 'AuthentificationError';
-			error.message = 'ce jeton n\'est pas valable';
+			error.message = 'Votre jeton n\'est plus valable.';
 			return res.json({reset: false, reason: error});
 		}
 		 user.password = User.createHash(req.body.password);
