@@ -1,17 +1,6 @@
 .row
-  .col-xs-6
-    p: a(href="/#/places" ng-click="$ctrl.close()") TOUS LES BARS
-    p: a(href="/#/places/game/billard" ng-click="$ctrl.close()") BILLARD
-    p: a(href="/#/places/game/bowling" ng-click="$ctrl.close()") BOWLING
-    p: a(href="/#/places/game/flipper" ng-click="$ctrl.close()") FLIPPER
-    p: a(href="/#/places/game/petanque" ng-click="$ctrl.close()") P&Eacute;TANQUE
-  .col-xs-6
-    p: a(href="/#/places/game/baby-foot" ng-click="$ctrl.close()") BABY-FOOT
-    p: a(href="/#/places/game/board-game" ng-click="$ctrl.close()") BOARD-GAME
-    p: a(href="/#/places/game/flechettes" ng-click="$ctrl.close()") FL&Eacute;CHETTES
-    p: a(href="/#/places/game/jeu-video" ng-click="$ctrl.close()") JEU VID&Eacute;O
-    p: a(href="/#/places/game/ping-pong" ng-click="$ctrl.close()") PING-PONG
-hr    
+  .col-xs-12
+    p: a(href="/" ng-click="$ctrl.close()") Accueil
 .row
   .col-xs-6
     p(ng-if='!$ctrl.currentuser'): a(href='' ng-click="$ctrl.template='sign-in'") Connexion
@@ -26,4 +15,19 @@ hr
 .row
   .col-xs-6
     p(ng-if='$ctrl.currentuser && $ctrl.currentuser.role==="ADMIN"'): a(href='/admin' ng-click="$ctrl.close()") Administration
-  .col-xs-6   
+  .col-xs-6 
+hr
+.row
+  .col-xs-6
+    p: a(href="/#/places" ng-click="$ctrl.close()") TOUS LES BARS
+    p: a(href="/#/places/game/billard" ng-click="$ctrl.close()") BILLARD
+    p: a(href="/#/places/game/bowling" ng-click="$ctrl.close()") BOWLING
+    p: a(href="/#/places/game/flipper" ng-click="$ctrl.close()") FLIPPER
+    p: a(href="/#/places/game/petanque" ng-click="$ctrl.close()") P&Eacute;TANQUE
+  .col-xs-6
+    p: a(href="/#/places/game/baby-foot" ng-click="$ctrl.close()") BABY-FOOT
+    p: a(href="/#/places/game/board-game" ng-click="$ctrl.close()") BOARD-GAME
+    p: a(href="/#/places/game/flechettes" ng-click="$ctrl.close()") FL&Eacute;CHETTES
+    p: a(href="/#/places/game/jeu-video" ng-click="$ctrl.close()") JEU VID&Eacute;O
+    p: a(href="/#/places/game/ping-pong" ng-click="$ctrl.close()") PING-PONG  
+  

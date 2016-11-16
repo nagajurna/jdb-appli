@@ -208,6 +208,7 @@ main.component('main', {
 	templateUrl: '/fragments/main/main',
 	controller: function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
+			ctrl.logo = '';
 			ctrl.view = 'list';
 			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
@@ -274,6 +275,8 @@ main.component('main', {
 			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
 				ctrl.views();
+				ctrl.logo = ( $location.path()==='/' ? 'JDB' : '' );
+				ctrl.hide = ( $location.path()==='/' ? false : true );
 			});
 			
 			//TOGGLE VIEWS
@@ -497,7 +500,7 @@ places.component('placesList', {
 		title: '<',
 		link: '<'
 	},
-	controller: function($rootScope, $scope, $http, mapService, $filter) {
+	controller: function($rootScope, $scope, $http, $location, mapService, $filter) {
 		var ctrl = this;
 		ctrl.propertyName = mapService.getOrderByProperty();
 		ctrl.reverse = mapService.getReverse();
@@ -523,6 +526,11 @@ places.component('placesList', {
 		ctrl.position = function(spot) {
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		};
+		
+		ctrl.goToPlace = function(spot) {
+			$location.path(ctrl.link + spot.nameAlpha);
+			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		}
 	}
 });
 

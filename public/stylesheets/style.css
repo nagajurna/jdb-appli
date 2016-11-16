@@ -5,6 +5,10 @@ html, body {
   height: 100vh;
 }
 
+.row.content, .leftCol, .rightCol {
+	height: 100vh;
+}
+
 
 a {
   color: #757575;
@@ -20,23 +24,22 @@ a:active {
 	color: #ff5722
 }
 
-.row.content, .leftCol, .rightCol {
-	height: 100vh;
-}
 
 .map-sm, .map-sm-place {
 	margin-left: -15px;
 	margin-right: -15px;
 }
 
+div.modal-content {
+	border-radius: 0px;
+}
 
+div.modal.fade.in {
+	background-color: #43a047;
+}
 
 nav.navbar.navbar-inverse.navbar.fixed-top {
 	border-radius: 0px;
-	margin-right: -15px;
-	margin-left: -15px;
-	padding-right: 0px;
-	
 	
 }
 
@@ -50,31 +53,13 @@ div.navbar-header button.navbar-toggle {
 	border-color: #43a047;
 }
 
-/* MODAL*/
-/*
-div.modal-header, div.modal-footer {
-	background-color: #388e3c;
-}
-*/
-
-div.modal-content {
-	border-radius: 0px;
-}
-
-/*
-div.modal.fade.in {
-	background-color: #388e3c;
-}
-*/
 .navbar-header a.navbar-brand, .nav span.glyphicon {
 	color: #fff;
 }
 
-/*
-.modal-title, .navbar-header a.navbar-brand, .nav span.glyphicon {
-	color: #fff;
+a.navbar-brand.hide {
+	display: none;
 }
-*/
 
 @media only screen and (min-width: 768px) {
 	nav.navbar.navbar-inverse {
@@ -85,7 +70,7 @@ div.modal.fade.in {
 	}
 }
 
-.menu-title {
+.menu-left-title, .menu-right-title {
 	padding: 15px;
 	height: 50px;
 	display: inline-block;
@@ -94,7 +79,15 @@ div.modal.fade.in {
 	color: #fff;
 }
 
-button.menu-title {
+.menu-right-title {
+	float: right;
+}
+
+.menu-left-title {
+	float: left;
+}
+
+button.menu-left-title, button.menu-right-title {
 	background-color: #43a047;
 	border: none;
 }
@@ -151,9 +144,7 @@ button.menu-title {
 	border-right: none;
 }
 
-#view {
-	height: 100%;
-}
+
 
 .main-wrapper {
 	height: 100%;
@@ -203,6 +194,7 @@ button.menu-title {
 @media only screen and (min-width: 768px) {
 	#view {
 		height: -webkit-calc(100% - 100px);
+		height: -moz-calc(100% - 100px);
 		height: calc(100% - 100px);
 		
 	}
@@ -214,6 +206,7 @@ button.menu-title {
 
 	.wrapper {
 		height: -webkit-calc(100% - 67px);
+		height: -moz-calc(100% - 67px);
 		height: calc(100% - 67px);
 		overflow-y: auto;
 		margin-top: 10px;
@@ -231,12 +224,6 @@ button.menu-title {
 	.wrapper > form {
 		margin-right: 10px;
 	}
-
-/*
-	.wrapper > ul li:last-child {
-		margin-bottom: 700px;
-	}
-*/
 }
 
 .wrapper-strict {
@@ -247,8 +234,7 @@ button.menu-title {
 }
 
 
-
-
+/*
 #div-user {
 	position: fixed;
 	bottom: -1500px;
@@ -262,13 +248,7 @@ button.menu-title {
 #div-user.in {
 	bottom: 0px;
 }
-
-.top-title  div.row {
-/*
-	border-bottom: 1px solid #e0e0e0;
 */
-	
-}
 
 .top-title button  {
 	border: none;
@@ -305,12 +285,6 @@ button.menu-title {
 .dropdown-menu > li > a.sorted {
 	font-weight: 700;
 }
-
-/*
-.back {
-	position: absolute;
-}
-*/
 
 .comments {
 	margin-top: 30px;
