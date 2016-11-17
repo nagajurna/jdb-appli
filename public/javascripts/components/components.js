@@ -446,6 +446,7 @@ places.component('places', {
 	templateUrl: '/fragments/places/places',
 	bindings: {
 		view: '=',
+		placeview: '=',
 		title: '=',
 		markers: '='
 	},
@@ -461,7 +462,7 @@ places.component('places', {
 				ctrl.link = "/places/name/";
 			}
 			
-			
+			ctrl.placeview = 'text';
 		};
 		
 		ctrl.getPlaces = function() {
@@ -553,7 +554,7 @@ places.component('place', {
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
 		var ctrl = this;
-		
+		ctrl.ready = false;
 		ctrl.init = function() {
 			if($route.current.params.game) {
 				ctrl.getGamePlaces();
@@ -582,8 +583,8 @@ places.component('place', {
 					ctrl.markers = ctrl.spots;
 					ctrl.title = 'Tous les bars';
 					ctrl.spot = ctrl.getPlace(ctrl.spots);
+					ctrl.ready = true;
 					ctrl.comments = ctrl.getComments(ctrl.spot._id)
-					
 				});
 		};
 		
@@ -600,11 +601,12 @@ places.component('place', {
 							ctrl.spots = response.data;
 							ctrl.markers = ctrl.spots;
 							ctrl.spot = ctrl.getPlace(ctrl.spots);
+							ctrl.ready = true;
 							ctrl.comments = ctrl.getComments(ctrl.spot._id)
 						});
 				});
 		};
-		
+		ctrl.commentsTitle = "";
 		ctrl.getComments = function(id) {
 			$http.get('/api/comments/place/' + id).
 				then(function(response) {
@@ -824,6 +826,10 @@ places.component('placeUpdate', {
 
 places.component('sortBy', {
 	templateUrl: '/fragments/places/sortBy',
+	bindings: {
+		propertyName: '<',
+		reverse: '<'
+	},
 	controller: function($rootScope, $scope, mapService) {
 		
 		var ctrl = this;

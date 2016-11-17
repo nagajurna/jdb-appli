@@ -1,11 +1,10 @@
 .dropdown.pull-right
   button(class="dropdown-toggle hidden-xs" type="button" data-toggle="dropdown") Tri&ensp;
     span(class="caret")
-  button(class="dropdown-toggle visible-xs menu-left-title" type="button" data-toggle="dropdown") Tri&ensp;
-    span(class="caret")
+  button(class="dropdown-toggle visible-xs menu-left-title" type="button" data-toggle="dropdown"): <span class="glyphicon glyphicon-sort-by-attributes">
     
   button(class="reverse-btn hidden-xs" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
-  button(class="reverse-btn visible-xs menu-left-title" type="button" ng-click="$ctrl.toggleReverse()"): span(ng-class="{reverse: $ctrl.reverse}")
+  button(class="visible-xs menu-left-title" type="button" ng-click="$ctrl.toggleReverse()"): <span class="glyphicon glyphicon-sort"></span>
   
   ul(class="dropdown-menu")
     li: a(href="" ng-click="$ctrl.sortBy('nameAlpha')" ng-class="{sorted: $ctrl.propertyName==='nameAlpha'}") {{ $ctrl.labels['nameAlpha'] }}

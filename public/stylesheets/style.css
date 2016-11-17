@@ -238,22 +238,6 @@ button.menu-left-title, button.menu-right-title {
 }
 
 
-/*
-#div-user {
-	position: fixed;
-	bottom: -1500px;
-	padding: 10px;
-	background: #fff;
-	z-index: 1000;
-	transition: top 1s;
-	-webkit-transition: bottom 1s;
-}
-
-#div-user.in {
-	bottom: 0px;
-}
-*/
-
 .top-title button  {
 	border: none;
 	background: none;

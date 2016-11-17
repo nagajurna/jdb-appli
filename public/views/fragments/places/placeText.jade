@@ -14,7 +14,7 @@
     p: em(ng-bind-html="$ctrl.spot.description")
     <hr>
     .comments
-      p Commentaires {{ ' (' + $ctrl.comments.length + ')&ensp;' }}
+      p {{ 'Commentaires (' + $ctrl.comments.length + ')&ensp;' }}
         a(href="{{ $ctrl.newCommentPath }}") <span class="glyphicon glyphicon-plus">
       ul(class="list-group")
         li(ng-repeat="comment in $ctrl.comments" class="list-group-item")

@@ -26,14 +26,14 @@
           button(type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
          
           a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
-          span.menu-left-title {{ $ctrl.title }}
+          span.menu-left-title: strong {{ $ctrl.title }}
           
                  
           button(type="button" class="menu-left-title" ng-if="$ctrl.btnViews" ng-click="$ctrl.toggleView()")
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           
-          <sort-by property="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-left" ng-class="{hide: $ctrl.hideSort}"></sort-by>
+          <sort-by class="menu-left" ng-class="{hide: $ctrl.hideSort}"></sort-by>
          
            
       #view(ng-view)

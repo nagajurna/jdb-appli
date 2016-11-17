@@ -32,7 +32,7 @@
     "passport-local": "^1.0.0",
     "serve-favicon": "~2.3.0"
   },
-  "description": "bar à jeux de Paris",
+  "description": "Les bars à jeux de Paris",
   "main": "app.js",
   "devDependencies": {},
   "keywords": [
