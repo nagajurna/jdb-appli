@@ -16,12 +16,12 @@ a {
 }
 
 a:hover {
-	color: #ff5722;
+	color: #ff8a65;
 	text-decoration: none;
 }
 
 a:active {
-	color: #ff5722
+	color: #ff8a65
 }
 
 
@@ -94,6 +94,24 @@ div.navbar-header button.navbar-toggle {
 button.menu-left-title, button.menu-right-title {
 	background-color: #43a047;
 	border: none;
+}
+
+a.dropdown-toggle:hover, a.dropdown-toggle:active {
+	color: #fff;
+}
+
+ul.game-dropdown li {
+	height: 24px;
+	line-height: normal;
+}
+
+ul.dropdown-menu.game-dropdown > li a {
+	font-weight: bold;
+}
+
+ul.dropdown-menu.game-dropdown > li.active a {
+	background-color: #43a047;
+	color: #fff;
 }
 
 
@@ -308,4 +326,5 @@ button.menu-left-title, button.menu-right-title {
 .popup a:active {
 	color: #ff5722;
 }
+
 

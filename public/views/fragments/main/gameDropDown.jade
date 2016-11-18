@@ -1,0 +1,13 @@
+a(href="" class="dropdown-toggle menu-left-title" data-toggle="dropdown") {{ game }} 
+  span(class="caret" ng-if="game")
+ul(class="dropdown-menu game-dropdown")
+  li(class="small text-uppercase" ng-class="{active: isActive('tous')}"): a(href="/#/places" ) Tous les bars
+  li(class="small text-uppercase" ng-class="{active: isActive('baby-foot')}"): a(href="/#/places/game/baby-foot") Baby-foot
+  li(class="small text-uppercase" ng-class="{active: isActive('billard')}"): a(href="/#/places/game/billard") Billard
+  li(class="small text-uppercase" ng-class="{active: isActive('board-game')}"): a(href="/#/places/game/board-game") Board game
+  li(class="small text-uppercase" ng-class="{active: isActive('bowling')}"): a(href="/#/places/game/bowling") Bowling
+  li(class="small text-uppercase" ng-class="{active: isActive('flechettes')}"): a(href="/#/places/game/flechettes") Fléchettes
+  li(class="small text-uppercase" ng-class="{active: isActive('flipper')}"): a(href="/#/places/game/flipper") Flipper
+  li(class="small text-uppercase" ng-class="{active: isActive('jeu-video')}"): a(href="/#/places/game/jeu-video") Jeu vidéo
+  li(class="small text-uppercase" ng-class="{active: isActive('petanque')}"): a(href="/#/places/game/petanque") Pétanque
+  li(class="small text-uppercase" ng-class="{active: isActive('ping-pong')}"): a(href="/#/places/game/ping-pong") Ping-pong

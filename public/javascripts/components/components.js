@@ -329,6 +329,12 @@ main.component('main', {
 					});
 				 } 
 			});
+			
+			ctrl.isActive = function(game) {
+				if(game==='tous' && !$route.current.params.game) return true;
+				if($route.current.params.game)
+				 return game===$route.current.params.game;
+			}
 	}
 });
 
@@ -434,10 +440,33 @@ main.directive('gamesBar', function ($http, $route) {
 				scope.isActive = function(game) {
 					if(game==='tous' && !$route.current.params.game) return true;
 					return game===$route.current.params.game;
-				}
+				};
 			}
 		};
 		
+});
+
+main.directive('gameDropDown', function($route) {
+	
+	return {
+		templateUrl: '/fragments/main/gameDropDown',
+		restrict: 'E',
+		link: function(scope, element, attrs) {
+						
+			scope.$watch(attrs.game, function(newGame, oldGame) {
+				scope.game = newGame;
+			});
+			
+			scope.isActive = function(game) {
+				if(game==='tous' && !$route.current.params.game) {
+					return true;
+				} else {
+					return game===$route.current.params.game;
+				}
+			};
+			
+		}
+	};
 });
 
 //places module
