@@ -240,6 +240,7 @@ main.component('main', {
 				$http.get('/users/signout').
 					then(function(response) {
 						ctrl.getUser();
+						$location.path('/');
 					});
 			};
 			
@@ -504,14 +505,10 @@ places.component('placesList', {
 		title: '<',
 		link: '<'
 	},
-	controller: function($rootScope, $scope, $http, $location, mapService, $filter) {
+	controller: function($rootScope, $scope, $http, $location, mapService, sortService, $filter) {
 		var ctrl = this;
-		//init sorting : propertyName and reverse be the same as in placesList component
-		ctrl.propertyName = 'cp';
-		ctrl.reverse = false;
-		$rootScope.$broadcast('InitSortProperty', {property: ctrl.propertyName});
-		$rootScope.$broadcast('InitReverse', {reverse: ctrl.reverse});
 		
+		//sort for mobile (broadcast from sortService). Otherwise : bindings in sortBy
 		$scope.$on('sortProperty', function(event, data) {
 			ctrl.propertyName = data.property;
 		});
@@ -661,11 +658,16 @@ places.component('placesAdmin', {
 	bindings: {
 		markers: '='
 	},
-	controller: function($scope, $http, mapService) {
+	controller: function($scope, $http, $location, mapService) {
 		
 		var ctrl = this;
-		ctrl.propertyName = mapService.getOrderByProperty();
-		ctrl.reverse = mapService.getReverse();
+		//sort for mobile (broadcast from sortService). Otherwise : bindings in sortBy
+		$scope.$on('sortProperty', function(event, data) {
+			ctrl.propertyName = data.property;
+		});
+		$scope.$on('sortOrder', function(event, data) {
+			ctrl.reverse = data.reverse;
+		});
 		
 		ctrl.getPlaces = function() {
 			$http.get('/api/places').
@@ -682,9 +684,16 @@ places.component('placesAdmin', {
 				});
 		};
 		
-		ctrl.position = function(spot) {
-			$scope.$emit('position', {id: spot._id, index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
-		};
+		//marker in view and popup open
+		ctrl.goToPlace = function(spot) {
+			$location.path('/admin/places/name/' + spot.nameAlpha + '/show');
+			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
+		}
+		
+		//scroll to place
+		$scope.$on('item', function(ev,data) {
+			mapService.scroll(data);
+		});
 	}
 });
 
@@ -757,7 +766,7 @@ places.component('placeAdmin', {
 				then(function(response) {
 					$location.path(ctrl.path);
 				});
-		}
+		};
 		
 		ctrl.getPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
@@ -766,7 +775,11 @@ places.component('placeAdmin', {
 					ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
 					ctrl.getComments(ctrl.spot._id)
 				});
-			};
+		};
+		
+		ctrl.back = function() {
+			mapService.setScrollPosition('/admin/places', ctrl.spot._id);
+		};
 			
 	}
 });
@@ -827,29 +840,24 @@ places.component('placeUpdate', {
 places.component('sortBy', {
 	templateUrl: '/fragments/places/sortBy',
 	bindings: {
-		propertyName: '<',
-		reverse: '<'
+		propertyName: '=',
+		reverse: '='
 	},
-	controller: function($rootScope, $scope, mapService) {
+	controller: function($rootScope, $scope, sortService) {
 		
 		var ctrl = this;
-		//init: propertyName and reverse be the same as in placesList component
-		$scope.$on('InitSortProperty', function(event, data) {
-			ctrl.propertyName = data.property;
-		});
 		
-		$scope.$on('InitReverse', function(event, data) {
-			ctrl.reverse = data.reverse;
-		});
-				
+		ctrl.propertyName = sortService.getPropertyName();
+		ctrl.reverse = sortService.getReverse();
+		
 		ctrl.sortBy = function(name) {
 			ctrl.propertyName = name;
-			$rootScope.$broadcast('sortProperty', {property: name});
+			sortService.setPropertyName(ctrl.propertyName);
 		}
 		
 		ctrl.toggleReverse = function() {
 			ctrl.reverse = (ctrl.reverse===true ? false: true);
-			$rootScope.$broadcast('sortOrder', {reverse: ctrl.reverse});
+			sortService.setReverse(ctrl.reverse);
 		}
 		
 		ctrl.labels = {

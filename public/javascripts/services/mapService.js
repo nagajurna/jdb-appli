@@ -10,22 +10,22 @@ var mapService = angular.module('app.mapService', [])
 		};
 		
 	mapService.getMarkers = function() {
-			var defer = $q.defer();
-			$http.get('/api/markers').
-			then(function(response) {
-				defer.resolve({reason: 'got markers', markers: response.data.markers});
-			});
-								
-			return defer.promise;
-		};
+		var defer = $q.defer();
+		$http.get('/api/markers').
+		then(function(response) {
+			defer.resolve({reason: 'got markers', markers: response.data.markers});
+		});
+							
+		return defer.promise;
+	};
 		
 	mapService.setSelectedMarker = function(index) {
 		mapService.selectedMarker = index;
-	}
+	};
 	
 	mapService.getSelectedMarker = function() {
 		return mapService.selectedMarker;
-	}
+	};
 		
 	mapService.centerDefault = [48.8560601,2.3465281];
 	mapService.zoomDefault = 13;
@@ -41,15 +41,15 @@ var mapService = angular.module('app.mapService', [])
 		map.center = mapService.center;
 		map.zoom = mapService.zoom;
 		return map;
-	}
+	};
 	
 	mapService.goToMap = function() {
 		$rootScope.$broadcast('goToMap', {placeview: 'map'});
-	}
+	};
 	
 	mapService.backToText = function() {
 		$rootScope.$broadcast('backToText', {placeview: 'text'});
-	}
+	};
 	
 	
 	mapService.setScrollPosition = function(link, id) {
@@ -72,8 +72,7 @@ var mapService = angular.module('app.mapService', [])
 			}
 		};
 		
-		
-	}
+	};
 	
 	mapService.getScrollPosition = function() {
 		return mapService.scrollPosition;

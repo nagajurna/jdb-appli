@@ -33,7 +33,7 @@
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           
-          <sort-by class="menu-left" ng-class="{hide: $ctrl.hideSort}"></sort-by>
+          <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-left" ng-class="{hide: $ctrl.hideSort}"></sort-by>
          
            
       #view(ng-view)
