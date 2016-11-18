@@ -2,19 +2,19 @@ app.config(['$routeProvider', '$locationProvider',
 	function($routeProvider,$locationProvider) {
 		$routeProvider.
 			when('/', {
-				template: '<home title="$ctrl.title" markers="$ctrl.markers" ></home>',
+				template: '<home maintitle="$ctrl.maintitle" markers="$ctrl.markers" ></home>',
 			}).
 			when('/places', {
-				template: '<places title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers"></places>',
+				template: '<places maintitle="$ctrl.maintitle" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers"></places>',
 			}).
 			when('/places/game/:game', {
-				template: '<places title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers" ></places-Game>',
+				template: '<places maintitle="$ctrl.maintitle" view="$ctrl.view" placeview="$ctrl.placeview" markers="$ctrl.markers" ></places-Game>',
 			}).
 			when('/places/name/:name', {
-				template: '<place title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
+				template: '<place maintitle="$ctrl.maintitle" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
 			}).
 			when('/places/game/:game/name/:name', {
-				template: '<place title="$ctrl.title" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
+				template: '<place maintitle="$ctrl.maintitle" view="$ctrl.view" placeview="$ctrl.placeview" ></place>',
 			}).
 			when('/places/name/:name/comments/new', {
 				template: '<comment-new currentuser="$ctrl.currentuser" on-anonymous="$ctrl.modalLoad(template)" ></comment-new>',

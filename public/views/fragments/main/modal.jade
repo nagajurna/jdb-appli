@@ -3,14 +3,14 @@ div(id="myModal" class="modal fade" role="dialog")
     .modal-content
       .modal-header
         button(type="button" class="close" data-dismiss="modal") &times;
-        h4(class="modal-title") {{ $ctrl.title }}
+        h4(class="modal-title") {{ $ctrl.maintitle }}
       .modal-body
         div(ng-switch="$ctrl.template")
-          <sign-in ng-switch-when="sign-in" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
-          <sign-up ng-switch-when="sign-up" title="$ctrl.title" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-up>
-          <forgot-password ng-switch-when="forgot-password" title="$ctrl.title" template="$ctrl.template"></forgot-password>
-          <profile ng-switch-when="profile" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser"></profile>
-          <reset-password ng-switch-when="reset-password" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser"></reset-password>
-          <menu-sm ng-switch-when="menu" title="$ctrl.title" template="$ctrl.template" currentuser="$ctrl.currentuser" on-completed="$ctrl.close(action)" ></menu-sm>
+          <sign-in ng-switch-when="sign-in" maintitle="$ctrl.maintitle" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
+          <sign-up ng-switch-when="sign-up" maintitle="$ctrl.maintitle" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-up>
+          <forgot-password ng-switch-when="forgot-password" maintitle="$ctrl.maintitle" template="$ctrl.template"></forgot-password>
+          <profile ng-switch-when="profile" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser"></profile>
+          <reset-password ng-switch-when="reset-password" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser"></reset-password>
+          <menu-sm ng-switch-when="menu" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser" on-completed="$ctrl.close(action)" ></menu-sm>
       .modal-footer
         button(type="button" class="btn btn-default" data-dismiss="modal") Fermer

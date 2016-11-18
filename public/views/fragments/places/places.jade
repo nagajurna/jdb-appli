@@ -1,4 +1,4 @@
 .main-wrapper(ng-switch="$ctrl.view" ng-init="$ctrl.init()")
-  <places-list ng-switch-when="list" spots="$ctrl.spots" title="$ctrl.title" link="$ctrl.link"></places-list>
+  <places-list ng-switch-when="list" spots="$ctrl.spots" maintitle="$ctrl.maintitle" link="$ctrl.link"></places-list>
   div(leaflet-map class="map-sm" ng-switch-when="map" source='$ctrl.markers')
  

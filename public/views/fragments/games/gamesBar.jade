@@ -6,12 +6,12 @@ div(class="hidden-xs")
     li(class="list-group-item small text-uppercase"): a(href="/#/places/game/flechettes" ng-class="{active: isActive('flechettes')}") Fléchettes
     li(class="list-group-item small text-uppercase"): a(href="/#/places/game/flipper" ng-class="{active: isActive('flipper')}") Flipper 
     li(class="list-group-item dropdown small text-uppercase")
-      a(href="" class="dropdown-toggle" data-toggle="dropdown") Autres
+      a(href="" class="dropdown-toggle" data-toggle="dropdown" ng-class="{active: isActiveOthers()}") Autres
       ul(class="dropdown-menu text-capitalize")
-        li: a(href="/#/places/game/board-game" ng-class="{active: isActive('board-game')}") Board game
-        li: a(href="/#/places/game/bowling" ng-class="{active: isActive('bowling')}") Bowling
-        li: a(href="/#/places/game/jeu-video" ng-class="{active: isActive('jeu-video')}") Jeu vidéo
-        li: a(href="/#/places/game/petanque" ng-class="{active: isActive('petanque')}") Pétanque
-        li: a(href="/#/places/game/ping-pong" ng-class="{active: isActive('ping-pong')}") Ping-pong
+        li(class=" small text-uppercase"): a(href="/#/places/game/board-game" ng-class="{active: isActive('board-game')}") Board game
+        li(class=" small text-uppercase"): a(href="/#/places/game/bowling" ng-class="{active: isActive('bowling')}") Bowling
+        li(class=" small text-uppercase"): a(href="/#/places/game/jeu-video" ng-class="{active: isActive('jeu-video')}") Jeu vidéo
+        li(class=" small text-uppercase"): a(href="/#/places/game/petanque" ng-class="{active: isActive('petanque')}") Pétanque
+        li(class=" small text-uppercase"): a(href="/#/places/game/ping-pong" ng-class="{active: isActive('ping-pong')}") Ping-pong
   
 

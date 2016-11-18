@@ -341,13 +341,13 @@ main.component('main', {
 main.component('home', {
 		templateUrl: '/fragments/main/home',
 		bindings: {
-			title: '=',
+			maintitle: '=',
 			markers: '='
 		},
 		controller: function($http) {
 			
 			var ctrl = this;
-			ctrl.title = '';
+			ctrl.maintitle = '';
 			
 			ctrl.showGames = function() {
 				$http.get('/api/games').
@@ -376,7 +376,7 @@ main.component('admin', {
 main.component('menuSm', {
 		templateUrl: '/fragments/main/menu',
 		bindings: {
-			title: '=',
+			maintitle: '=',
 			template: '=',
 			onCompleted: '&',
 			currentuser: '<'
@@ -384,7 +384,7 @@ main.component('menuSm', {
 		controller: function($scope, mapService) {
 			
 			var ctrl = this;
-			ctrl.title = "Menu";
+			ctrl.maintitle = "Menu";
 			
 			ctrl.close = function() {
 				mapService.setView(null,null);
@@ -409,7 +409,7 @@ main.component('modal', {
 		
 		var ctrl = this;
 		
-		ctrl.title = "";
+		ctrl.maintitle = "";
 		
 		ctrl.close = function(action) {
 			$("#myModal").modal(action);
@@ -437,9 +437,15 @@ main.directive('gamesBar', function ($http, $route) {
 					$(element).css("left", left+"px");
 				});
 				
+				
 				scope.isActive = function(game) {
 					if(game==='tous' && !$route.current.params.game) return true;
 					return game===$route.current.params.game;
+				};
+				
+				scope.isActiveOthers = function() {
+					var game = $route.current.params.game;
+					if(game==='board-game' | game==='bowling' | game==='jeu-video' | game==='petanque' | game==='ping-pong' ) return true;
 				};
 			}
 		};
@@ -477,7 +483,7 @@ places.component('places', {
 	bindings: {
 		view: '=',
 		placeview: '=',
-		title: '=',
+		maintitle: '=',
 		markers: '='
 	},
 	controller: function($scope, $route, $http, mapService) {
@@ -500,7 +506,7 @@ places.component('places', {
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.markers = ctrl.spots;
-					ctrl.title = 'Tous les bars';
+					ctrl.maintitle = 'Tous les bars';
 				});
 		};
 		
@@ -508,7 +514,7 @@ places.component('places', {
 			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
-					ctrl.title = ctrl.game.name;
+					ctrl.maintitle = ctrl.game.name;
 					return ctrl.game;
 				})
 				.then(function(game) {
@@ -531,7 +537,7 @@ places.component('placesList', {
 	templateUrl: '/fragments/places/placesList',
 	bindings: {
 		spots: '<',
-		title: '<',
+		maintitle: '<',
 		link: '<'
 	},
 	controller: function($rootScope, $scope, $http, $location, mapService, sortService, $filter) {
@@ -575,7 +581,7 @@ places.component('place', {
 	bindings: {
 		view: '<',
 		placeview: '<',
-		title: '='
+		maintitle: '='
 	},
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
@@ -607,7 +613,7 @@ places.component('place', {
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.markers = ctrl.spots;
-					ctrl.title = 'Tous les bars';
+					ctrl.maintitle = 'Tous les bars';
 					ctrl.spot = ctrl.getPlace(ctrl.spots);
 					ctrl.ready = true;
 					ctrl.comments = ctrl.getComments(ctrl.spot._id)
@@ -618,7 +624,7 @@ places.component('place', {
 			$http.get('/api/games/' + $route.current.params.game).
 				then(function(response) {
 					ctrl.game = response.data;
-					ctrl.title = ctrl.game.name;
+					ctrl.maintitle = ctrl.game.name;
 					return ctrl.game;
 				})
 				.then(function(game) {
@@ -1058,13 +1064,13 @@ var users = angular.module('app.users', []);
 users.component('signUp', {
 	templateUrl: '/fragments/users/signUp',
 	bindings: {
-		title: '=',
+		maintitle: '=',
 		template: '=',
 		onCompleted: '&'
 	},
 	controller: function($scope, $http, $location,authService) {
 		var ctrl = this;
-		ctrl.title = "Inscription";
+		ctrl.maintitle = "Inscription";
 		ctrl.user = {};
 		ctrl.form = {};
 		
@@ -1098,14 +1104,14 @@ users.component('signUp', {
 users.component('signIn', {
 	templateUrl: '/fragments/users/signIn',
 	bindings: {
-		title: '=',
+		maintitle: '=',
 		template: '=',
 		onCompleted: '&'
 	},
 	controller: function($scope, $http, $location, $route, authService) {
 		
 		var ctrl = this;
-		ctrl.title = "Connexion";
+		ctrl.maintitle = "Connexion";
 		ctrl.user = {};
 		ctrl.form = {};
 		
@@ -1140,12 +1146,12 @@ users.component('profile', {
 	templateUrl: '/fragments/users/profile',
 	bindings: {
 		currentuser: '<',
-		title: '=',
+		maintitle: '=',
 		template: '='
 	},
 	controller: function() {
 		var ctrl = this;
-		ctrl.title = "Profil";
+		ctrl.maintitle = "Profil";
 	}
 });
 
@@ -1153,12 +1159,12 @@ users.component('resetPassword', {
 	templateUrl: '/fragments/users/resetPassword',
 	bindings: {
 		currentuser: '<',
-		title: '=',
+		maintitle: '=',
 		template: '='
 	},
 	controller: function($http, authService) {
 		var ctrl = this;
-		ctrl.title = "Modifier votre mot de passe";
+		ctrl.maintitle = "Modifier votre mot de passe";
 		ctrl.user = {};
 		ctrl.form = {};
 				
@@ -1166,7 +1172,6 @@ users.component('resetPassword', {
 			ctrl.user.email = ctrl.currentuser.email;
 			$http.put('/users/resetPassword', ctrl.user).
 				then(function(response) {
-					console.log(response.data);
 					if(response.data.reset===false) {
 						ctrl.form = {};
 						if(response.data.reason.name === 'ValidationError') {
@@ -1190,13 +1195,13 @@ users.component('resetPassword', {
 users.component('forgotPassword', {
 	templateUrl: '/fragments/users/forgotPassword',
 	bindings: {
-		title: '=',
+		maintitle: '=',
 		template: '=',
 	},
 	controller: function($http) {
 		
 		var ctrl = this;
-		ctrl.title = 'Mot de passe oublié';
+		ctrl.maintitle = 'Mot de passe oublié';
 		ctrl.user = {};
 		ctrl.form = {};
 		

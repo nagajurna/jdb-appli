@@ -1,7 +1,7 @@
 .top-title.hidden-xs
   .row
     .col-xs-6
-      p: strong {{ $ctrl.title }}
+      p(class="text-uppercase") {{ $ctrl.maintitle }}
     .col-xs-6
       <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" ></sort-by>
 .wrapper
