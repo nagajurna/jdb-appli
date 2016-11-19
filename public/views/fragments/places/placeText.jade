@@ -12,16 +12,23 @@ hr(class="low")
     p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
     p {{ $ctrl.spot.address }}
     p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+    p {{ $ctrl.spot.tel }}
+    p {{ $ctrl.spot.horaires }}
     p: em(ng-bind-html="$ctrl.spot.description")
     <hr>
     .comments
-      p {{ 'Commentaires (' + $ctrl.comments.length + ')&ensp;' }}
-        a(href="{{ $ctrl.newCommentPath }}") <span class="glyphicon glyphicon-plus">
-      ul(class="list-group")
-        li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
-          .row
-            .col-xs-12
-              p(ng-bind-html="comment.text")
-          .row
-            .col-xs-12
-              span(class="pull-right small") {{ comment.author.name  + ', ' + (comment.postedAt | date:'dd-M-yyyy')}}  
+      .row
+        .col-xs-6
+          p {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
+        .col-xs-6
+          p(class="pull-right"): a(href="{{ $ctrl.newCommentPath }}") Ajouter
+      .row
+        .col-xs-12
+          ul(class="list-group")
+            li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
+              .row
+                .col-xs-12
+                  p(ng-bind-html="comment.text")
+              .row
+                .col-xs-12
+                  span(class="pull-right small") {{ comment.author.name  + ', ' + (comment.postedAt | date:'dd-M-yyyy')}}  

@@ -365,6 +365,7 @@ main.component('home', {
 			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
+					console.log(ctrl.spots);
 					ctrl.markers = ctrl.spots;
 				});
 			};

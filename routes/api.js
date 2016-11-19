@@ -135,6 +135,7 @@ router.post('/places', function(req, res, next) {
 						   city: req.body.city,
 						   tel: req.body.tel,
 						   horaires: req.body.horaires,
+						   image_link: req.body.image_link,
 						   description: req.body.description,
 						   games: games,
 						   lat: req.body.lat,
@@ -180,6 +181,7 @@ router.put('/places/:id', function(req, res, next) {
 	    place.city = req.body.city;
 	    place.tel = req.body.tel;
 	    place.horaires = req.body.horaires;
+	    place.image_link = req.body.image_link;
 	    place.description = req.body.description;
 	    place.games = games;
 	    place.lat = req.body.lat;

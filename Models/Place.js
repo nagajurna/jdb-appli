@@ -20,5 +20,7 @@ var placeSchema = new Schema({
 	updated: { type: Date, default: Date.now },
 })
 
+placeSchema.add({ image_link: String });
+
 
 module.exports = mongoose.model('Place', placeSchema);

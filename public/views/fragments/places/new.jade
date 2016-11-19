@@ -35,6 +35,10 @@
         input(type='text' class='form-control' ng-model='$ctrl.spot.horaires' id='horaires')
         p(ng-bind='$ctrl.form.errors.horaires.message' class='small error-message')
       .form-group
+        label(for='image_link') Image
+        input(type='text' class='form-control' ng-model='$ctrl.spot.image_link' id='image_link')
+        p(ng-bind='$ctrl.form.errors.image_link.message' class='small error-message')
+      .form-group
         label(for='description') Description
         textarea(ng-model='$ctrl.spot.description' class='form-control' rows='5' id='description')
         p(ng-bind='$ctrl.form.errors.description.message' class='small error-message')
