@@ -25,6 +25,10 @@ a:active {
 	text-decoration: none;
 }
 
+hr.low {
+	margin-top: 0px;
+}
+
 
 .map-sm, .map-sm-place {
 	margin-left: -15px;

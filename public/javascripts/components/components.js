@@ -111,6 +111,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		removeMarker = function(markers) {
 			for(i=0; i<markers.length; i++)
 			{
+				//mapService.setSelectedMarker(null);
 				map.removeLayer(markers[i]);
 			}
 		}
@@ -178,7 +179,9 @@ var leafletDirective = angular.module('app.leaflet', [])
 					if(!bounds.contains(L.latLng(newPos.lat,newPos.lg))) {
 						map.flyTo(L.latLng(newPos.lat,newPos.lg));
 					}
-					markers[newPos.index].openPopup();
+					if(markers[newPos.index]) {
+						markers[newPos.index].openPopup();
+					}
 				}
 			});
 		}
@@ -347,13 +350,14 @@ main.component('home', {
 		controller: function($http) {
 			
 			var ctrl = this;
+			ctrl.ready = false;
 			ctrl.maintitle = '';
 			
 			ctrl.showGames = function() {
 				$http.get('/api/games').
 					then(function(response) {
 						 ctrl.games = response.data;
-						 //ctrl.games.unshift({name: "Tous les bars", pathname: ""});
+						 ctrl.ready = true;
 					});
 				};
 				
@@ -362,7 +366,6 @@ main.component('home', {
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.markers = ctrl.spots;
-					//ctrl.onPlaces({places: ctrl.spots});
 				});
 			};
 			ctrl.showPlaces();
@@ -452,7 +455,7 @@ main.directive('gamesBar', function ($http, $route) {
 		
 });
 
-main.directive('gameDropDown', function($route) {
+main.directive('gameDropDown', function($route, mapService) {
 	
 	return {
 		templateUrl: '/fragments/main/gameDropDown',
@@ -471,6 +474,11 @@ main.directive('gameDropDown', function($route) {
 				}
 			};
 			
+			scope.onChange = function() {
+				mapService.setSelectedMarker(null);
+			}
+			
+						
 		}
 	};
 });
