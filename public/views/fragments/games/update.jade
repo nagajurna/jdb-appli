@@ -1,8 +1,10 @@
 .main-wrapper(ng-init="$ctrl.getGame()")
-  p MODIFIER {{ $ctrl.game.name }}
-
-  a(href='/#/admin/games') Retour admin/jeu
-
+  .row.top-title
+    .col-xs-6
+      p: a(href="/admin/games"): <span class="glyphicon glyphicon-arrow-left">
+    .col-xs-6
+      p(class="pull-right") Modifier
+  hr(class="low")
   .wrapper
     form(novalidate)
       p(ng-bind='$ctrl.form.message' class='small error-message')

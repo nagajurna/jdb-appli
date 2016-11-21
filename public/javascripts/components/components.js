@@ -233,9 +233,9 @@ main.component('main', {
 				});
 			};
 			//mise à jour user (signup, signin) lancée par de 'signUp' et 'signIn' components
-			$scope.$on('refreshUser', function(event, user) {
+			$scope.$on('refreshUser', function(event, data) {
 				//ctrl.loggedIn = user.loggedIn;
-				ctrl.currentuser = user.user;
+				ctrl.currentuser = data.user;
 				ctrl.admin = (ctrl.currentuser && ctrl.currentuser.role==="ADMIN") ? true : false;
 			});
 			//log out
@@ -365,7 +365,6 @@ main.component('home', {
 			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
-					console.log(ctrl.spots);
 					ctrl.markers = ctrl.spots;
 				});
 			};
@@ -669,7 +668,7 @@ places.component('placeText', {
 		spot: '<',
 		comments: '<'
 	},
-	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
+	controller: function($route, mapService, $location) {
 		
 		var ctrl = this;
 		
@@ -705,6 +704,7 @@ places.component('placesAdmin', {
 	controller: function($scope, $http, $location, mapService) {
 		
 		var ctrl = this;
+		ctrl.path = $location.path();
 		//sort for mobile (broadcast from sortService). Otherwise : bindings in sortBy
 		$scope.$on('sortProperty', function(event, data) {
 			ctrl.propertyName = data.property;
@@ -725,6 +725,7 @@ places.component('placesAdmin', {
 			$http.delete('/api/places/' + id).
 				then(function(response) {
 					ctrl.getPlaces();
+					////$location.path('/admin/places');
 				});
 		};
 		
@@ -912,6 +913,7 @@ places.component('sortBy', {
 	}
 });
 
+//filter line breaks to <br>
 places.filter('toHtml', function() {
 	return function(input) {
 		input = input || '';
@@ -1052,7 +1054,6 @@ games.component('gameUpdate', {
 				then(function(response) {
 					if(response.data.saved===false) {
 						if(response.data.reason.name==='ValidationError') {
-							console.log(response.data);
 							ctrl.form.errors = response.data.reason.errors;
 						} else {
 							ctrl.form.message = 'Problème au moment de l\enregistrement';
@@ -1095,12 +1096,14 @@ users.component('signUp', {
 						} else {
 							ctrl.form.message = 'problème au moment de l\'enregistrement';
 						}
-					} else {
-						ctrl.user = {};
-						ctrl.form = {};
+					} else if(response.data.loggedIn===true) {
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							//$("#myModal").modal('hide');
+							if(ctrl.user.remember) {
+								authService.remember();
+							}
+							ctrl.user = {};
+						    ctrl.form = {};
 							ctrl.onCompleted({action: "hide"});
 						});
 					}
@@ -1136,14 +1139,17 @@ users.component('signIn', {
 						} else {
 							ctrl.form.message = 'problème au moment de l\'enregistrement';
 						}
-					} else {
-						ctrl.user = {};
-						ctrl.form = {};
+					} else if(response.data.loggedIn===true) {
 						authService.getUser().then(function(user) {
 							$scope.$emit('refreshUser', user);
-							//$("#myModal").modal('hide');
+							if(ctrl.user.remember) {
+								authService.remember();
+							}
+							ctrl.user = {};
+							ctrl.form = {};
 							ctrl.onCompleted({action: "hide"});
 						});
+						
 					}
 				});
 		};		
@@ -1156,11 +1162,27 @@ users.component('profile', {
 	bindings: {
 		currentuser: '<',
 		maintitle: '=',
-		template: '='
+		template: '=',
+		onCompleted: '&'
 	},
-	controller: function() {
+	controller: function($scope) {
 		var ctrl = this;
 		ctrl.maintitle = "Profil";
+		ctrl.admin = false;
+		
+		if(ctrl.currentuser.role==="ADMIN") {
+			ctrl.admin = true;
+		}
+		
+		ctrl.close = function() {
+			ctrl.onCompleted({action: "hide"});
+		}
+		
+		ctrl.signout = function() {
+			$scope.$emit('signout');
+			ctrl.onCompleted({action: "hide"});
+		}
+		
 	}
 });
 

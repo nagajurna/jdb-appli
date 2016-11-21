@@ -1,8 +1,10 @@
 .main-wrapper(ng-init="$ctrl.getGames()")
-  p AJOUTER UN ENDROIT
-
-  a(href='/#/admin/places') Retour admin/places
-
+  .row.top-title
+    .col-xs-6
+      p: a(href="/admin/places"): <span class="glyphicon glyphicon-arrow-left">
+    .col-xs-6
+      p(class="pull-right") Ajouter
+  hr(class="low")
   .wrapper
     form(novalidate)
       p(ng-bind='$ctrl.form.message' class='small error-message')

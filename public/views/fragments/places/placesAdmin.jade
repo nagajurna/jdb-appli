@@ -6,12 +6,12 @@
       <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse"></sort-by>  
   
   .wrapper
-    h4: a(href='/#/admin/places/new'): span(class="glyphicon glyphicon-plus") 
+    p: a(href='/#/admin/places/new') Ajouter
     ul(class="list-group")
-      li(class="list-group-item" ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' id="{{ spot._id }}" ng-click="$ctrl.goToPlace(spot)")
+      li(class="list-group-item" ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' id="{{ spot._id }}" )
         .row
           .col-xs-8
-            p {{spot.name}}
+            p: a(href='' ng-click="$ctrl.goToPlace(spot)") {{spot.name}}
             p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
             p(class="small"): strong
               span(ng-repeat='g in spot.games') {{ g.name + ' ' }}

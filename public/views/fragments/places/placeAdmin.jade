@@ -1,16 +1,19 @@
 .main-wrapper(ng-init="$ctrl.getPlace()")
   .row.top-title
     .col-xs-12
-      a(href="" ng-click="$ctrl.back()"): <span class="glyphicon glyphicon-arrow-left">
-      h4(class="text-center") {{ $ctrl.spot.name }}
+      p: a(href="" ng-click="$ctrl.back()"): <span class="glyphicon glyphicon-arrow-left"> 
+  hr(class="low")
   .wrapper
     div
+      p {{ $ctrl.spot.name }}
       p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}
       p {{ $ctrl.spot.address }}
       p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
+      p {{ $ctrl.spot.tel }}
+      p {{ $ctrl.spot.horaires }}
       p: em(ng-bind-html="$ctrl.spot.description")
       .comments
-        p COMMENTAIRES &ensp;
+        p {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
         ul(class="list-group")
           li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
             p: strong Commentaire : 
@@ -26,6 +29,6 @@
                 .col-xs-6
                   a(href="" ng-click="$ctrl.toggleVisible(comment)")
                     span(ng-if="comment.visible") Visible
-                    span: strong(ng-if="!comment.visible") Caché
+                    span(ng-if="!comment.visible") Caché
                 .col-xs-6
                   a(href='' ng-if="!comment.visible" class="pull-right" ng-click="$ctrl.deleteComment(comment._id)"): span(class="glyphicon glyphicon-trash")

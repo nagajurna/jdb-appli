@@ -1,6 +1,6 @@
 div(title="formulaire d'inscription")
   form(novalidate)
-    p(ng-bind='$ctrl.form.message' class='small error-message')
+    p(ng-bind='$ctrl.form.message' class='small top-error-message')
     .form-group
       label(for="name") Nom d'utilisateur
       input(type='text' class="form-control" id="name" ng-model='$ctrl.user.name')
@@ -17,7 +17,14 @@ div(title="formulaire d'inscription")
       label(for="passwordConfirm") Confirmation
       input(type='password' class="form-control" id="passwordConfirm" ng-model='$ctrl.user.passwordConfirm')
       p(ng-bind='$ctrl.form.errors.passwordConfirm.message' class='small error-message')
-    p
-      input(type='submit' class="btn btn-default" ng-click='$ctrl.signup()' value='valider')
+    .row
+      .col-xs-6
+        p
+          input(type='submit' class="btn btn-default" title="Valider" ng-click='$ctrl.signup()' value='Valider')
+      .col-xs-6    
+        .checkbox(class="pull-right")
+          label
+            input(type='checkbox' ng-model="$ctrl.user.remember")
+            se souvenir de moi 
 
     a(href='' ng-click="$ctrl.template ='sign-in'") Connexion

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+
 var crypto = require('crypto');
 var base64url = require('base64url');
 var nodemailer = require('nodemailer');
@@ -90,15 +91,16 @@ router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		
 		if (!user) { return res.json(info); }
 		
-		req.logIn(user, function(err) {
-			
-		  if (err) { return next(err); }
+		req.logIn(user, function(err) {  if (err) { return next(err); }
+		  
 		  entities = new Entities();
+		  
 		  var currentUser = {};
 		  currentUser.id = req.user._id;
 		  currentUser.name = entities.encode(req.user.name);
 		  currentUser.email = req.user.email;
 		  currentUser.role = req.user.role;
+		  
 		  res.set('Cache-Control', 'no-cache, no-store, must-revalidate'); 
 		  return res.json({ loggedIn: true, user: currentUser });
 		});
@@ -112,14 +114,14 @@ router.post('/signin', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		
 		if (!user) { return res.json(info); }
 		
-		req.logIn(user, function(err) {
-			
-		  if (err) { return next(err); }
+		req.logIn(user, function(err) {	if (err) { return next(err); }
+		  
 		  var currentUser = {};
 		  currentUser.id = req.user._id;
 		  currentUser.name = req.user.name;
 		  currentUser.email = req.user.email;
 		  currentUser.role = req.user.role;
+		  
 		  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		  return res.json({loggedIn: true, user: currentUser });
 		});
@@ -227,12 +229,17 @@ router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(re
 });
 	
 router.get('/signout', function(req, res){
+  //clear remember_me cookies
+  res.clearCookie('_jdb_remember_me_');
+  res.clearCookie('_jdb_user_id_');
+  //clear session
   req.logout();
   res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   return res.json({loggedIn: false, user: null});
 });
 
 router.get('/check', function(req, res){
+	//if session
 	if(req.isAuthenticated()) {
 	  var currentUser = {};
 	  currentUser.id = req.user._id;
@@ -240,14 +247,61 @@ router.get('/check', function(req, res){
 	  currentUser.email = req.user.email;
 	  currentUser.role = req.user.role;
 	  res.set('Cache-Control', 'no-cache, no-store, must-revalidate'); 
-	  return res.json({ loggedIn: true, user: currentUser }) 
+	  return res.json({ loggedIn: true, user: currentUser })
+	//else if remember_me cookie   
+	} else if(req.cookies['_jdb_remember_me_'] && req.signedCookies["_jdb_user_id_"]) {
+		var id = req.signedCookies["_jdb_user_id_"];
+		var rememberToken = req.cookies['_jdb_remember_me_'];
+		
+		User.findOne({_id: id}, function(err, user) {
+			if(err) return console.log(err);
+			if(user.validRememberToken(user, rememberToken)) {
+				console.log("remember token valid");
+				req.logIn(user, function(err) {	if (err) { return next(err); }
+					var currentUser = {};
+					currentUser.id = req.user._id;
+					currentUser.name = req.user.name;
+					currentUser.email = req.user.email;
+					currentUser.role = req.user.role;
+				  
+					res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+					return res.json({loggedIn: true, user: currentUser });
+				});
+			} else {
+				res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+				return res.json({ loggedIn: false, user: null });
+			}
+		});
+	//else	
 	} else {
 	  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 	  return res.json({ loggedIn: false, user: null });
 	}
 });
 
+router.get('/remember', function(req, res, next) {
+	//create token + token encrypted
+	var token = User.rememberToken()
+	var id = req.user._id;
+	//retrieve user
+	User.findById(id, function (err, user) {
+		if(err) { return console.log(err); }
+		//save encrypted token
+		user.remember_token = token.encryptedToken;
+		user.save(function(err) {
+			if(err) { return console.log(err); }
+			//Set cookies : token + user
+			var tenYears = 10 * 365 * 24 * 3600000; //10 years
+			res.cookie('_jdb_remember_me_', token.token, { maxAge: tenYears });
+			res.cookie('_jdb_user_id_', id, { signed: true, maxAge: tenYears });
+			return res.json("remember cookies set");
+			
+		});
+	});
+	
+	
 
+});
 
 module.exports = router;
 

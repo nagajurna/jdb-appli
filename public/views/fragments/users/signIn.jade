@@ -1,6 +1,6 @@
 div(title="formulaire de connexion")
   form(novalidate)
-    p(ng-bind='$ctrl.form.message' class='small error-message')
+    p(ng-bind='$ctrl.form.message' class='small top-error-message')
     .form-group
       label(for="email") Email
       input(type='text' class="form-control" id="email" ng-model='$ctrl.user.email')
@@ -11,8 +11,17 @@ div(title="formulaire de connexion")
       p(ng-bind='$ctrl.form.errors.password.message' class='small error-message')
     .form-group
       a(href='' title="Mot de passe oublié" ng-click="$ctrl.template='forgot-password'") Mot de passe oublié ?
-    p
-      input(type='submit' class="btn btn-default" title="Valider" ng-click='$ctrl.signin()' value='Valider')
-      
-    a(href='' title="Inscription" ng-click="$ctrl.template='sign-up'") Inscription
+    
+    .row
+      .col-xs-6
+        p
+          input(type='submit' class="btn btn-default" title="Valider" ng-click='$ctrl.signin()' value='Valider')
+      .col-xs-6    
+        .checkbox(class="pull-right")
+          label
+            input(type='checkbox' ng-model="$ctrl.user.remember")
+            se souvenir de moi  
+    
+    
+    p: a(href='' title="Inscription" ng-click="$ctrl.template='sign-up'") Inscription
 

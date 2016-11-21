@@ -41,5 +41,13 @@ var authService = angular.module('app.authService', [])
 			return defer.promise;
 		}
 		
+	authService.remember = function() {
+			$http.get('/users/remember').
+			then(function(response) {
+				console.log(response.data);
+			});
+		}
+
+		
 	return authService;
 });

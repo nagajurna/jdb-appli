@@ -6,7 +6,7 @@
       a(href="" ng-if="$ctrl.view==='list'" ng-click="$ctrl.placeToggleView()" class="visible-xs pull-right")
         span(class="glyphicon glyphicon-map-marker")
 hr(class="low")
-.wrapper(ng-init="$ctrl.getPlace()")
+.wrapper
   div
     h4 {{ $ctrl.spot.name }}
     p: span(ng-repeat="game in $ctrl.spot.games" class="text-uppercase small"): strong {{ game.name + ' ' }}

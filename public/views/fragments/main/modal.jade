@@ -9,7 +9,7 @@ div(id="myModal" class="modal fade" role="dialog")
           <sign-in ng-switch-when="sign-in" maintitle="$ctrl.maintitle" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-in>
           <sign-up ng-switch-when="sign-up" maintitle="$ctrl.maintitle" template="$ctrl.template" on-completed="$ctrl.close(action)"></sign-up>
           <forgot-password ng-switch-when="forgot-password" maintitle="$ctrl.maintitle" template="$ctrl.template"></forgot-password>
-          <profile ng-switch-when="profile" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser"></profile>
+          <profile ng-switch-when="profile" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser" on-completed="$ctrl.close(action)"></profile>
           <reset-password ng-switch-when="reset-password" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser"></reset-password>
           <menu-sm ng-switch-when="menu" maintitle="$ctrl.maintitle" template="$ctrl.template" currentuser="$ctrl.currentuser" on-completed="$ctrl.close(action)" ></menu-sm>
       .modal-footer

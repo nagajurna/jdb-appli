@@ -12,6 +12,7 @@ html, body {
 
 a {
   color: #757575;
+  text-decoration: none;
 }
 
 a:hover {
@@ -307,14 +308,36 @@ ul.dropdown-menu.game-dropdown > li.active a {
 
 /* MESSAGES */
 
-.error-message {
+.top-error-message {
+/*
 	height: 14px;
+*/
 	color: red;
+	margin-bottom: 10px;
+}
+
+.error-message {
+/*
+	height: 10px;
+*/
+	color: red;
+	margin-bottom: 0px;
+}
+
+.top-success-message {
+/*
+	height: 14px;
+*/
+	color: #43a047;
+	margin-bottom: 10px;
 }
 
 .success-message {
-	height: 14px;
+/*
+	height: 10px;
+*/
 	color: #43a047;
+	margin-bottom: 0px;
 }
 
 /* POPUP */

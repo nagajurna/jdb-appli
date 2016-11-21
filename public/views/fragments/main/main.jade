@@ -7,15 +7,9 @@
         .navbar-header
           a.navbar-brand(href='/') JDB
         ul.nav.navbar-nav.navbar-right
-          li(ng-if='$ctrl.admin') 
-            a(href='/admin')
-              span(class="glyphicon glyphicon-king") 
           li(ng-if='$ctrl.currentuser') 
             a(href='' ng-click="$ctrl.modalLoad('profile')")
               span(class="glyphicon glyphicon-user")
-          li(ng-if='$ctrl.currentuser') 
-            a(href='' ng-click='$ctrl.signout()')
-              span(class="glyphicon glyphicon-log-out")
           li(ng-if='!$ctrl.currentuser') 
             a(href='' ng-click="$ctrl.modalLoad('sign-in')") 
               span(class="glyphicon glyphicon-log-in")

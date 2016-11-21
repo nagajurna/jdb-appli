@@ -1,6 +1,12 @@
 div
   p {{ $ctrl.currentuser.name }}
   p {{ $ctrl.currentuser.email }}
-  p 
-    a(href='' ng-click="$ctrl.template='reset-password'") Modifier votre mot de passe
-
+  p: a(href='' ng-click="$ctrl.template='reset-password'") Modifier votre mot de passe
+  div(ng-if="$ctrl.admin" class="hidden-xs")
+    hr
+    p: a(href='/admin' ng-click='$ctrl.close()')
+      <span class="glyphicon glyphicon-king"></span>&ensp;Espace admin
+  div(class="hidden-xs")
+    hr
+    p: a(href='' ng-click='$ctrl.signout()')
+      <span class="glyphicon glyphicon-log-out"></span>&ensp;Déconnexion

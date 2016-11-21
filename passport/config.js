@@ -102,32 +102,39 @@ passport.use('resetPassword', new LocalStrategy({
 		passwordField: 'passwordCurrent'
 	},
 	function(req, email, password, done) {
+		//check that user is session user
+		if(email!==req.user.email) {
+			var reason = {};
+			reason.name = 'AuthentificationError';
+			reason.message = 'Votre requête ne peut pas aboutir'; 
+			return done(null, false, {reset: false, reason: reason }); 
+		}
+		
 		User.findOne({ email: email }, function (err, user) {
 			
 		  if (err) { return done(err); }
-		  
+		  //no user
 		  if (!user) { 
 			  var reason = {};
 			  reason.name = 'AuthentificationError';
-			  reason.message = 'user.email.invalid';
+			  reason.message = 'Votre requête ne peut pas aboutir';
 			  return done(null, false, { reset: false, reason: reason }); 
 		  }
-		  
+		  //password incorrect
 		  if (!user.validPassword(user, password)) { 
 			  var reason = {};
 			  reason.name = 'AuthentificationError';
-			  reason.message = 'user.password.invalid';
+			  reason.message = 'Mot de passe incorrect';
 			  return done(null, false, { reset: false, reason: reason }); 
 		  }
-		  
+		  //ok
 		  user.password = User.createHash(req.body.password);
 		  user.save(function(err) {
 			  if(err) {
 				  return console.log(err);
 				  return done(err);
 			  } else {
-				  console.log('password changed');
-				  return done(null, user); 
+				 return done(null, user); 
 			  }
 		  });
 		  
