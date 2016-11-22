@@ -1,6 +1,6 @@
 //leaflet directive
 var leafletDirective = angular.module('app.leaflet', [])
-	.directive('leafletMap', function($route, mapService) {
+	.directive('leafletMap', ['$route', 'mapService', function($route, mapService) {
 			
 		function initialize(scope, element, attrs) {
 		/* 3 differents classes (= 3 different uses)
@@ -202,16 +202,16 @@ var leafletDirective = angular.module('app.leaflet', [])
 		restrict: 'AE',
 		link: initialize,
 	}
-});
+}]);
 
 //main module
 var main = angular.module('app.main', []);
 
 main.component('main', {
 	templateUrl: '/fragments/main/main',
-	controller: function($scope, $http, $location, $route, authService, mapService) {
+	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
-			ctrl.logo = '';
+			ctrl.home = false;
 			ctrl.view = 'list';
 			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
@@ -276,13 +276,16 @@ main.component('main', {
 				$("#myModal").modal({show: true});
 			}
 			
-			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
 				//buttons toggleView and sort-by : display or not
 				ctrl.views();
-				//logo : display or not
-				ctrl.logo = ( $location.path()==='/' ? 'JDB' : null );
-				ctrl.hideLogo = !ctrl.logo;
+				//css classes for page Home
+				ctrl.home = ( $location.path()==='/' ? true : false );
+				if(ctrl.home) {
+					$('html').css("background-color", "#43a047");
+				} else {
+					$('html').css("background-color", "#fff");
+				}
 			});
 			
 			//TOGGLE VIEWS
@@ -338,7 +341,7 @@ main.component('main', {
 				if($route.current.params.game)
 				 return game===$route.current.params.game;
 			}
-	}
+	}]
 });
 
 main.component('home', {
@@ -347,13 +350,13 @@ main.component('home', {
 			maintitle: '=',
 			markers: '='
 		},
-		controller: function($http) {
+		controller: ['$http', function($http) {
 			
 			var ctrl = this;
 			ctrl.ready = false;
 			ctrl.maintitle = '';
 			
-			ctrl.showGames = function() {
+			ctrl.getGames = function() {
 				$http.get('/api/games').
 					then(function(response) {
 						 ctrl.games = response.data;
@@ -361,15 +364,16 @@ main.component('home', {
 					});
 				};
 				
-			ctrl.showPlaces = function() {
+			ctrl.getPlaces = function() {
 			$http.get('/api/places').
 				then(function(response) {
 					ctrl.spots = response.data;
 					ctrl.markers = ctrl.spots;
 				});
 			};
-			ctrl.showPlaces();
-		}
+			ctrl.getPlaces();
+			
+		}]
 });
 
 main.component('admin', {
@@ -384,7 +388,7 @@ main.component('menuSm', {
 			onCompleted: '&',
 			currentuser: '<'
 		},
-		controller: function($scope, mapService) {
+		controller: ['$scope', 'mapService', function($scope, mapService) {
 			
 			var ctrl = this;
 			ctrl.maintitle = "Menu";
@@ -399,7 +403,7 @@ main.component('menuSm', {
 				$scope.$emit('signout');
 				ctrl.onCompleted({action: "hide"});
 			}
-		}
+		}]
 });
 
 main.component('modal', {
@@ -534,6 +538,11 @@ places.component('places', {
 				});
 		};
 		
+		//scroll to place
+		$scope.$on('item', function(ev,data) {
+			mapService.scroll(data);
+		});
+		
 		
 	}
 });
@@ -579,10 +588,6 @@ places.component('placesList', {
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		}
 		
-		//scroll to place
-		$scope.$on('item', function(ev,data) {
-			mapService.scroll(data);
-		});
 	}
 });
 

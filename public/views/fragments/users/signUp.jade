@@ -18,10 +18,10 @@ div(title="formulaire d'inscription")
       input(type='password' class="form-control" id="passwordConfirm" ng-model='$ctrl.user.passwordConfirm')
       p(ng-bind='$ctrl.form.errors.passwordConfirm.message' class='small error-message')
     .row
-      .col-xs-6
+      .col-xs-4
         p
           input(type='submit' class="btn btn-default" title="Valider" ng-click='$ctrl.signup()' value='Valider')
-      .col-xs-6    
+      .col-xs-8    
         .checkbox(class="pull-right")
           label
             input(type='checkbox' ng-model="$ctrl.user.remember")

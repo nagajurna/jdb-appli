@@ -1,9 +1,9 @@
 .container-fluid(ng-init="$ctrl.appInit()")
   .row.content
-    .col-sm-4.col-lg-3.leftCol
+    .col-sm-4.col-lg-3.leftCol(ng-class="{green: $ctrl.home}")
       
       //navbar for large devices
-      nav.navbar.navbar-inverse.hidden-xs
+      nav.navbar.navbar-inverse.hidden-xs(ng-class="{hide: $ctrl.home}")
         .navbar-header
           a.navbar-brand(href='/') JDB
         ul.nav.navbar-nav.navbar-right
@@ -16,10 +16,18 @@
       
       //navbar for small devices        
       nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
-        .navbar-header
+        .top-brand(ng-class="{hide: !$ctrl.home}")
+          h4
+            span(class="big") JDB
+            , c'est super, c'est 
+            a(href="/#/places") tous&nbsp;les&nbsp;bars&nbsp;
+            span à&nbsp;jeux de&nbsp;Paris&nbsp;!
+            div
+              hr
+        .navbar-header(ng-class="{hide: $ctrl.home}")
           button(type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
          
-          a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
+          //a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
           <game-drop-down game="$ctrl.maintitle"></game-drop-down>
                  
           button(type="button" class="menu-right-title" ng-if="$ctrl.btnViews" ng-click="$ctrl.toggleView()")

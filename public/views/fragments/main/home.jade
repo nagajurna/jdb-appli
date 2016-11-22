@@ -1,5 +1,11 @@
-.main-wrapper(ng-init="$ctrl.showGames()" ng-show="$ctrl.ready")
-  .wrapper-strict
+.main-wrapper(ng-init="$ctrl.getGames()" ng-show="$ctrl.ready" class="home")
+  .top-brand(class="hidden-xs")
+    h4
+      span(class="big") JDB
+      , c'est super, c'est 
+      a(href="/#/places") tous&nbsp;les&nbsp;bars&nbsp;
+      span à&nbsp;jeux de&nbsp;Paris&nbsp;!
+      hr
+  .wrapper-strict(class="text-center")
     ul(class="list-group")
-      li(class="list-group-item"): p: a(href="/#/places") Tous les bars
-      li(class="list-group-item" ng-repeat='game in $ctrl.games'): p: a(href="{{ '/#/places/game/' + game.pathname}}") {{ game.name }}
+      li(class="list-group-item" ng-repeat='game in $ctrl.games'): h4: a(href="{{ '/#/places/game/' + game.pathname}}" class="text-uppercase") {{ game.name }}
