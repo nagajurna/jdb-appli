@@ -534,10 +534,7 @@ places.component('places', {
 				});
 		};
 		
-		//scroll to place
-		$scope.$on('item', function(ev,data) {
-			mapService.scroll(data);
-		});
+		
 	}
 });
 
@@ -581,6 +578,11 @@ places.component('placesList', {
 			$location.path(ctrl.link + spot.nameAlpha);
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		}
+		
+		//scroll to place
+		$scope.$on('item', function(ev,data) {
+			mapService.scroll(data);
+		});
 	}
 });
 

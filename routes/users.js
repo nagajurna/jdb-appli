@@ -229,13 +229,24 @@ router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(re
 });
 	
 router.get('/signout', function(req, res){
-  //clear remember_me cookies
-  res.clearCookie('_jdb_remember_me_');
-  res.clearCookie('_jdb_user_id_');
-  //clear session
-  req.logout();
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  return res.json({loggedIn: false, user: null});
+	var id = req.user._id;
+	//retrieve user
+	User.findById(id, function (err, user) {
+		if(err) { return console.log(err); }
+		//delete encrypted token
+		user.remember_token = '';
+		user.save(function(err) {
+			if(err) { return console.log(err); }
+				//clear remember_me cookies
+				res.clearCookie('_jdb_remember_me_');
+				res.clearCookie('_jdb_user_id_');
+				//clear session
+				req.logout();
+				res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+				return res.json({loggedIn: false, user: null});
+			});
+	});
+  
 });
 
 router.get('/check', function(req, res){

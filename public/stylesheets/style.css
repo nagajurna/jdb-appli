@@ -361,3 +361,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 }
 
 
+/* checkboxes */
+.checkbox input {
+	margin-top: 3px;
+}

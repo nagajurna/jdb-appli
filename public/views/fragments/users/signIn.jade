@@ -6,7 +6,7 @@ div(title="formulaire de connexion")
       input(type='text' class="form-control" id="email" ng-model='$ctrl.user.email')
       p(ng-bind='$ctrl.form.errors.email.message' class='small error-message') 
     .form-group
-      label(for="password") Password
+      label(for="password") Mot de passe
       input(type='password'  class="form-control" id="password" ng-model='$ctrl.user.password')
       p(ng-bind='$ctrl.form.errors.password.message' class='small error-message')
     .form-group
@@ -20,7 +20,7 @@ div(title="formulaire de connexion")
         .checkbox(class="pull-right")
           label
             input(type='checkbox' ng-model="$ctrl.user.remember")
-            se souvenir de moi  
+            span se souvenir de moi  
     
     
     p: a(href='' title="Inscription" ng-click="$ctrl.template='sign-up'") Inscription
