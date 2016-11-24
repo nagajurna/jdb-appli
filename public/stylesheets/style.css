@@ -244,9 +244,9 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	
 	.wrapper-strict {
 		margin-top: 20px;
-		height: -webkit-calc(100% - 105px);
-		height: -moz-calc(100% - 105px);
-		height: calc(100% - 105px);
+		height: -webkit-calc(100% - 10px);
+		height: -moz-calc(100% - 10px);
+		height: calc(100% - 10px);
 		overflow-y: auto;
 	}
 	
@@ -523,3 +523,4 @@ footer div.col-xs-6 {
 .checkbox input {
 	margin-top: 2px;
 }
+

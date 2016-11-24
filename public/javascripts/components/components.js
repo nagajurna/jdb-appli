@@ -967,7 +967,6 @@ comments.component('commentNew', {
 			
 		ctrl.add = function() {
 			if(!ctrl.currentuser) {
-				console.log(ctrl.currentuser);
 				ctrl.onAnonymous({template: 'sign-in'});
 				return
 			}
