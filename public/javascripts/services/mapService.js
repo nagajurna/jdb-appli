@@ -51,7 +51,6 @@ var mapService = angular.module('app.mapService', [])
 		$rootScope.$broadcast('backToText', {placeview: 'text'});
 	};
 	
-	
 	mapService.setScrollPosition = function(link, id) {
 		//$interval to make sure $location is correct before broadcasting event
 		var check, stopCheck;

@@ -50,6 +50,15 @@ var leafletDirective = angular.module('app.leaflet', [])
 		
 		var orangeIcon = new OrangeIcon();
 		
+		var RedIcon = L.Icon.Default.extend({
+			options: {
+				iconUrl: '../../../../images/leaflet-icon/marker-icon-red.png',
+				iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-orange.png'
+				}
+			});
+		
+		var redIcon = new RedIcon();
+		
 		//MARKERS	
 		var markers = [];//will receive all markers
 		
@@ -196,6 +205,27 @@ var leafletDirective = angular.module('app.leaflet', [])
 				mapService.getSelectedMarker().getPopup().openOn(map);
 			}
 		}
+		
+		//USER LOCATION
+		var uLoc;
+		function onLocationFound(e) {
+			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map);
+			if(!mapService.getSelectedMarker()) {
+				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+				map.flyTo(e.latlng, z)
+			}
+		}
+		
+		function onLocationError(e) {
+			alert(e.message);
+		}
+		
+		if(attrs.class==="map-sm") {
+			map.locate({setView: false, enableHighAccuracy: false, timeout: 3000});
+		}
+		
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
 	};
 	
 	return {
@@ -306,6 +336,7 @@ main.component('main', {
 					ctrl.placeview = 'text';
 				}
 				ctrl.hideSort = (ctrl.view==='map' ? true : false);
+				ctrl.hideLocate = (ctrl.view==='map' ? false : true);
 				mapService.setView(null,null);
 				mapService.setSelectedMarker(null);
 			}
@@ -335,16 +366,12 @@ main.component('main', {
 					});
 				 } 
 			});
-			////active links gamebar
-			//ctrl.isActive = function(game) {
-				//if(game==='tous' && !$route.current.params.game) return true;
-				//if($route.current.params.game)
-				 //return game===$route.current.params.game;
-			//}
+			
 			//scroll to place
 			$scope.$on('item', function(ev,data) {
 				mapService.scroll(data);
 			});
+			
 	}]
 });
 
