@@ -314,14 +314,14 @@ main.component('main', {
 			ctrl.placeToggleView = function() {
 				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
 			}
-			//on placeToggleView from map
+			//on placeToggleView from map to placeText
 			$scope.$on('backToText', function(event,data) {
 				$scope.$apply(function() {
 					ctrl.placeToggleView();
 				});
 			});
 			
-			//on placeToggleView from map
+			//on placeToggleView from map to placesList
 			$scope.$on('goToMap', function(event,data) {
 				ctrl.placeToggleView();
 			});
@@ -335,12 +335,16 @@ main.component('main', {
 					});
 				 } 
 			});
-			
-			ctrl.isActive = function(game) {
-				if(game==='tous' && !$route.current.params.game) return true;
-				if($route.current.params.game)
-				 return game===$route.current.params.game;
-			}
+			////active links gamebar
+			//ctrl.isActive = function(game) {
+				//if(game==='tous' && !$route.current.params.game) return true;
+				//if($route.current.params.game)
+				 //return game===$route.current.params.game;
+			//}
+			//scroll to place
+			$scope.$on('item', function(ev,data) {
+				mapService.scroll(data);
+			});
 	}]
 });
 
@@ -348,19 +352,18 @@ main.component('home', {
 		templateUrl: '/fragments/main/home',
 		bindings: {
 			maintitle: '=',
-			markers: '='
+			markers: '=',
+			template: '=',
 		},
-		controller: ['$http', function($http) {
+		controller: ['$http', '$location', function($http, $location) {
 			
 			var ctrl = this;
-			ctrl.ready = false;
 			ctrl.maintitle = '';
 			
 			ctrl.getGames = function() {
 				$http.get('/api/games').
 					then(function(response) {
 						 ctrl.games = response.data;
-						 ctrl.ready = true;
 					});
 				};
 				
@@ -372,6 +375,19 @@ main.component('home', {
 				});
 			};
 			ctrl.getPlaces();
+			
+			ctrl.goToPlaces = function(game) {
+				if(game) {
+					$location.path('/places/game/' + game);
+				} else {
+					$location.path('/places');
+				}
+			}
+			
+			ctrl.modalLoad = function(template) {
+				ctrl.template = template;
+				$("#myModal").modal({show: true});
+			}
 			
 		}]
 });
@@ -434,13 +450,13 @@ main.directive('gamesBar', function ($http, $route) {
 				/*Init*/
 				var w = $('.rightCol').width();
 				var barW = $('#game-bar').width();//bar width
-				var left = w/2-(barW/2)+15;
+				var left = w/2-(barW/2)-10;
 				$(element).css("left", left+"px");
 				/*on resize*/
 				$(window).on('resize', function() {
 					var w = $('.rightCol').width();
 					var barW = $('#game-bar').width();//bar width
-					var left = w/2-(barW/2)+15;
+					var left = w/2-(barW/2)-10;
 					$(element).css("left", left+"px");
 				});
 				
@@ -537,12 +553,6 @@ places.component('places', {
 						});
 				});
 		};
-		
-		//scroll to place
-		$scope.$on('item', function(ev,data) {
-			mapService.scroll(data);
-		});
-		
 		
 	}
 });

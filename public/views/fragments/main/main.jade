@@ -15,14 +15,12 @@
               span(class="glyphicon glyphicon-log-in")
       
       //navbar for small devices        
-      nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs
+      nav.navbar.navbar-inverse.navbar-fixed-top.visible-xs()
         .top-brand(ng-class="{hide: !$ctrl.home}")
           h4
             span(class="big") JDB
-            , c'est super, c'est 
-            a(href="/#/places") tous&nbsp;les&nbsp;bars&nbsp;
-            span à&nbsp;jeux de&nbsp;Paris&nbsp;!
-            div
+            span , c'est les&nbsp;bars à&nbsp;jeux de&nbsp;Paris&nbsp;!
+            div(class="hr")
               hr
         .navbar-header(ng-class="{hide: $ctrl.home}")
           button(type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
@@ -41,4 +39,4 @@
       <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
     .col-sm-8.col-lg-9.rightCol.hidden-xs
       div(leaflet-map class="map-lg" source='$ctrl.markers' position='$ctrl.position')
-      div(id="game-bar" games-bar)
+      div(id="game-bar" games-bar ng-class="{hide: $ctrl.home}")

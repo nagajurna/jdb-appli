@@ -49,6 +49,10 @@ div.modal.fade.in {
 	background-color: #43a047;
 }
 
+menu-sm a {
+	display: block;
+}
+
 nav.navbar.navbar-inverse.navbar.fixed-top.visible-xs {
 	border-radius: 0px;
 }
@@ -153,8 +157,14 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	margin-right: 2px;
 }
 
+#game-bar ul.dropdown-menu {
+	max-width: 105px;
+	min-width: 105px;
+}
+
 #game-bar ul.dropdown-menu li {
 	margin-top: 2px;
+	
 }
 
 #game-bar a {
@@ -165,12 +175,13 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	font-weight: 700;
 }
 
-#game-bar a:hover {
+#game-bar a:hover, #game-bar li.dropdown.open > a.dropdown-toggle {
 	background-color: #ef6c00;
 	color: #fff;
+	text-decoration: none;
 }
 
-#game-bar a.active, #game-bar li.dropdown.open > a.dropdown-toggle {
+#game-bar a.active {
 	background-color: #43a047;
 	color: #fff;
 	text-decoration: none;
@@ -185,7 +196,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 }
 /* page Home */
 .main-wrapper.home {
-	padding-top: 65px;
+	padding-top: 80px;
 }
 
 .wrapper, .wrapper-strict {
@@ -207,6 +218,10 @@ ul.dropdown-menu.game-dropdown > li.active a {
 .wrapper > form, .wrapper > div {
 		margin-right: 0px;
 	}
+	
+.list-group-item.place:hover {
+	cursor: pointer;
+}
 
 @media only screen and (min-width: 768px) {
 	#view {
@@ -229,13 +244,13 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	
 	.wrapper-strict {
 		margin-top: 20px;
-		height: -webkit-calc(100% - 20px);
-		height: -moz-calc(100% - 20px);
-		height: calc(100% - 20px);
+		height: -webkit-calc(100% - 105px);
+		height: -moz-calc(100% - 105px);
+		height: calc(100% - 105px);
 		overflow-y: auto;
 	}
 	
-	.wrapper-strict > div, .wrapper-strict > ul, .wrapper-strict > form {
+	.wrapper-strict  div, .wrapper-strict > ul, .wrapper-strict > form {
 		margin-right: 10px;
 	}
 
@@ -300,6 +315,12 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	color: #fff;
 }
 
+game-drop-down li.dropdown.open > a.dropdown-toggle {
+	text-decoration: none;
+	background-color: #43a047;
+	color: #fff;
+}
+
 .dropdown-menu > li > a.sorted, .dropdown-menu > li > a.sorted:hover {
 	background-color: #43a047;
 	color: #fff;
@@ -330,10 +351,14 @@ ul.dropdown-menu.game-dropdown > li.active a {
 .top-brand a {
    color: #fff;
    font-weight: bold;
-
 }
 
-.top-brand div {
+.top-brand a: hover {
+   color: #ef6c00;
+   
+}
+
+div.hr {
 	padding-left: 15px;
 	padding-right: 15px;
 }
@@ -344,21 +369,18 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	text-align: center;
 }
 
-
-
 .home a {
    color: #fff;
    font-weight: bold;
+}
 
+.home a:hover {
+   color: #ef6c00;
 }
 
 .home h4 {
 		
 	font-size: 1.1em;
-}
-
-.home ul {
-	margin-top: 25px;
 }
 
 .home li.list-group-item {
@@ -369,15 +391,45 @@ ul.dropdown-menu.game-dropdown > li.active a {
 	padding-bottom: 5px;
 }
 
+.home li.list-group-item h4 {
+	font-weight: bold;
+}
+
+.home li.list-group-item:hover {
+/*
+	background-color: #4caf50;
+*/
+	cursor: pointer;
+}
+
+
+
+footer {
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+footer div.col-xs-6 {
+	padding: 0px;
+	margin: 0px;
+}
+
+.footer-item-left {
+	margin: 0px;
+	padding-left: 30px
+}
+
+.footer-item-right {
+	margin: 0px;
+	padding-right: 30px
+}
+
+
 @media only screen and (min-width: 768px) {
 
-	.top-brand {
-		padding-top: 10px;
-	}
-	
 	.home h4{
 		
-		font-size: 1.15em;
+		font-size: 1.1em;
 	}
 	
 	.home li.list-group-item {

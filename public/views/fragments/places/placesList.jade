@@ -6,7 +6,7 @@
       <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" ></sort-by>
 .wrapper
   ul(class="list-group")
-    li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' class="list-group-item" id="{{ spot._id }}" ng-click="$ctrl.goToPlace(spot)")
+    li(ng-repeat='spot in $ctrl.spots | orderBy:$ctrl.propertyName:$ctrl.reverse' class="list-group-item place" id="{{ spot._id }}" ng-click="$ctrl.goToPlace(spot)")
       .row
         .col-xs-12
           p(class="name") {{ spot.name }}

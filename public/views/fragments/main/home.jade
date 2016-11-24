@@ -1,11 +1,26 @@
-.main-wrapper(ng-init="$ctrl.getGames()" ng-show="$ctrl.ready" class="home")
+.main-wrapper(ng-init="$ctrl.getGames()" class="home")
   .top-brand(class="hidden-xs")
     h4
       span(class="big") JDB
-      , c'est super, c'est 
-      a(href="/#/places") tous&nbsp;les&nbsp;bars&nbsp;
-      span à&nbsp;jeux de&nbsp;Paris&nbsp;!
+      span , c'est les&nbsp;bars&nbsp;à&nbsp;jeux de&nbsp;Paris&nbsp;!
       hr
   .wrapper-strict(class="text-center")
     ul(class="list-group")
-      li(class="list-group-item" ng-repeat='game in $ctrl.games'): h4: a(href="{{ '/#/places/game/' + game.pathname}}" class="text-uppercase") {{ game.name }}
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces()' )
+         h4(class="text-uppercase") Tous les bars  
+      li(class="list-group-item" ng-repeat='game in $ctrl.games' ng-click='$ctrl.goToPlaces(game.pathname)' )
+        h4(class="text-uppercase") {{ game.name }}
+      
+  footer
+    //div(class="hr")
+      //hr
+    .row
+      .col-xs-6
+        div(class="footer-item-left")
+          //p Signaler un bar
+          //p: a(href='' ng-click="$ctrl.modalLoad('sign-in')") Se connecter
+          //p: a(href='' ng-click="$ctrl.modalLoad('sign-up')") S'inscrire
+      .col-xs-6
+        div(class="footer-item-right text-right")
+          //p Signaler un bar
+            
