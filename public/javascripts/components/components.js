@@ -219,8 +219,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		var uLoc;
 		function onLocationFound(e) {
+			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
+				.setContent("<strong>Votre position</strong>");
+					
 			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
-			 .bindPopup("Votre position");
+				.bindPopup(uPopup);
+			
 			if(!mapService.getSelectedMarker()) {
 				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
 				map.flyTo(e.latlng, z)
@@ -253,11 +257,7 @@ main.component('main', {
 	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.home = false;
-			if(window.innerWidth < 768) {
-				ctrl.view = 'map';
-			} else {
-				ctrl.view = 'list';
-			}
+			ctrl.view = 'list';
 			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
 			ctrl.currentuser = null;
@@ -389,11 +389,6 @@ main.component('main', {
 						ctrl.view='list';
 						ctrl.placeView='text';
 					});
-				 } else {
-					$scope.$apply(function() { 
-						ctrl.view='map';
-						ctrl.placeView='text';
-					}); 
 				 }
 			});
 			
@@ -513,7 +508,7 @@ main.component('modalPlace', {
 			$http.get('/api/places/' + name).
 				then(function(response) {
 					ctrl.spot = response.data;
-					return ctrl.spot
+					return ctrl.spot;
 				})
 				.then(function(spot) {
 					$http.get('/api/comments/place/' + spot._id).
@@ -535,7 +530,6 @@ main.component('modalPlace', {
 						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
 						
 					});
-					console.log(ctrl.comments);
 				});
 		};
 		
@@ -847,52 +841,6 @@ places.component('placeModal', {
 	}
 });
 
-places.component('newCommentModal', {
-	templateUrl: '/fragments/comments/newModal',
-	bindings: {
-		placetemplate: "=",
-		spot: "<",
-		comments: "=",
-		currentuser: '<',
-		onCompleted: '&',
-		maintitle: "="
-	},
-	controller: function($scope, $http, $sce, toHtmlFilter) {
-		
-		var ctrl = this;
-		ctrl.maintitle = '';
-		ctrl.form = {};
-		ctrl.comment = {};
-				
-		ctrl.add = function() {
-			if(!ctrl.currentuser) {
-				ctrl.placetemplate = 'sign-in';
-				return
-			}
-			ctrl.comment.author = ctrl.currentuser.id;
-			ctrl.comment.place = ctrl.spot._id;
-			
-			$http.post('/api/comments', ctrl.comment).
-				then(function(response) {
-					if(response.data.saved===false) {
-						if(response.data.reason.name === "ValidationError")
-						{
-							ctrl.form.errors = response.data.reason.errors;
-						} else {
-							ctrl.form.message = "Problème au moment de l\'enregistrement";
-						}
-						
-					} else {
-						ctrl.comment = {};
-						ctrl.form = {};
-						ctrl.placetemplate = 'place';
-						ctrl.onCompleted({ id: ctrl.spot._id});
-					}
-				});
-		};
-	}
-});
-
 places.component('placesAdmin', {
 	templateUrl: '/fragments/places/placesAdmin',
 	bindings: {
@@ -1145,6 +1093,10 @@ comments.component('commentNew', {
 			};
 			
 		ctrl.add = function() {
+			if(!ctrl.currentuser) {
+				ctrl.onAnonymous({ template: 'sign-in' });
+				return
+			}
 			ctrl.comment.author = ctrl.currentuser.id;
 			ctrl.comment.place = ctrl.spot._id;
 			
@@ -1170,6 +1122,52 @@ comments.component('commentNew', {
 			var path = $location.path().replace('/comments/new','');
 			$location.path(path);
 		}
+	}
+});
+
+places.component('newCommentModal', {
+	templateUrl: '/fragments/comments/newModal',
+	bindings: {
+		placetemplate: "=",
+		spot: "<",
+		comments: "=",
+		currentuser: '<',
+		onCompleted: '&',
+		maintitle: "="
+	},
+	controller: function($scope, $http, $sce, toHtmlFilter) {
+		
+		var ctrl = this;
+		ctrl.maintitle = '';
+		ctrl.form = {};
+		ctrl.comment = {};
+				
+		ctrl.add = function() {
+			if(!ctrl.currentuser) {
+				ctrl.placetemplate = 'sign-in';
+				return
+			}
+			ctrl.comment.author = ctrl.currentuser.id;
+			ctrl.comment.place = ctrl.spot._id;
+			
+			$http.post('/api/comments', ctrl.comment).
+				then(function(response) {
+					if(response.data.saved===false) {
+						if(response.data.reason.name === "ValidationError")
+						{
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = "Problème au moment de l\'enregistrement";
+						}
+						
+					} else {
+						ctrl.comment = {};
+						ctrl.form = {};
+						ctrl.placetemplate = 'place';
+						ctrl.onCompleted({ id: ctrl.spot._id});
+					}
+				});
+		};
 	}
 });
 

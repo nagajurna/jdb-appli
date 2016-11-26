@@ -1,4 +1,7 @@
 div()
+  div(class="place-image")
+    <img src="{{$ctrl.spot.image_link}}" alt="{{$ctrl.spot.name}}" style="width=500px">
+  hr
   p {{ $ctrl.spot.address }}
   p {{ $ctrl.spot.cp + ' ' + $ctrl.spot.city }}
   p {{ $ctrl.spot.tel }}

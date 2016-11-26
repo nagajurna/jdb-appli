@@ -45,7 +45,7 @@ div.modal-content {
 	border-radius: 0px;
 }
 
-#myModal.modal.fade.in {
+div#myModal.modal.fade.in, div#placeModal.modal.fade.in {
 	background-color: #43a047;
 }
 
@@ -444,9 +444,6 @@ footer div.col-xs-6 {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
-	
-	
-
 }
 
 
@@ -475,33 +472,21 @@ footer div.col-xs-6 {
 /* MESSAGES */
 
 .top-error-message {
-/*
-	height: 14px;
-*/
 	color: red;
 	margin-bottom: 10px;
 }
 
 .error-message {
-/*
-	height: 10px;
-*/
 	color: red;
 	margin-bottom: 0px;
 }
 
 .top-success-message {
-/*
-	height: 14px;
-*/
 	color: #43a047;
 	margin-bottom: 10px;
 }
 
 .success-message {
-/*
-	height: 10px;
-*/
 	color: #43a047;
 	margin-bottom: 0px;
 }
@@ -512,7 +497,7 @@ footer div.col-xs-6 {
 	border-radius: 0px;
 }
 
-.popup a {
+.popup-link a, .popup-link > strong {
 	color: #43a047;
 	font-size: 1.1em;
 	text-decoration: none;
@@ -532,3 +517,8 @@ footer div.col-xs-6 {
 	margin-top: 2px;
 }
 
+/* IMAGES */
+.place-image > img {
+	max-width: 100%;
+	height: auto;
+}
