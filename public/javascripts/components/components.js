@@ -53,7 +53,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		var RedIcon = L.Icon.Default.extend({
 			options: {
 				iconUrl: '../../../../images/leaflet-icon/marker-icon-red.png',
-				iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-orange.png'
+				iconRetinaUrl: '../../../../images/leaflet-icon/marker-icon-2x-red.png'
 				}
 			});
 		
@@ -91,15 +91,25 @@ var leafletDirective = angular.module('app.leaflet', [])
 						}
 						games += '<span>' + places[i].games[j].name + virg + '</span>';
 					}
-				
-					var popupContent = '<a id="link1' + places[i]._id + '" href="' + link1 + '" class="popup-link"><strong>' + places[i].name + '</strong></a></br>' +
-									   games + '</br>'
+					var popupContent;
+					if(attrs.class==="map-sm") {
+						popupContent = '<span id="' + places[i].nameAlpha + '" class="popup-link"><strong>' + places[i].name + '</strong></span></br>' + games + '</br>'
+					} else {
+						popupContent = '<a id="' + places[i].nameAlpha + '" href="' + link1 + '" class="popup-link"><strong>' + places[i].name + '</strong></a></br>' + games + '</br>'
+					}
 					
 					//Pop-up				  
 					var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
 					setContent(popupContent);
 					marker.bindPopup(popup);
-										
+					
+					//Pop-up link on click (map-sm : placeModal)
+					$(element).unbind().on("click", ".popup-link", function(e){
+						if(attrs.class==="map-sm") {
+							mapService.setPlaceModal(e.target.parentElement.id);
+						}
+					});
+					
 					//Marker on click						
 					var myFunction = function(place) {
 						marker.on('click', function(ev) {
@@ -147,7 +157,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		if(attrs.class==="map-sm-place") {
 			map.on('popupopen', function() {  
 			  $('.popup-link').click(function(e){
-				  mapService.backToText();
+				  mapService.backToText(e.target);
 			  });
 			});
 		 }
@@ -209,7 +219,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		var uLoc;
 		function onLocationFound(e) {
-			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map);
+			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
+			 .bindPopup("Votre position");
 			if(!mapService.getSelectedMarker()) {
 				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
 				map.flyTo(e.latlng, z)
@@ -221,7 +232,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		
 		if(attrs.class==="map-sm") {
-			map.locate({setView: false, enableHighAccuracy: false, timeout: 3000});
+			map.locate({setView: false});
 		}
 		
 		map.on('locationfound', onLocationFound);
@@ -242,12 +253,12 @@ main.component('main', {
 	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.home = false;
-			ctrl.view = 'list';
+			ctrl.view = 'map';
 			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
 			ctrl.currentuser = null;
 			ctrl.markers = {};
-			//INITIALISATION DE APP
+			//INIT APP
 			ctrl.appInit = function () {
 				ctrl.getUser();
 				ctrl.getMarkers();
@@ -301,10 +312,20 @@ main.component('main', {
 				ctrl.position = position;
 			});
 			
+			//log-in and menu
 			ctrl.modalLoad = function(template) {
 				ctrl.template = template;
 				$("#myModal").modal({show: true});
 			}
+			//place infos when map-sm
+			ctrl.placeModalLoad = function(template) {
+				ctrl.placetemplate = template;
+				$("#placeModal").modal({show: true});
+			}
+			//map-sm : launched by mapService (when click on popup) 
+			$scope.$on('placeModal', function(ev, data) {
+				ctrl.placeModalLoad('place');
+			});
 			
 			$scope.$on('$routeChangeSuccess', function(event, current, previous) {
 				//buttons toggleView and sort-by : display or not
@@ -367,7 +388,7 @@ main.component('main', {
 				 } 
 			});
 			
-			//scroll to place
+			//places-list : scroll to place
 			$scope.$on('item', function(ev,data) {
 				mapService.scroll(data);
 			});
@@ -411,10 +432,10 @@ main.component('home', {
 				}
 			}
 			
-			ctrl.modalLoad = function(template) {
-				ctrl.template = template;
-				$("#myModal").modal({show: true});
-			}
+			//ctrl.modalLoad = function(template) {
+				//ctrl.template = template;
+				//$("#myModal").modal({show: true});
+			//}
 			
 		}]
 });
@@ -455,15 +476,69 @@ main.component('modal', {
 		template: '=',
 		currentuser: '<'
 	},
-	controller: function() {
+	controller: function($scope) {
 		
 		var ctrl = this;
-		
+		ctrl.modal = 'main';
 		ctrl.maintitle = "";
 		
 		ctrl.close = function(action) {
 			$("#myModal").modal(action);
 		};
+	}
+});
+
+main.component('modalPlace', {
+	templateUrl: '/fragments/places/modal',
+	bindings: {
+		placetemplate: '=',
+		currentuser: '<'
+	},
+	controller: function($scope, $http, $sce, toHtmlFilter) {
+		
+		var ctrl = this;
+		ctrl.modal = 'place';
+		ctrl.maintitle = "";
+		
+		ctrl.getPlace = function(name) {
+			$http.get('/api/places/' + name).
+				then(function(response) {
+					ctrl.spot = response.data;
+					return ctrl.spot
+				})
+				.then(function(spot) {
+					$http.get('/api/comments/place/' + spot._id).
+						then(function(response) {
+							ctrl.comments = response.data;
+							ctrl.comments.forEach(function(comment) {
+								comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+								
+							});
+						});
+				});
+		};
+		
+		ctrl.getComments = function(id) {
+			$http.get('/api/comments/place/' + id).
+				then(function(response) {
+					ctrl.comments = response.data;
+					ctrl.comments.forEach(function(comment) {
+						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+						
+					});
+					console.log(ctrl.comments);
+				});
+		};
+		
+		$scope.$on('placeModal', function(ev, data) {
+				ctrl.getPlace(data.place);
+		});
+			
+		$("#placeModal").on('hidden.bs.modal', function() {
+				ctrl.spot = {};
+				ctrl.comments = {};
+		});
+		
 	}
 });
 
@@ -739,6 +814,75 @@ places.component('placeText', {
 });
 
 
+places.component('placeModal', {
+	templateUrl: '/fragments/places/placeModal',
+	bindings: {
+		placetemplate: "=",
+		spot: "<",
+		comments: "=",
+		currentuser: "<",
+		maintitle: "="
+	},
+	controller: function() {
+		
+		var ctrl = this;
+		ctrl.maintitle = null;
+		ctrl.addComment = function() {
+			if(!ctrl.currentuser) {
+				ctrl.placetemplate = 'sign-in';
+				return
+			}
+			ctrl.placetemplate = 'comment';
+		};
+		
+	}
+});
+
+places.component('newCommentModal', {
+	templateUrl: '/fragments/comments/newModal',
+	bindings: {
+		placetemplate: "=",
+		spot: "<",
+		comments: "=",
+		currentuser: '<',
+		onCompleted: '&',
+		maintitle: "="
+	},
+	controller: function($scope, $http, $sce, toHtmlFilter) {
+		
+		var ctrl = this;
+		ctrl.maintitle = '';
+		ctrl.form = {};
+		ctrl.comment = {};
+				
+		ctrl.add = function() {
+			if(!ctrl.currentuser) {
+				ctrl.placetemplate = 'sign-in';
+				return
+			}
+			ctrl.comment.author = ctrl.currentuser.id;
+			ctrl.comment.place = ctrl.spot._id;
+			
+			$http.post('/api/comments', ctrl.comment).
+				then(function(response) {
+					if(response.data.saved===false) {
+						if(response.data.reason.name === "ValidationError")
+						{
+							ctrl.form.errors = response.data.reason.errors;
+						} else {
+							ctrl.form.message = "Problème au moment de l\'enregistrement";
+						}
+						
+					} else {
+						ctrl.comment = {};
+						ctrl.form = {};
+						ctrl.placetemplate = 'place';
+						ctrl.onCompleted({ id: ctrl.spot._id});
+					}
+				});
+		};
+	}
+});
 
 places.component('placesAdmin', {
 	templateUrl: '/fragments/places/placesAdmin',
@@ -769,7 +913,6 @@ places.component('placesAdmin', {
 			$http.delete('/api/places/' + id).
 				then(function(response) {
 					ctrl.getPlaces();
-					////$location.path('/admin/places');
 				});
 		};
 		
@@ -993,10 +1136,6 @@ comments.component('commentNew', {
 			};
 			
 		ctrl.add = function() {
-			if(!ctrl.currentuser) {
-				ctrl.onAnonymous({template: 'sign-in'});
-				return
-			}
 			ctrl.comment.author = ctrl.currentuser.id;
 			ctrl.comment.place = ctrl.spot._id;
 			
@@ -1119,7 +1258,8 @@ users.component('signUp', {
 	bindings: {
 		maintitle: '=',
 		template: '=',
-		onCompleted: '&'
+		onCompleted: '&',
+		modal: '<'
 	},
 	controller: function($scope, $http, $location,authService) {
 		var ctrl = this;
@@ -1147,7 +1287,11 @@ users.component('signUp', {
 							}
 							ctrl.user = {};
 						    ctrl.form = {};
-							ctrl.onCompleted({action: "hide"});
+							if(ctrl.modal==="place") {
+								ctrl.template='comment';
+							} else {
+								ctrl.onCompleted({action: "hide"});
+							}
 						});
 					}
 				});
@@ -1161,7 +1305,8 @@ users.component('signIn', {
 	bindings: {
 		maintitle: '=',
 		template: '=',
-		onCompleted: '&'
+		onCompleted: '&',
+		modal: '<'
 	},
 	controller: function($scope, $http, $location, $route, authService) {
 		
@@ -1190,7 +1335,11 @@ users.component('signIn', {
 							}
 							ctrl.user = {};
 							ctrl.form = {};
-							ctrl.onCompleted({action: "hide"});
+							if(ctrl.modal==="place") {
+								ctrl.template='comment';
+							} else {
+								ctrl.onCompleted({action: "hide"});
+							}
 						});
 						
 					}

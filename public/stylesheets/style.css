@@ -45,8 +45,16 @@ div.modal-content {
 	border-radius: 0px;
 }
 
-div.modal.fade.in {
+#myModal.modal.fade.in {
 	background-color: #43a047;
+}
+
+#placeModal div.modal-body {
+	min-height: 65vh;
+}
+
+.modal-title > *  {
+	margin: 0px;
 }
 
 menu-sm a {

@@ -23,7 +23,10 @@
             div(class="hr")
               hr
         .navbar-header(ng-class="{hide: $ctrl.home}")
-          button(type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')"): span(class="glyphicon glyphicon-menu-hamburger")
+          button(ng-if='!$ctrl.currentuser' type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('sign-in')")
+            span(class="glyphicon glyphicon-log-in")
+          button(ng-if='$ctrl.currentuser' type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')")
+            span(ng-if='$ctrl.currentuser' class="glyphicon glyphicon-user")
          
           //a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
           <game-drop-down game="$ctrl.maintitle"></game-drop-down>
@@ -37,6 +40,7 @@
            
       #view(ng-view)
       <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
+      <modal-place placetemplate='$ctrl.placetemplate' currentuser="$ctrl.currentuser"></modal-place>
     .col-sm-8.col-lg-9.rightCol.hidden-xs
       div(leaflet-map class="map-lg" source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar ng-class="{hide: $ctrl.home}")
