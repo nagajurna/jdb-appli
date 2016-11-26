@@ -253,7 +253,11 @@ main.component('main', {
 	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', function($scope, $http, $location, $route, authService, mapService) {
 			var ctrl = this;
 			ctrl.home = false;
-			ctrl.view = 'map';
+			if(window.innerWidth < 768) {
+				ctrl.view = 'map';
+			} else {
+				ctrl.view = 'list';
+			}
 			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
 			ctrl.currentuser = null;
@@ -380,12 +384,17 @@ main.component('main', {
 			
 			
 			$(window).on('resize', function() {
-				if(window.innerWidth > 768) {
+				if(window.innerWidth >= 768) {
 					$scope.$apply(function() { 
 						ctrl.view='list';
 						ctrl.placeView='text';
 					});
-				 } 
+				 } else {
+					$scope.$apply(function() { 
+						ctrl.view='map';
+						ctrl.placeView='text';
+					}); 
+				 }
 			});
 			
 			//places-list : scroll to place
