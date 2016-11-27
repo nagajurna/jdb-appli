@@ -114,7 +114,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 					var myFunction = function(place) {
 						marker.on('click', function(ev) {
 							if(attrs.class==="map-sm") {
-								mapService.setSelectedMarker(ev.target);
+								//mapService.setSelectedMarker(ev.target);
 							} else if (attrs.class==="map-lg") {
 								mapService.setScrollPosition(link2, place._id)
 							}
@@ -211,9 +211,9 @@ var leafletDirective = angular.module('app.leaflet', [])
 				mapService.setView(map.getCenter(),map.getZoom());
 			});
 			
-			if(mapService.getSelectedMarker()) {
-				mapService.getSelectedMarker().getPopup().openOn(map);
-			}
+			//if(mapService.getSelectedMarker()) {
+				//mapService.getSelectedMarker().getPopup().openOn(map);
+			//}
 		}
 		
 		//USER LOCATION
@@ -225,7 +225,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
 				.bindPopup(uPopup);
 			
-			if(!mapService.getSelectedMarker()) {
+			if(!mapService.getView().center) {
 				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
 				map.flyTo(e.latlng, z)
 			}
@@ -236,6 +236,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		
 		if(attrs.class==="map-sm") {
+			console.log("locate!");
 			map.locate({setView: false});
 		}
 		
@@ -288,6 +289,7 @@ main.component('main', {
 				$http.get('/users/signout').
 					then(function(response) {
 						ctrl.getUser();
+						mapService.setView(null, null);
 						$location.path('/');
 					});
 			};
@@ -357,13 +359,13 @@ main.component('main', {
 			//toggleView()
 			ctrl.toggleView = function() {
 				ctrl.view = (ctrl.view==='list' ? 'map' : 'list');
-				if(ctrl.view==='map') {
-					ctrl.placeview = 'text';
-				}
+				//if(ctrl.view==='map') {
+					//ctrl.placeview = 'text';
+				//}
 				ctrl.hideSort = (ctrl.view==='map' ? true : false);
-				ctrl.hideLocate = (ctrl.view==='map' ? false : true);
+				//ctrl.hideLocate = (ctrl.view==='map' ? false : true);
 				mapService.setView(null,null);
-				mapService.setSelectedMarker(null);
+				//mapService.setSelectedMarker(null);
 			}
 			
 			//placeToggleView()
@@ -462,8 +464,8 @@ main.component('menuSm', {
 			ctrl.maintitle = "Menu";
 			
 			ctrl.close = function() {
-				mapService.setView(null,null);
-				mapService.setSelectedMarker(null);
+				//mapService.setView(null,null);
+				//mapService.setSelectedMarker(null);
 				ctrl.onCompleted({action: "hide"});
 			};
 			
@@ -600,7 +602,7 @@ main.directive('gameDropDown', function($route, mapService) {
 			};
 			
 			scope.onChange = function() {
-				mapService.setSelectedMarker(null);
+				//mapService.setSelectedMarker(null);
 			}
 			
 						
@@ -1125,7 +1127,7 @@ comments.component('commentNew', {
 	}
 });
 
-places.component('newCommentModal', {
+comments.component('newCommentModal', {
 	templateUrl: '/fragments/comments/newModal',
 	bindings: {
 		placetemplate: "=",
