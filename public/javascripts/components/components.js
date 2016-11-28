@@ -209,7 +209,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		scope.$on('locate', function() {
 			if(attrs.class==="map-sm") {
-				map.locate({setView: true, watch: true});
+				map.locate({setView: false, watch: true});
 			}
 		});
 		
@@ -229,12 +229,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 			if(mapService.getView().center) {
 				var bounds = map.getBounds();
 				if(!bounds.contains(e.latlng)) {
-					var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-					//map.flyTo(e.latlng, z);
+					//var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+					map.flyTo(e.latlng, map.getZoom());
 				}
 			} else {
-				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-				//map.flyTo(e.latlng, z)
+				//var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+				map.flyTo(e.latlng, map.getZoom())
 			}
 		}
 		
