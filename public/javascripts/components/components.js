@@ -209,14 +209,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		
 		scope.$on('locate', function() {
-			console.log('locate');
 			if(attrs.class==="map-sm") {
-				map.locate({setView: false, watch: true});
+				map.locate({setView: false, watch: true, enableHighAccuracy: true});
 			}
 		});
 		
 		scope.$on('stopLocate', function() {
-			console.log('stop locate');
 			map.stopLocate();
 			if(map.hasLayer(uLoc)) {
 				map.removeLayer(uLoc);
@@ -226,7 +224,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		var uLoc;
 		
 		function onLocationFound(e) {
-			alert(e.latitude + " " + e.longitude);
+			
 			if(!map.hasLayer(uLoc)) {
 				
 				var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
@@ -242,6 +240,10 @@ var leafletDirective = angular.module('app.leaflet', [])
 			} else {
 				
 				uLoc.setLatLng(e.latlng);
+				
+				if(!bounds.contains(e.latlng)) {
+					map.flyTo(e.latlng);
+				}
 				
 			}
 				
