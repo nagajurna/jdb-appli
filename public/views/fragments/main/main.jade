@@ -36,6 +36,8 @@
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           
+          button(type="button" class="menu-right-title" ng-if="$ctrl.view==='map'" ng-click="$ctrl.locate()")
+            img(src="/images/google- icons/ic_my_location_white_24dp/web/ic_my_location_white_24dp_1x.png")
                      
           <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-right" ng-class="{hide: $ctrl.hideSort}"></sort-by>
        

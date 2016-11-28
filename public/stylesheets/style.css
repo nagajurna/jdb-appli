@@ -86,10 +86,6 @@ div.navbar-header button.navbar-toggle {
 
 .hide {
 	display: none;
-/*
-	z-index: -10;
-	top: -1000px;
-*/
 }
 
 @media only screen and (min-width: 768px) {
@@ -106,7 +102,7 @@ div.navbar-header button.navbar-toggle {
 }
 
 .menu-left-title, .menu-right-title {
-	padding: 15px;
+	padding: 13px;
 	height: 50px;
 	display: inline-block;
 	line-height: 20px;
