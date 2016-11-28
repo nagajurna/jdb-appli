@@ -207,17 +207,23 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		
 		//USER LOCATION
+		var uLoc;
 		scope.$on('locate', function() {
+			console.log('locate');
 			if(attrs.class==="map-sm") {
 				map.locate({setView: false, watch: true});
 			}
 		});
 		
 		scope.$on('stopLocate', function() {
+			console.log('stop locate');
 			map.stopLocate();
+			if(map.hasLayer(uLoc)) {
+				map.removeLayer(uLoc);
+			}
 		});
 		
-		var uLoc;
+		
 		function onLocationFound(e) {
 			
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
@@ -378,6 +384,7 @@ main.component('main', {
 				//ctrl.hideLocate = (ctrl.view==='map' ? false : true);
 				mapService.setView(null,null);
 				mapService.stopLocate();
+				ctrl.locate = false;
 				//mapService.setSelectedMarker(null);
 			}
 			
@@ -413,8 +420,15 @@ main.component('main', {
 			});
 			
 			//locate
-			ctrl.locate = function() {
-				mapService.locate();
+			ctrl.locate=false;
+			ctrl.toggleLocate = function() {
+				if(ctrl.locate===true) {
+					mapService.stopLocate();
+					ctrl.locate = false;
+				} else {
+					mapService.locate();
+					ctrl.locate = true;
+				}
 			}
 			
 			

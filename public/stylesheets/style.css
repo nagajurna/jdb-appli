@@ -123,6 +123,10 @@ button.menu-left-title, button.menu-right-title {
 	border: none;
 }
 
+button.menu-right-title.locate {
+	background-color: #388e3c;
+}
+
 game-drop-down a.dropdown-toggle {
 	font-weight: bold;
 }
