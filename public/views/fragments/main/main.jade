@@ -27,7 +27,8 @@
             span(class="glyphicon glyphicon-log-in")
           button(ng-if='$ctrl.currentuser' type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')")
             span(ng-if='$ctrl.currentuser' class="glyphicon glyphicon-user")
-         
+          
+                   
           //a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
           <game-drop-down game="$ctrl.maintitle"></game-drop-down>
                  
@@ -35,10 +36,12 @@
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           
+                     
           <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-right" ng-class="{hide: $ctrl.hideSort}"></sort-by>
          
            
       #view(ng-view)
+     
       <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
       <modal-place placetemplate='$ctrl.placetemplate' currentuser="$ctrl.currentuser"></modal-place>
     .col-sm-8.col-lg-9.rightCol.hidden-xs

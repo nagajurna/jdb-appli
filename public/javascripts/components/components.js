@@ -217,6 +217,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		
 		//USER LOCATION
+		
+		
 		var uLoc;
 		function onLocationFound(e) {
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
@@ -235,6 +237,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 			alert(e.message);
 		}
 		
+			
 		if(attrs.class==="map-sm") {
 			console.log("locate!");
 			map.locate({setView: false});
@@ -660,6 +663,8 @@ places.component('places', {
 						});
 				});
 		};
+		
+		
 		
 	}
 });

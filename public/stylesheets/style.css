@@ -49,6 +49,10 @@ div#myModal.modal.fade.in, div#placeModal.modal.fade.in {
 	background-color: #43a047;
 }
 
+#myModal div.modal-body {
+	min-height: 406px;
+}
+
 #placeModal div.modal-body {
 	min-height: 65vh;
 }
@@ -497,19 +501,17 @@ footer div.col-xs-6 {
 	border-radius: 0px;
 }
 
-.popup-link a, .popup-link > strong {
+.popup a, .popup-link > strong {
 	color: #43a047;
-	font-size: 1.1em;
+	font-size: 1.05em;
 	text-decoration: none;
 }
 
-.popup a:hover {
+.popup a:hover, .popup-link > strong:hover {
 	color: #ff5722;
 }
 
-.popup a:active {
-	color: #ff5722;
-}
+
 
 
 /* checkboxes */
