@@ -305,18 +305,18 @@ router.delete('/comments/:id', function(req, res, next) {
 });
 
 /*SET MARKERS*/
-router.post('/markers', function(req, res, next) {
-	req.session.markers = req.body.markers;
-	res.json({message: 'markers enregistrés dans session'});
-});
+//router.post('/markers', function(req, res, next) {
+	//req.session.markers = req.body.markers;
+	//res.json({message: 'markers enregistrés dans session'});
+//});
 
 /*GET MARKERS*/
-router.get('/markers', function(req, res, next) {
-	if(req.session.markers) {
-		var markers = req.session.markers;
-		res.json({session: 'ok', markers: markers});
-	}
+//router.get('/markers', function(req, res, next) {
+	//if(req.session.markers) {
+		//var markers = req.session.markers;
+		//res.json({session: 'ok', markers: markers});
+	//}
 	
-});
+//});
 
 module.exports = router;
