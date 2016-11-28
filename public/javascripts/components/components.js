@@ -207,7 +207,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		
 		//USER LOCATION
-		var uLoc;
+		
 		scope.$on('locate', function() {
 			console.log('locate');
 			if(attrs.class==="map-sm") {
@@ -223,20 +223,31 @@ var leafletDirective = angular.module('app.leaflet', [])
 			}
 		});
 		
+		var uLoc;
 		
 		function onLocationFound(e) {
-			
-			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
-				.setContent("<strong>Votre position</strong>");
+			alert(e.latitude + " " + e.longitude);
+			if(!map.hasLayer(uLoc)) {
 				
-			if(map.hasLayer(uLoc)) {
-				map.removeLayer(uLoc);
-			} else {
+				var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
+					.setContent("<strong>Votre position</strong>");
+				
+				uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
+					.bindPopup(uPopup);
+				
 				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+				
 				map.flyTo(e.latlng, z)
-			}		
-			uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
-				.bindPopup(uPopup);
+				
+			} else {
+				
+				uLoc.setLatLng(e.latlng);
+				
+			}
+				
+
+				
+			
 			
 			//if(mapService.getView().center) {
 				//var bounds = map.getBounds();
