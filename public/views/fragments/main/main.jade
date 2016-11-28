@@ -38,19 +38,15 @@
           
                      
           <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-right" ng-class="{hide: $ctrl.hideSort}"></sort-by>
+       
          
-<<<<<<< HEAD
-           
-      #view(ng-view)
-     
-=======
+
       //ng-view : hidden when view === 'map' on small devices     
       #view(ng-view ng-show="$ctrl.view==='list'")
       
       //map-sm : only if view === 'map'
       div(leaflet-map class="map-sm" ng-if="$ctrl.view==='map'" source='$ctrl.markers')
-      
->>>>>>> refactoring-maps
+
       <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
       <modal-place placetemplate='$ctrl.placetemplate' currentuser="$ctrl.currentuser"></modal-place>
     
