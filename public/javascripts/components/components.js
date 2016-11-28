@@ -136,21 +136,11 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		//GET ARRAY FOR MARKERS	
 		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
-			if(attrs.class==="map-lg") {
-				//map-lg : refresh only if newcoll different from oldcoll
-				if(angular.isDefined(newColl) && !angular.equals(newColl, oldColl)) {
-					removeMarker(markers);//suppress all previous markers
-					addMarker(newColl);//add new markers
-					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
-				}
-			} else {
-				//map-sm : newColl alway equals to oldColl
-				if(angular.isDefined(newColl)) {
-					removeMarker(markers);//suppress all previous markers
-					addMarker(newColl);//add new markers
-					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
-				}
-			} 
+			 if(angular.isDefined(newColl)) {
+				removeMarker(markers);//suppress all previous markers
+				addMarker(newColl);//add new markers
+				//mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
+			}
 		});
 		
 		//place backToText
@@ -266,7 +256,7 @@ main.component('main', {
 			//INIT APP
 			ctrl.appInit = function () {
 				ctrl.getUser();
-				ctrl.getMarkers();
+				//ctrl.getMarkers();
 			};
 			
 			/*USER*/
@@ -339,6 +329,7 @@ main.component('main', {
 				//css classes for page Home
 				ctrl.home = ( $location.path()==='/' ? true : false );
 				if(ctrl.home) {
+					ctrl.view="list";
 					$('html').css("background-color", "#43a047");
 				} else {
 					$('html').css("background-color", "#fff");
@@ -387,7 +378,7 @@ main.component('main', {
 			
 			$(window).on('resize', function() {
 				if(window.innerWidth >= 768) {
-					$scope.$apply(function() { 
+					$scope.$apply(function() {
 						ctrl.view='list';
 						ctrl.placeView='text';
 					});
@@ -398,6 +389,7 @@ main.component('main', {
 			$scope.$on('item', function(ev,data) {
 				mapService.scroll(data);
 			});
+			
 			
 	}]
 });

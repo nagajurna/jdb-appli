@@ -37,10 +37,17 @@
           
           <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-right" ng-class="{hide: $ctrl.hideSort}"></sort-by>
          
-           
-      #view(ng-view)
+      //ng-view : hidden when view === 'map' on small devices     
+      #view(ng-view ng-show="$ctrl.view==='list'")
+      
+      //map-sm : only if view === 'map'
+      div(leaflet-map class="map-sm" ng-if="$ctrl.view==='map'" source='$ctrl.markers')
+      
       <modal template='$ctrl.template' currentuser="$ctrl.currentuser"></modal>
       <modal-place placetemplate='$ctrl.placetemplate' currentuser="$ctrl.currentuser"></modal-place>
+    
+    //rightCol : hidden on small devices
     .col-sm-8.col-lg-9.rightCol.hidden-xs
-      div(leaflet-map class="map-lg" source='$ctrl.markers' position='$ctrl.position')
+      //map-lg : only if view === 'list' (= always on large devices)
+      div(leaflet-map class="map-lg" ng-if="$ctrl.view==='list'" source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar ng-class="{hide: $ctrl.home}")
