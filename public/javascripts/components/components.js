@@ -222,8 +222,11 @@ var leafletDirective = angular.module('app.leaflet', [])
 			
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
 				.setContent("<strong>Votre position</strong>");
-					
-			var uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
+				
+			if(uLoc) {
+				map.removeLayer(uLoc);
+			}		
+			uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
 				.bindPopup(uPopup);
 			
 			if(mapService.getView().center) {
