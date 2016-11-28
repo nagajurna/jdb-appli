@@ -59,6 +59,10 @@ var mapService = angular.module('app.mapService', [])
 		$rootScope.$broadcast('locate');
 	};
 	
+	mapService.stopLocate = function() {
+		$rootScope.$broadcast('stopLocate');
+	};
+	
 	mapService.setScrollPosition = function(link, id) {
 		//$interval to make sure $location is correct before broadcasting event
 		var check, stopCheck;
