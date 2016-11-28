@@ -219,7 +219,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		
 		var uLoc;
 		function onLocationFound(e) {
-			alert('located');
+			
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
 				.setContent("<strong>Votre position</strong>");
 				
