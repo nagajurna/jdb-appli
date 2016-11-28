@@ -209,7 +209,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		scope.$on('locate', function() {
 			if(attrs.class==="map-sm") {
-				map.locate({setView: false, watch: true});
+				var z = map.getZoom();
+				map.locate({setView: true, watch: true, maxZoom: z});
 			}
 		});
 		
@@ -223,22 +224,19 @@ var leafletDirective = angular.module('app.leaflet', [])
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
 				.setContent("<strong>Votre position</strong>");
 				
-			if(uLoc) {
-				map.removeLayer(uLoc);
-			}		
 			uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
 				.bindPopup(uPopup);
 			
-			if(mapService.getView().center) {
-				var bounds = map.getBounds();
-				if(!bounds.contains(e.latlng)) {
-					//var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-					map.flyTo(e.latlng, map.getZoom());
-				}
-			} else {
-				//var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-				map.flyTo(e.latlng, map.getZoom())
-			}
+			//if(mapService.getView().center) {
+				//var bounds = map.getBounds();
+				//if(!bounds.contains(e.latlng)) {
+					////var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+					//map.flyTo(e.latlng, map.getZoom());
+				//}
+			//} else {
+				////var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+				//map.flyTo(e.latlng, map.getZoom())
+			//}
 		}
 		
 		function onLocationError(e) {
