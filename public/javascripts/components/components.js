@@ -209,8 +209,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//USER LOCATION
 		scope.$on('locate', function() {
 			if(attrs.class==="map-sm") {
-				var z = map.getZoom();
-				map.locate({setView: true, watch: true, maxZoom: z});
+				map.locate({setView: false, watch: true});
 			}
 		});
 		
@@ -220,10 +219,16 @@ var leafletDirective = angular.module('app.leaflet', [])
 		
 		var uLoc;
 		function onLocationFound(e) {
-			
+			alert('located');
 			var uPopup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
 				.setContent("<strong>Votre position</strong>");
 				
+			if(map.hasLayer(uLoc)) {
+				map.removeLayer(uLoc);
+			} else {
+				var z = (map.getZoom() < 14 ? 14 : map.getZoom());
+				map.flyTo(e.latlng, z)
+			}		
 			uLoc = L.marker(e.latlng, {icon: redIcon}).addTo(map)
 				.bindPopup(uPopup);
 			
