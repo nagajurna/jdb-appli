@@ -7,9 +7,25 @@
   .wrapper-strict(class="text-center")
     ul(class="list-group")
       li(class="list-group-item" ng-click='$ctrl.goToPlaces()' )
-         h4(class="text-uppercase") Tous les bars  
-      li(class="list-group-item" ng-repeat='game in $ctrl.games' ng-click='$ctrl.goToPlaces(game.pathname)' )
-        h4(class="text-uppercase") {{ game.name }}
+        h4(class="text-uppercase") Tous les bars
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("baby-foot")' )
+        h4(class="text-uppercase") Baby-foot
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("billard")' )
+        h4(class="text-uppercase") Billard
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("board-game")' )
+        h4(class="text-uppercase") Board game
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("bowling")' )
+        h4(class="text-uppercase") Bowling
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("flechettes")' )
+        h4(class="text-uppercase") Fléchettes
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("flipper")' )
+        h4(class="text-uppercase") Flipper
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("jeu-video")' )
+        h4(class="text-uppercase") Jeu vidéo
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("petanque")' )
+        h4(class="text-uppercase") Pétanque
+      li(class="list-group-item" ng-click='$ctrl.goToPlaces("ping-pong")' )
+        h4(class="text-uppercase") Ping-pong
       
   footer
     //div(class="hr")

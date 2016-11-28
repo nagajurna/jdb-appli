@@ -240,7 +240,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 			} else {
 				
 				uLoc.setLatLng(e.latlng);
-				
+				var bounds = map.getBounds();
 				if(!bounds.contains(e.latlng)) {
 					map.flyTo(e.latlng);
 				}
@@ -460,13 +460,6 @@ main.component('home', {
 			var ctrl = this;
 			ctrl.maintitle = '';
 			
-			ctrl.getGames = function() {
-				$http.get('/api/games').
-					then(function(response) {
-						 ctrl.games = response.data;
-					});
-				};
-				
 			ctrl.getPlaces = function() {
 			$http.get('/api/places').
 				then(function(response) {
