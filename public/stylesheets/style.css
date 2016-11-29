@@ -31,6 +31,10 @@ a:active {
 	text-decoration: none;
 }
 
+button:focus {
+	outline:0;
+}
+
 hr.low {
 	margin-top: 0px;
 }
@@ -274,7 +278,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 		height: -webkit-calc(100% - 67px);
 		height: -moz-calc(100% - 67px);
 		height: calc(100% - 67px);
-		overflow-y: auto;
+		overflow-y: scroll;
 		margin-top: 10px;
 	}
 	
@@ -316,6 +320,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 
 .reverse-btn {
 	margin-left: 5px;
+	outline: none;
 }
 
 .reverse-btn span:after {
@@ -527,4 +532,7 @@ footer div.col-xs-6 {
 .place-image > img {
 	max-width: 100%;
 	height: auto;
+	
 }
+
+

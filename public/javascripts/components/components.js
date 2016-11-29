@@ -99,8 +99,8 @@ var leafletDirective = angular.module('app.leaflet', [])
 					}
 					
 					//Pop-up				  
-					var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'}).
-					setContent(popupContent);
+					var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
+						.setContent(popupContent);
 					marker.bindPopup(popup);
 					
 					//Pop-up link on click (map-sm : placeModal)
@@ -113,9 +113,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 					//Marker on click						
 					var myFunction = function(place) {
 						marker.on('click', function(ev) {
-							if(attrs.class==="map-sm") {
-								//mapService.setSelectedMarker(ev.target);
-							} else if (attrs.class==="map-lg") {
+							if (attrs.class==="map-lg") {
 								mapService.setScrollPosition(link2, place._id)
 							}
 						});
@@ -136,12 +134,24 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 		//GET ARRAY FOR MARKERS	
 		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
-			 if(angular.isDefined(newColl)) {
-				removeMarker(markers);//suppress all previous markers
-				addMarker(newColl);//add new markers
-				//mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
+			if(attrs.class==="map-lg" && window.innerWidth >= 768)  {
+				 if(angular.isDefined(newColl) & !angular.equals(newColl, oldColl)) {
+					removeMarker(markers);//suppress all previous markers
+					addMarker(newColl);//add new markers
+					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
+				}
+			} else {
+				if(angular.isDefined(newColl)) {
+					removeMarker(markers);//suppress all previous markers
+					addMarker(newColl);//add new markers
+					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
+				}
 			}
+			
 		});
+	
+		
+		
 		
 		//place backToText
 		if(attrs.class==="map-sm-place") {
@@ -159,13 +169,15 @@ var leafletDirective = angular.module('app.leaflet', [])
 			zoom = mapService.zoomDefault;
 			map.setView(center, zoom);
 		} else if(attrs.class==="map-sm") {
-			if(mapService.getView().center) {
-				center = mapService.getView().center;
-				zoom = mapService.getView().zoom;
-			} else {
-				center = mapService.centerDefault;
-				zoom = mapService.zoomDefaultSm;
-			}
+			//if(mapService.getView().center) {
+				//center = mapService.getView().center;
+				//zoom = mapService.getView().zoom;
+			//} else {
+				//center = mapService.centerDefault;
+				//zoom = mapService.zoomDefaultSm;
+			//}
+			center = mapService.centerDefault;
+			zoom = mapService.zoomDefaultSm;
 			map.setView(center, zoom);
 		} else if(attrs.class==='map-sm-place') {
 			scope.$watch(attrs.selected, function(newSelected,oldSelected) {
@@ -196,18 +208,17 @@ var leafletDirective = angular.module('app.leaflet', [])
 		}
 			
 		//SMALL DEVICES : keep track of map state
-		if(attrs.class==="map-sm") {
-			map.on('moveend', function() {
-				mapService.setView(map.getCenter(),map.getZoom());
-			});
+		//if(attrs.class==="map-sm") {
+			//map.on('moveend', function() {
+				//mapService.setView(map.getCenter(),map.getZoom());
+			//});
 			
-			//if(mapService.getSelectedMarker()) {
-				//mapService.getSelectedMarker().getPopup().openOn(map);
-			//}
-		}
+			////if(mapService.getSelectedMarker()) {
+				////mapService.getSelectedMarker().getPopup().openOn(map);
+			////}
+		//}
 		
 		//USER LOCATION
-		
 		scope.$on('locate', function() {
 			if(attrs.class==="map-sm") {
 				map.locate({setView: false, watch: true, enableHighAccuracy: true});
@@ -240,27 +251,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 			} else {
 				
 				uLoc.setLatLng(e.latlng);
-				var bounds = map.getBounds();
-				if(!bounds.contains(e.latlng)) {
-					map.flyTo(e.latlng);
-				}
-				
-			}
-				
-
-				
-			
-			
-			//if(mapService.getView().center) {
 				//var bounds = map.getBounds();
 				//if(!bounds.contains(e.latlng)) {
-					////var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-					//map.flyTo(e.latlng, map.getZoom());
+					//map.flyTo(e.latlng);
 				//}
-			//} else {
-				////var z = (map.getZoom() < 14 ? 14 : map.getZoom());
-				//map.flyTo(e.latlng, map.getZoom())
-			//}
+				
+			}
 		}
 		
 		function onLocationError(e) {
@@ -296,7 +292,7 @@ main.component('main', {
 			//INIT APP
 			ctrl.appInit = function () {
 				ctrl.getUser();
-				//ctrl.getMarkers();
+				ctrl.getMarkers();
 			};
 			
 			/*USER*/
@@ -319,7 +315,7 @@ main.component('main', {
 				$http.get('/users/signout').
 					then(function(response) {
 						ctrl.getUser();
-						mapService.setView(null, null);
+						//mapService.setView(null, null);
 						$location.path('/');
 					});
 			};
@@ -395,7 +391,7 @@ main.component('main', {
 				//}
 				ctrl.hideSort = (ctrl.view==='map' ? true : false);
 				//ctrl.hideLocate = (ctrl.view==='map' ? false : true);
-				mapService.setView(null,null);
+				//mapService.setView(null,null);
 				mapService.stopLocate();
 				ctrl.locate = false;
 				//mapService.setSelectedMarker(null);
@@ -421,8 +417,8 @@ main.component('main', {
 			$(window).on('resize', function() {
 				if(window.innerWidth >= 768) {
 					$scope.$apply(function() {
-						ctrl.view='list';
-						ctrl.placeView='text';
+						ctrl.view="list";
+						ctrl.placeview = 'text';
 					});
 				 }
 			});
@@ -702,6 +698,8 @@ places.component('places', {
 		
 		
 		
+		
+		
 	}
 });
 
@@ -745,6 +743,8 @@ places.component('placesList', {
 			$location.path(ctrl.link + spot.nameAlpha);
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
 		}
+		
+		
 		
 	}
 });

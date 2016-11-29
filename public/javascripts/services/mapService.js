@@ -3,45 +3,45 @@ var mapService = angular.module('app.mapService', [])
 	
 	var mapService = {};
 	/*setMarkers and getMarkers : save in session last state of markers in case refreshing by user*/
-	//mapService.setMarkers = function(markers) {
-			//var data = {};
-			//data.markers = markers;
-			//$http.post('/api/markers', data);
-		//};
+	mapService.setMarkers = function(markers) {
+			var data = {};
+			data.markers = markers;
+			$http.post('/api/markers', data);
+		};
 		
-	//mapService.getMarkers = function() {
-		//var defer = $q.defer();
-		//$http.get('/api/markers').
-		//then(function(response) {
-			//defer.resolve({reason: 'got markers', markers: response.data.markers});
-		//});
+	mapService.getMarkers = function() {
+		var defer = $q.defer();
+		$http.get('/api/markers').
+		then(function(response) {
+			defer.resolve({reason: 'got markers', markers: response.data.markers});
+		});
 							
-		//return defer.promise;
-	//};
+		return defer.promise;
+	};
 		
-	mapService.setSelectedMarker = function(index) {
-		mapService.selectedMarker = index;
-	};
+	//mapService.setSelectedMarker = function(index) {
+		//mapService.selectedMarker = index;
+	//};
 	
-	mapService.getSelectedMarker = function() {
-		return mapService.selectedMarker;
-	};
+	//mapService.getSelectedMarker = function() {
+		//return mapService.selectedMarker;
+	//};
 		
 	mapService.centerDefault = [48.8560601,2.3465281];
 	mapService.zoomDefault = 13;
 	mapService.zoomDefaultSm = 12;
 	
-	mapService.setView = function(center, zoom) {
-		mapService.center = center;
-		mapService.zoom = zoom;
-	};
+	//mapService.setView = function(center, zoom) {
+		//mapService.center = center;
+		//mapService.zoom = zoom;
+	//};
 	
-	mapService.getView = function() {
-		var map = {};
-		map.center = mapService.center;
-		map.zoom = mapService.zoom;
-		return map;
-	};
+	//mapService.getView = function() {
+		//var map = {};
+		//map.center = mapService.center;
+		//map.zoom = mapService.zoom;
+		//return map;
+	//};
 	
 	mapService.goToMap = function() {
 		$rootScope.$broadcast('goToMap', {placeview: 'map'});
@@ -62,6 +62,7 @@ var mapService = angular.module('app.mapService', [])
 	mapService.stopLocate = function() {
 		$rootScope.$broadcast('stopLocate');
 	};
+	
 	
 	mapService.setScrollPosition = function(link, id) {
 		//$interval to make sure $location is correct before broadcasting event
