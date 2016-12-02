@@ -2,17 +2,19 @@ div(id="placeModal" class="modal fade" role="dialog")
   .modal-dialog
     .modal-content
       .modal-header
-        button(type="button" class="close" data-dismiss="modal") &times;
+        button(type="button" class="close" ng-click="$ctrl.close($ctrl.spot)") &times;
         div(ng-if='!$ctrl.maintitle')
           h4(class="modal-title") {{ $ctrl.spot.name }}
             p: span(ng-repeat="game in $ctrl.spot.games" class="small") {{ game.name + ' ' }}
         div(ng-if='$ctrl.maintitle'): h4(class="modal-title") {{ $ctrl.maintitle }}
       .modal-body
         div(ng-switch="$ctrl.placetemplate")
-          <place-modal ng-switch-when="place" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser"></place-modal>
+          <place-modal ng-switch-when="place" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser" ready="$ctrl.ready" view="$ctrl.view"></place-modal>
           <new-comment-modal ng-switch-when="comment" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser" on-completed="$ctrl.getComments(id)" ></new-comment-modal>
           <sign-in ng-switch-when="sign-in" maintitle="$ctrl.maintitle" template="$ctrl.placetemplate" modal="$ctrl.modal"></sign-in>
           <sign-up ng-switch-when="sign-up" maintitle="$ctrl.maintitle" template="$ctrl.placetemplate" modal="$ctrl.modal"></sign-up>
           <forgot-password ng-switch-when="forgot-password" maintitle="$ctrl.maintitle" template="$ctrl.placetemplate"></forgot-password>
       .modal-footer
-        button(type="button" class="btn btn-default" data-dismiss="modal") Fermer
+        button(type="button" class="btn btn-default place-modal pull-left" ng-click="$ctrl.backToPlace()" ng-if="$ctrl.placetemplate!=='place'")
+          span(class="glyphicon glyphicon-arrow-left")
+        button(type="button" class="btn btn-default" ng-click="$ctrl.close($ctrl.spot)") Fermer

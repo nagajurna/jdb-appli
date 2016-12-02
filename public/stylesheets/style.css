@@ -35,6 +35,19 @@ a:active {
 	text-decoration: none;
 }
 
+button.place-modal  {
+	border: none;
+	padding-top: 0px;
+}
+
+button.place-modal.pull-left {
+	padding-left: 0px;
+}
+
+button.place-modal.pull-right {
+	padding-right: 0px;
+}
+
 button:focus {
 	outline:0;
 }
@@ -285,6 +298,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 		overflow-y: scroll;
 		margin-top: 10px;
 	}
+	
 	
 	.wrapper > div, .wrapper > ul, .wrapper > form {
 		margin-right: 10px;

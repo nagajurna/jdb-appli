@@ -18,14 +18,17 @@ var mapService = angular.module('app.mapService', [])
 							
 		return defer.promise;
 	};
-		
-	//mapService.setSelectedMarker = function(index) {
-		//mapService.selectedMarker = index;
-	//};
 	
-	//mapService.getSelectedMarker = function() {
-		//return mapService.selectedMarker;
-	//};
+			
+	mapService.setSelectedSpot = function(spot) {
+		
+		mapService.selectedSpot = spot;
+	};
+	
+	mapService.getSelectedSpot = function() {
+		
+		return mapService.selectedSpot;
+	};
 		
 	mapService.centerDefault = [48.8560601,2.3465281];
 	mapService.zoomDefault = 13;
@@ -43,16 +46,20 @@ var mapService = angular.module('app.mapService', [])
 		//return map;
 	//};
 	
-	mapService.goToMap = function() {
-		$rootScope.$broadcast('goToMap', {placeview: 'map'});
+	//mapService.goToMap = function() {
+		//$rootScope.$broadcast('goToMap', {placeview: 'map'});
+	//};
+	
+	//mapService.backToText = function() {
+		//$rootScope.$broadcast('backToText', {placeview: 'text'});
+	//};
+	
+	mapService.setPlaceModalFromMap = function(name) {
+		$rootScope.$broadcast('placeModal', name);
 	};
 	
-	mapService.backToText = function() {
-		$rootScope.$broadcast('backToText', {placeview: 'text'});
-	};
-	
-	mapService.setPlaceModal = function(place) {
-		$rootScope.$broadcast('placeModal', {place: place});
+	mapService.setPlaceModalFromText = function(spot) {
+		$rootScope.$broadcast('placeModal', spot);
 	};
 	
 	mapService.locate = function() {
@@ -103,13 +110,13 @@ var mapService = angular.module('app.mapService', [])
 				},100);
 		} else {
 			var scroll = $interval(function() {
-					if($('#' + data.index).offset()) {
-					var offset = $(window).scrollTop() + $('#' + data.index).offset().top-52;
+				if($('#sm' + data.index).offset()) {
+					var offset = $(window).scrollTop() + $('#sm' + data.index).offset().top-52;
 					$('html, body').animate({
 							scrollTop: offset
-						},500);
+						},0);
 					stopScroll();
-					}
+				}
 			},100);
 		}
 		

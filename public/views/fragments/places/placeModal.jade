@@ -1,4 +1,15 @@
-div()
+div(ng-show="$ctrl.ready")
+  .row
+    .col-xs-6
+      button(type="button" class="btn btn-default place-modal pull-left" data-dismiss="modal")
+        span(class="glyphicon glyphicon-arrow-left")  
+    .col-xs-6
+      button(type="button" class="btn btn-default place-modal pull-right" ng-click="$ctrl.goToMap($ctrl.spot)" ng-if="$ctrl.view==='list'")
+        span(class="glyphicon glyphicon-map-marker")
+      button(type="button" class="btn btn-default place-modal pull-right" ng-click="$ctrl.goToList($ctrl.spot)" ng-if="$ctrl.view==='map'")
+        span(class="glyphicon glyphicon-list")
+      
+  hr(class="low")
   div(class="place-image")
     <img src="{{$ctrl.spot.image_link}}" alt="{{$ctrl.spot.name}}" style="width=500px">
   hr
@@ -8,7 +19,7 @@ div()
   p {{ $ctrl.spot.horaires }}
   p: em(ng-bind-html="$ctrl.spot.description")
   <hr>
-  .comments
+  .comments()
     .row
       .col-xs-8
         p {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
