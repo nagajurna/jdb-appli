@@ -10,13 +10,16 @@ router.get('/', function(req, res, next) {
 	res.cookie('XSRF-TOKEN', token);
 	//render index
 	res.render('index', {title: "JDB"});
+	//res.status('200').sendFile('index', {root: 'public/views/'});
 });
 
 /* GET fragments files. */
-router.get('/fragments/:filename', function(req, res, next) {
-	var filename = req.params.filename;
-	res.render('fragments/' + filename);
-});
+//router.get('/fragments/:filename', function(req, res, next) {
+	//console.log('ok');
+	//var filename = req.params.filename;
+	//res.render('fragments/' + filename);
+	////res.status('200').sendFile(filename, {root: 'public/views/fragments/'});
+//});
 
 /* GET fragments files in repertory. */
 router.get('/fragments/:repertory/:filename', function(req, res, next) {

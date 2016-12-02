@@ -16,6 +16,10 @@ html, body {
 	padding-left: 0px;
 }
 
+.map-lg, .map-sm, .map-sm-place {
+	height: 100vh;
+}
+
 a {
   color: #757575;
   text-decoration: none;

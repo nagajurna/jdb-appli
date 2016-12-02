@@ -1,6 +1,6 @@
 .container-fluid(ng-init="$ctrl.appInit()")
   .row.content
-    .col-sm-5.col-lg-4.leftCol(ng-class="{green: $ctrl.home}")
+    .col-sm-5.col-md-4.col-lg-3.leftCol(ng-class="{green: $ctrl.home}")
       
       //navbar for large devices
       nav.navbar.navbar-inverse.hidden-xs(ng-class="{hide: $ctrl.home}")
@@ -40,9 +40,8 @@
             img(src="/images/google- icons/ic_my_location_white_24dp/web/ic_my_location_white_24dp_1x.png")
                      
           <sort-by property-name="$ctrl.propertyName" reverse="$ctrl.reverse" class="menu-right" ng-class="{hide: $ctrl.hideSort}"></sort-by>
-       
          
-
+      
       //ng-view : hidden when view === 'map' on small devices     
       #view(ng-view ng-show="$ctrl.view==='list'")
       
@@ -53,7 +52,7 @@
       <modal-place placetemplate='$ctrl.placetemplate' currentuser="$ctrl.currentuser"></modal-place>
     
     //rightCol : hidden on small devices
-    .col-sm-7.col-lg-8.rightCol.hidden-xs
+    .col-sm-7.col-md-8.col-lg-9.rightCol.hidden-xs
       //map-lg : only if view === 'list' (= always on large devices)
       div(leaflet-map class="map-lg" ng-if="$ctrl.view==='list'" source='$ctrl.markers' position='$ctrl.position')
       div(id="game-bar" games-bar ng-class="{hide: $ctrl.home}")

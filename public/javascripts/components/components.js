@@ -10,9 +10,6 @@ var leafletDirective = angular.module('app.leaflet', [])
 		 * */
 		
 		
-		//SIZE
-		$(element).css({'height': '100vh'});
-		
 		//MAP		
 		var map = L.map(element[0], {
 				zoomControl: false
@@ -27,8 +24,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		//LAYER
 		L.tileLayer('https://a.tiles.mapbox.com/v4/nagajurna.l3km7gd0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmFnYWp1cm5hIiwiYSI6IklzMFRIYXcifQ.hqVc_h3zWIaNXodK_5DnvA#4/48.87/2.36', {
 			//attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			minZoom: 11,
-			maxZoom: 18,
+			minZoom: 11
 		}).addTo(map);
 		
 		//ICONS
@@ -186,7 +182,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 					zoom = 16;
 					map.setView(center, zoom);
 					//Marker open pop-up
-					markers[newSelected.index].setIcon(orangeIcon);
+					markers[newSelected.index].setIcon(greenIcon);
 					markers[newSelected.index].openPopup();
 				}
 			});
