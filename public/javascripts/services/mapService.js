@@ -110,8 +110,8 @@ var mapService = angular.module('app.mapService', [])
 				},100);
 		} else {
 			var scroll = $interval(function() {
-				if($('#sm' + data.index).offset()) {
-					var offset = $(window).scrollTop() + $('#sm' + data.index).offset().top-52;
+				if($('#' + data.index).offset()) {
+					var offset = $(window).scrollTop() + $('#' + data.index).offset().top-52;
 					$('html, body').animate({
 							scrollTop: offset
 						},0);

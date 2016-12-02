@@ -693,6 +693,14 @@ places.component('placesList', {
 			}
 			return count;
 		};
+		
+		ctrl.toPlace = function(spot) {
+			if(window.innerWidth >= 768) {
+				ctrl.goToPlace(spot);
+			} else {
+				ctrl.getPlaceModal(spot);
+			}
+		}
 			
 		// lg devices : marker in view and popup open
 		ctrl.goToPlace = function(spot) {
