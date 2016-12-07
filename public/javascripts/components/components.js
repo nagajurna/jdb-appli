@@ -514,6 +514,7 @@ main.component('modalPlace', {
 			$http.get('/api/comments/place/' + id).
 				then(function(response) {
 					ctrl.comments = response.data;
+					ctrl.ready = true;
 					ctrl.comments.forEach(function(comment) {
 						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
 					});
@@ -532,13 +533,11 @@ main.component('modalPlace', {
 			ctrl.spot = spot;
 			ctrl.getComments(spot._id)
 			
+			
 		});
 		
 			
-		$("#placeModal").on('show.bs.modal', function() {
-				ctrl.ready = true;
-				
-		});
+		
 		
 		
 		$("#placeModal").on('hidden.bs.modal', function() {
