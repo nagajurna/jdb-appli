@@ -9,7 +9,7 @@ div(id="placeModal" class="modal fade" role="dialog")
         div(ng-if='$ctrl.maintitle'): h4(class="modal-title") {{ $ctrl.maintitle }}
       .modal-body
         div(ng-switch="$ctrl.placetemplate")
-          <place-modal ng-switch-when="place" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser" ready="$ctrl.ready" view="$ctrl.view"></place-modal>
+          <place-modal ng-switch-when="place" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser" ready="$ctrl.ready" nocom="$ctrl.nocom" view="$ctrl.view"></place-modal>
           <new-comment-modal ng-switch-when="comment" maintitle="$ctrl.maintitle" spot="$ctrl.spot" comments="$ctrl.comments" placetemplate="$ctrl.placetemplate" currentuser="$ctrl.currentuser" on-completed="$ctrl.getComments(id)" ></new-comment-modal>
           <sign-in ng-switch-when="sign-in" maintitle="$ctrl.maintitle" template="$ctrl.placetemplate" modal="$ctrl.modal"></sign-in>
           <sign-up ng-switch-when="sign-up" maintitle="$ctrl.maintitle" template="$ctrl.placetemplate" modal="$ctrl.modal"></sign-up>

@@ -193,6 +193,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 		});
 		
 		scope.$on('stopLocate', function() {
+			console.log("ok");
 			map.stopLocate();
 			if(map.hasLayer(uLoc)) {
 				map.removeLayer(uLoc);
@@ -252,7 +253,7 @@ main.component('main', {
 			var ctrl = this;
 			ctrl.home = false;
 			ctrl.view = 'list';
-			ctrl.placeview = 'text';
+			//ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
 			ctrl.currentuser = null;
 			ctrl.markers = {};
@@ -359,27 +360,27 @@ main.component('main', {
 			}
 			
 			//placeToggleView()
-			ctrl.placeToggleView = function() {
-				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
-			}
+			//ctrl.placeToggleView = function() {
+				//ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
+			//}
 			//on placeToggleView from map to placeText
-			$scope.$on('backToText', function(event,data) {
-				$scope.$apply(function() {
-					ctrl.placeToggleView();
-				});
-			});
+			//$scope.$on('backToText', function(event,data) {
+				//$scope.$apply(function() {
+					//ctrl.placeToggleView();
+				//});
+			//});
 			
-			//on placeToggleView from map to placesList
-			$scope.$on('goToMap', function(event,data) {
-				ctrl.placeToggleView();
-			});
+			////on placeToggleView from map to placesList
+			//$scope.$on('goToMap', function(event,data) {
+				//ctrl.placeToggleView();
+			//});
 			
 			
 			$(window).on('resize', function() {
 				if(window.innerWidth >= 768) {
 					$scope.$apply(function() {
 						ctrl.view="list";
-						ctrl.placeview = 'text';
+						//ctrl.placeview = 'text';
 					});
 				 }
 			});
@@ -400,6 +401,10 @@ main.component('main', {
 					ctrl.locate = true;
 				}
 			}
+			
+			$scope.$on('stopLocate', function(event, data) {
+				ctrl.locate = false;
+			});
 			
 			
 	}]
@@ -500,8 +505,10 @@ main.component('modalPlace', {
 		
 		var ctrl = this;
 		ctrl.ready = false;
+		ctrl.nocom = true;
 		ctrl.modal = 'place';
 		ctrl.maintitle = "";
+		
 		
 		ctrl.getComments = function(id) {
 			$http.get('/api/comments/place/' + id).
@@ -523,15 +530,22 @@ main.component('modalPlace', {
 		
 		$scope.$on('placeModal', function(ev, spot) {
 			ctrl.spot = spot;
-			ctrl.ready = true;
 			ctrl.getComments(spot._id)
+			
 		});
 		
 			
+		$("#placeModal").on('show.bs.modal', function() {
+				ctrl.ready = true;
+				
+		});
+		
+		
 		$("#placeModal").on('hidden.bs.modal', function() {
 				ctrl.spot = {};
 				ctrl.comments = {};
 				ctrl.ready = false;
+				ctrl.nocom = true;
 		});
 		
 	}
@@ -607,7 +621,7 @@ places.component('places', {
 	templateUrl: '/fragments/places/places',
 	bindings: {
 		view: '=',
-		placeview: '=',
+		//placeview: '=',
 		maintitle: '=',
 		markers: '='
 	},
@@ -623,7 +637,7 @@ places.component('places', {
 				ctrl.link = "/places/name/";
 			}
 			
-			ctrl.placeview = 'text';
+			//ctrl.placeview = 'text';
 		};
 		
 		ctrl.getPlaces = function() {
@@ -719,115 +733,115 @@ places.component('placesList', {
 	}
 });
 
-places.component('place', {
-	templateUrl: '/fragments/places/place',
-	bindings: {
-		view: '<',
-		placeview: '<',
-		maintitle: '='
-	},
-	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
+//places.component('place', {
+	//templateUrl: '/fragments/places/place',
+	//bindings: {
+		//view: '<',
+		////placeview: '<',
+		//maintitle: '='
+	//},
+	//controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
 		
-		var ctrl = this;
-		ctrl.ready = false;
-		ctrl.init = function() {
-			if($route.current.params.game) {
-				ctrl.getGamePlaces();
-			} else {
-				ctrl.getPlaces();
-			}
-		};
+		//var ctrl = this;
+		//ctrl.ready = false;
+		//ctrl.init = function() {
+			//if($route.current.params.game) {
+				//ctrl.getGamePlaces();
+			//} else {
+				//ctrl.getPlaces();
+			//}
+		//};
 		
-		ctrl.getPlace = function(spots) {
-			var pathname = $route.current.params.name;
-			for(var i=0; i<spots.length; i++) {
-			  if(spots[i]['nameAlpha']===pathname) {
-				  ctrl.spot = spots[i];
-				  ctrl.spot.index = i;
-				  ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
-				  break;
-			  }
-			}
-			return ctrl.spot;
-		}
+		//ctrl.getPlace = function(spots) {
+			//var pathname = $route.current.params.name;
+			//for(var i=0; i<spots.length; i++) {
+			  //if(spots[i]['nameAlpha']===pathname) {
+				  //ctrl.spot = spots[i];
+				  //ctrl.spot.index = i;
+				  //ctrl.spot.description = $sce.trustAsHtml(toHtmlFilter(ctrl.spot.description));
+				  //break;
+			  //}
+			//}
+			//return ctrl.spot;
+		//}
 		
-		ctrl.getPlaces = function() {
-			$http.get('/api/places').
-				then(function(response) {
-					ctrl.spots = response.data;
-					ctrl.markers = ctrl.spots;
-					ctrl.maintitle = 'Tous les bars';
-					ctrl.spot = ctrl.getPlace(ctrl.spots);
-					ctrl.ready = true;
-					ctrl.comments = ctrl.getComments(ctrl.spot._id)
-				});
-		};
+		//ctrl.getPlaces = function() {
+			//$http.get('/api/places').
+				//then(function(response) {
+					//ctrl.spots = response.data;
+					//ctrl.markers = ctrl.spots;
+					//ctrl.maintitle = 'Tous les bars';
+					//ctrl.spot = ctrl.getPlace(ctrl.spots);
+					//ctrl.ready = true;
+					//ctrl.comments = ctrl.getComments(ctrl.spot._id)
+				//});
+		//};
 		
-		ctrl.getGamePlaces = function() {
-			$http.get('/api/games/' + $route.current.params.game).
-				then(function(response) {
-					ctrl.game = response.data;
-					ctrl.maintitle = ctrl.game.name;
-					return ctrl.game;
-				})
-				.then(function(game) {
-					$http.get('/api/places/game/'  + game._id).
-						then(function(response) {
-							ctrl.spots = response.data;
-							ctrl.markers = ctrl.spots;
-							ctrl.spot = ctrl.getPlace(ctrl.spots);
-							ctrl.ready = true;
-							ctrl.comments = ctrl.getComments(ctrl.spot._id)
-						});
-				});
-		};
-		ctrl.commentsTitle = "";
-		ctrl.getComments = function(id) {
-			$http.get('/api/comments/place/' + id).
-				then(function(response) {
-					ctrl.comments = response.data;
-					ctrl.comments.forEach(function(comment) {
-						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
-					});
-					return ctrl.comments;
-				});
-		};
+		//ctrl.getGamePlaces = function() {
+			//$http.get('/api/games/' + $route.current.params.game).
+				//then(function(response) {
+					//ctrl.game = response.data;
+					//ctrl.maintitle = ctrl.game.name;
+					//return ctrl.game;
+				//})
+				//.then(function(game) {
+					//$http.get('/api/places/game/'  + game._id).
+						//then(function(response) {
+							//ctrl.spots = response.data;
+							//ctrl.markers = ctrl.spots;
+							//ctrl.spot = ctrl.getPlace(ctrl.spots);
+							//ctrl.ready = true;
+							//ctrl.comments = ctrl.getComments(ctrl.spot._id)
+						//});
+				//});
+		//};
+		//ctrl.commentsTitle = "";
+		//ctrl.getComments = function(id) {
+			//$http.get('/api/comments/place/' + id).
+				//then(function(response) {
+					//ctrl.comments = response.data;
+					//ctrl.comments.forEach(function(comment) {
+						//comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+					//});
+					//return ctrl.comments;
+				//});
+		//};
 		
-	}
-});
+	//}
+//});
 
-places.component('placeText', {
-	templateUrl: '/fragments/places/placeText',
-	bindings: {
-		view: '<',
-		spot: '<',
-		comments: '<'
-	},
-	controller: function($route, mapService, $location) {
+//places.component('placeText', {
+	//templateUrl: '/fragments/places/placeText',
+	//bindings: {
+		//view: '<',
+		//spot: '<',
+		//comments: '<'
+	//},
+	//controller: function($route, mapService, $location) {
 		
-		var ctrl = this;
+		//var ctrl = this;
 		
-		if($route.current.params.game) {
-			ctrl.redirect = "/places/game/" + $route.current.params.game
-		} else {
-			ctrl.redirect = "/places";
-		}
+		//if($route.current.params.game) {
+			//ctrl.redirect = "/places/game/" + $route.current.params.game
+		//} else {
+			//ctrl.redirect = "/places";
+		//}
 		
-		ctrl.newCommentPath = $location.path() + '/comments/new';
+		//ctrl.newCommentPath = $location.path() + '/comments/new';
 		
-		ctrl.back = function() {
-			if(ctrl.view==='list') {
-				mapService.setScrollPosition(ctrl.redirect,ctrl.spot._id);
-			} else {
-				$location.path(ctrl.redirect);
-			}
-		};
+		//ctrl.back = function() {
+			//if(ctrl.view==='list') {
+				//mapService.setScrollPosition(ctrl.redirect,ctrl.spot._id);
+			//} else {
+				//$location.path(ctrl.redirect);
+			//}
+		//};
 		
-		ctrl.placeToggleView = function() {
-			mapService.goToMap();
-		}
-	}
-});
+		//ctrl.placeToggleView = function() {
+			//mapService.goToMap();
+		//}
+	//}
+//});
 
 
 places.component('placeModal', {
@@ -839,21 +853,29 @@ places.component('placeModal', {
 		currentuser: "<",
 		maintitle: "=",
 		ready: "<",
-		view: "="
+		view: "=",
+		nocom: "="
 	},
 	controller: function($location, mapService) {
 		
 		var ctrl = this;
 		ctrl.maintitle = null;
+		
+		ctrl.toggleComments = function() {
+			ctrl.nocom = !ctrl.nocom;
+		}
+		
 		ctrl.addComment = function() {
 			if(!ctrl.currentuser) {
 				ctrl.placetemplate = 'sign-in';
 				return
 			}
 			ctrl.placetemplate = 'comment';
+			ctrl.nocom = false;
 		};
 		
 		ctrl.goToList = function(spot) {
+			mapService.stopLocate();
 			mapService.setScrollPosition($location.path(),spot._id);
 			ctrl.view = 'list';
 			$("#placeModal").modal('hide');

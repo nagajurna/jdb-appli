@@ -22,10 +22,11 @@ div(ng-show="$ctrl.ready")
   .comments()
     .row
       .col-xs-8
-        p {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
+        p: a(href="" ng-click="$ctrl.toggleComments()") {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
       .col-xs-4
-        p(class="pull-right"): a(href="" ng-click="$ctrl.addComment()") Ajouter
-    .row
+        p(class="pull-right" ng-if="$ctrl.comments.length>0" ng-hide="$ctrl.nocom"): a(href="" ng-click="$ctrl.addComment()") Ajouter
+        p(class="pull-right" ng-if="$ctrl.comments.length===0"): a(href="" ng-click="$ctrl.addComment()") Ajouter
+    .row(ng-hide="$ctrl.nocom")
       .col-xs-12
         ul(class="list-group")
           li(ng-repeat="comment in $ctrl.comments" class="list-group-item")
