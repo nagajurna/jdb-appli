@@ -252,7 +252,7 @@ main.component('main', {
 			var ctrl = this;
 			ctrl.home = false;
 			ctrl.view = 'list';
-			//ctrl.placeview = 'text';
+			ctrl.placeview = 'text';
 			//ctrl.loggedIn = false;
 			ctrl.currentuser = null;
 			ctrl.markers = {};
@@ -359,27 +359,27 @@ main.component('main', {
 			}
 			
 			//placeToggleView()
-			//ctrl.placeToggleView = function() {
-				//ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
-			//}
+			ctrl.placeToggleView = function() {
+				ctrl.placeview = (ctrl.placeview==='text' ? ctrl.placeview = 'map' : ctrl.placeview = 'text');
+			}
 			//on placeToggleView from map to placeText
-			//$scope.$on('backToText', function(event,data) {
-				//$scope.$apply(function() {
-					//ctrl.placeToggleView();
-				//});
-			//});
+			$scope.$on('backToText', function(event,data) {
+				$scope.$apply(function() {
+					ctrl.placeToggleView();
+				});
+			});
 			
-			////on placeToggleView from map to placesList
-			//$scope.$on('goToMap', function(event,data) {
-				//ctrl.placeToggleView();
-			//});
+			//on placeToggleView from map to placesList
+			$scope.$on('goToMap', function(event,data) {
+				ctrl.placeToggleView();
+			});
 			
 			
 			$(window).on('resize', function() {
 				if(window.innerWidth >= 768) {
 					$scope.$apply(function() {
 						ctrl.view="list";
-						//ctrl.placeview = 'text';
+						ctrl.placeview = 'text';
 					});
 				 }
 			});
@@ -618,7 +618,7 @@ places.component('places', {
 	templateUrl: '/fragments/places/places',
 	bindings: {
 		view: '=',
-		//placeview: '=',
+		placeview: '=',
 		maintitle: '=',
 		markers: '='
 	},
@@ -634,7 +634,7 @@ places.component('places', {
 				ctrl.link = "/places/name/";
 			}
 			
-			//ctrl.placeview = 'text';
+			ctrl.placeview = 'text';
 		};
 		
 		ctrl.getPlaces = function() {
@@ -735,7 +735,7 @@ places.component('place', {
 	templateUrl: '/fragments/places/place',
 	bindings: {
 		view: '<',
-		//placeview: '<',
+		placeview: '<',
 		maintitle: '='
 	},
 	controller: function($route, $http, mapService, $sce, toHtmlFilter, $location) {
