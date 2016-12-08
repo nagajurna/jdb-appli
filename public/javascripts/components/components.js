@@ -319,7 +319,9 @@ main.component('main', {
 			//place infos when map-sm
 			ctrl.placeModalLoad = function(template) {
 				ctrl.placetemplate = template;
-				$("#placeModal").modal({show: true});
+				$timeout(function() {
+					$("#placeModal").modal({show: true});
+				},400);
 			}
 			//sm : launched by mapService (when click on popup) 
 			$scope.$on('placeModal', function(ev, data) {
