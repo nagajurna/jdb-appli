@@ -1,4 +1,4 @@
-div(ng-show="$ctrl.ready")
+div()
   .row
     .col-xs-6
       button(type="button" class="btn btn-default place-modal pull-left" data-dismiss="modal")
@@ -19,13 +19,13 @@ div(ng-show="$ctrl.ready")
   p {{ $ctrl.spot.horaires }}
   p: em(ng-bind-html="$ctrl.spot.description")
   <hr>
-  .comments()
+  .comments(ng-show="$ctrl.ready")
     .row
       .col-xs-8
         p: a(href="" ng-click="$ctrl.toggleComments()") {{ 'Commentaires (' + $ctrl.comments.length + ')' }}
       .col-xs-4
         p(class="pull-right" ng-if="$ctrl.comments.length>0" ng-hide="$ctrl.nocom"): a(href="" ng-click="$ctrl.addComment()") Ajouter
-        p(class="pull-right" ng-if="$ctrl.comments.length===0"): a(href="" ng-click="$ctrl.addComment()") Ajouter
+        p(class="pull-right" ng-if="$ctrl.comments.length===0" ): a(href="" ng-click="$ctrl.addComment()") Ajouter
     .row(ng-hide="$ctrl.nocom")
       .col-xs-12
         ul(class="list-group")

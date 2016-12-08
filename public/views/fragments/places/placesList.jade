@@ -14,5 +14,5 @@
           p(class="small"): strong
             span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
           p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
-          p(class="small" ng-bind="'Commentaires : ' + $ctrl.commentsCount(spot._id)")
+          p(class="small" ng-bind="'Commentaires : ' + $ctrl.commentsCount(spot)")
 
