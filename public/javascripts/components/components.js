@@ -131,12 +131,14 @@ var leafletDirective = angular.module('app.leaflet', [])
 		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
 			if(attrs.class==="map-lg" && window.innerWidth >= 768)  {
 				 if(angular.isDefined(newColl) & !angular.equals(newColl, oldColl)) {
+					console.log("lg");
 					removeMarker(markers);//suppress all previous markers
 					addMarker(newColl);//add new markers
 					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
 				}
 			} else {
 				if(angular.isDefined(newColl)) {
+					console.log("sm");
 					removeMarker(markers);//suppress all previous markers
 					addMarker(newColl);//add new markers
 					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
@@ -248,7 +250,7 @@ var main = angular.module('app.main', []);
 
 main.component('main', {
 	templateUrl: '/fragments/main/main',
-	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', function($scope, $http, $location, $route, authService, mapService) {
+	controller: ['$scope', '$http', '$location', '$route', 'authService', 'mapService', '$timeout', function($scope, $http, $location, $route, authService, mapService, $timeout) {
 			var ctrl = this;
 			ctrl.home = false;
 			ctrl.view = 'list';
@@ -352,10 +354,15 @@ main.component('main', {
 			}
 			//toggleView()
 			ctrl.toggleView = function() {
+				if(mapService.getSelectedSpot()) {
+					var spot = mapService.getSelectedSpot();
+					mapService.setScrollPosition($location.path(), spot._id);
+					mapService.setSelectedSpot(null);
+				}
 				ctrl.view = (ctrl.view==='list' ? 'map' : 'list');
 				mapService.stopLocate();
 				ctrl.locate = false;
-				mapService.setSelectedSpot(null);
+				
 			}
 			
 			//placeToggleView()
@@ -864,15 +871,10 @@ places.component('placeModal', {
 		maintitle: "=",
 		view: "="
 	},
-	controller: function($rootScope, $scope, $http, $location, $sce, toHtmlFilter, mapService) {
+	controller: function($rootScope, $scope, $http, $location, $sce, toHtmlFilter, mapService, $timeout) {
 		
 		var ctrl = this;
-		//ctrl.comments = [];
 		ctrl.maintitle = null;
-		
-		//ctrl.toggleComments = function() {
-			//ctrl.nocom = !ctrl.nocom;
-		//}
 		
 		ctrl.commentsCount = function(spot) {
 			if(!ctrl.comments.length) {
@@ -889,8 +891,6 @@ places.component('placeModal', {
 					ctrl.comments.forEach(function(comment) {
 						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
 					});
-					//ctrl.ready = true;
-					//$rootScope.$broadcast('count');
 				});
 		};
 		

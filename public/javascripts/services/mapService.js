@@ -21,12 +21,10 @@ var mapService = angular.module('app.mapService', [])
 	
 			
 	mapService.setSelectedSpot = function(spot) {
-		
 		mapService.selectedSpot = spot;
 	};
 	
 	mapService.getSelectedSpot = function() {
-		
 		return mapService.selectedSpot;
 	};
 		
@@ -110,15 +108,10 @@ var mapService = angular.module('app.mapService', [])
 					}
 				},100);
 		} else {
-			var scroll = $interval(function() {
-				if($('#' + data.index).offset()) {
-					var offset = $(window).scrollTop() + $('#' + data.index).offset().top-52;
-					$('html, body').animate({
-							scrollTop: offset
-						},0);
-					stopScroll();
-				}
-			},100);
+			if($('#' + data.index).offset()) {
+				var offset = $(window).scrollTop() + $('#' + data.index).offset().top-52;
+				$('html, body').scrollTop(offset);
+			}
 		}
 		
 		stopScroll = function() {
