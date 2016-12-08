@@ -54,11 +54,12 @@ var mapService = angular.module('app.mapService', [])
 		//$rootScope.$broadcast('backToText', {placeview: 'text'});
 	//};
 	
-	mapService.setPlaceModalFromMap = function(name) {
-		$rootScope.$broadcast('placeModal', name);
-	};
+	//mapService.setPlaceModalFromMap = function(spot) {
+		//console.log(spot);
+		//$rootScope.$broadcast('placeModal', spot);
+	//};
 	
-	mapService.setPlaceModalFromText = function(spot) {
+	mapService.setPlaceModal = function(spot) {
 		$rootScope.$broadcast('placeModal', spot);
 	};
 	

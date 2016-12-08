@@ -102,7 +102,7 @@ var leafletDirective = angular.module('app.leaflet', [])
 					$(element).unbind().on("click", ".popup-link", function(e){
 						if(attrs.class==="map-sm") {//get modal place from map
 							var spot = places[e.target.parentElement.id];
-							mapService.setPlaceModalFromMap(spot);
+							mapService.setPlaceModal(spot);
 						}
 					});
 					
@@ -500,23 +500,22 @@ main.component('modalPlace', {
 		view: '=',
 		spots: '<'
 	},
-	controller: function($scope, $http, $location, $sce, toHtmlFilter, mapService) {
+	controller: function($rootScope, $scope, $http, $location, $sce, toHtmlFilter, mapService) {
 		
 		var ctrl = this;
-		ctrl.ready = false;
-		ctrl.nocom = true;
-		ctrl.modal = 'place';
+		ctrl.comments = [];
+		//ctrl.modal = 'place';
 		ctrl.maintitle = "";
 		
 		
-		ctrl.getComments = function(id) {
-			$http.get('/api/comments/place/' + id).
+		ctrl.getComments = function(spot) {
+			$http.get('/api/comments/place/' + spot._id).
 				then(function(response) {
 					ctrl.comments = response.data;
 					ctrl.comments.forEach(function(comment) {
 						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
 					});
-					ctrl.ready = true;
+					
 				});
 		};
 		
@@ -530,17 +529,26 @@ main.component('modalPlace', {
 		
 		$scope.$on('placeModal', function(ev, spot) {
 			ctrl.spot = spot;
-			ctrl.getComments(spot._id)
+			//console.log(spot);
+			if(ctrl.view==='map') {
+				$scope.$digest();
+			}
 		});
 		
-			
+		//$("#placeModal").on('show.bs.modal', function() {
+				//ctrl.spot = spot;
+		//});
+		
+		$scope.$on('refreshComment', function(event, data) {
+			console.log(data);
+			ctrl.getComments(data);
+		});	
 		
 		
 		$("#placeModal").on('hidden.bs.modal', function() {
 				ctrl.spot = {};
-				ctrl.comments = {};
-				ctrl.ready = false;
-				ctrl.nocom = true;
+				ctrl.comments = [];
+				$rootScope.$broadcast('count', ctrl.spot);
 		});
 		
 	}
@@ -704,6 +712,12 @@ places.component('placesList', {
 			return spot.commentsCount;
 		};
 		
+		//refresh comments count after comment added
+		$scope.$on('count', function(ev, data) {
+			ctrl.getComments();
+		});
+		
+				
 		ctrl.toPlace = function(spot) {
 			if(window.innerWidth >= 768) {
 				ctrl.goToPlace(spot);
@@ -712,7 +726,7 @@ places.component('placesList', {
 			}
 		}
 			
-		// lg devices : marker in view and popup open
+		// lg devices : get place + marker in view and popup open
 		ctrl.goToPlace = function(spot) {
 			$location.path(ctrl.link + spot.nameAlpha);
 			$scope.$emit('position', {index: ctrl.spots.indexOf(spot), lat: spot.lat, lg: spot.lg});
@@ -721,7 +735,7 @@ places.component('placesList', {
 		// sm devices : placeModal
 		ctrl.getPlaceModal = function(spot) {
 			spot.index = ctrl.spots.indexOf(spot)
-			mapService.setPlaceModalFromText(spot);
+			mapService.setPlaceModal(spot);
 		}
 		
 		
@@ -848,18 +862,39 @@ places.component('placeModal', {
 		comments: "=",
 		currentuser: "<",
 		maintitle: "=",
-		ready: "<",
-		view: "=",
-		nocom: "="
+		view: "="
 	},
-	controller: function($location, mapService) {
+	controller: function($rootScope, $scope, $http, $location, $sce, toHtmlFilter, mapService) {
 		
 		var ctrl = this;
+		//ctrl.comments = [];
 		ctrl.maintitle = null;
 		
-		ctrl.toggleComments = function() {
-			ctrl.nocom = !ctrl.nocom;
+		//ctrl.toggleComments = function() {
+			//ctrl.nocom = !ctrl.nocom;
+		//}
+		
+		ctrl.commentsCount = function(spot) {
+			if(!ctrl.comments.length) {
+				return spot.commentsCount;
+			} else {
+				return ctrl.comments.length;
+			}
 		}
+		
+		ctrl.getComments = function(spot) {
+			$http.get('/api/comments/place/' + spot._id).
+				then(function(response) {
+					ctrl.comments = response.data;
+					ctrl.comments.forEach(function(comment) {
+						comment.text = $sce.trustAsHtml(toHtmlFilter(comment.text));
+					});
+					//ctrl.ready = true;
+					//$rootScope.$broadcast('count');
+				});
+		};
+		
+		
 		
 		ctrl.addComment = function() {
 			if(!ctrl.currentuser) {
@@ -867,7 +902,6 @@ places.component('placeModal', {
 				return
 			}
 			ctrl.placetemplate = 'comment';
-			ctrl.nocom = false;
 		};
 		
 		ctrl.goToList = function(spot) {
@@ -1177,10 +1211,10 @@ comments.component('newCommentModal', {
 		spot: "<",
 		comments: "=",
 		currentuser: '<',
-		onCompleted: '&',
+		//onCompleted: '&',
 		maintitle: "="
 	},
-	controller: function($scope, $http, $sce, toHtmlFilter) {
+	controller: function($rootScope, $scope, $http, $sce, toHtmlFilter) {
 		
 		var ctrl = this;
 		ctrl.maintitle = '';
@@ -1208,8 +1242,9 @@ comments.component('newCommentModal', {
 					} else {
 						ctrl.comment = {};
 						ctrl.form = {};
+						$rootScope.$broadcast('refreshComment', ctrl.spot);
 						ctrl.placetemplate = 'place';
-						ctrl.onCompleted({ id: ctrl.spot._id});
+						//ctrl.onCompleted({ id: ctrl.spot._id});
 					}
 				});
 		};
