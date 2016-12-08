@@ -10,9 +10,10 @@
       .row
         .col-xs-12
           p(class="name") {{ spot.name }}
-          p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
+          
           p(class="small"): strong
             span(ng-repeat='g in spot.games') {{ g.name + ' ' }}
-          p(class="small") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
-          p(class="small" ng-bind="'Commentaires : ' + $ctrl.commentsCount(spot)")
+          p {{ spot.address  + ' ' + spot.cp + '&nbsp;' + spot.city }}
+          p(class="small grey") {{ 'Dernière mise à jour : ' + (spot.updated | date:'dd-M-yyyy') }}
+          p(class="small grey" ng-bind="'Commentaires : ' + $ctrl.commentsCount(spot)")
 
