@@ -67,9 +67,7 @@ div.modal-content {
 }
 
 div#myModal.modal.fade.in, div#placeModal.modal.fade.in {
-/*
 	background-color: #43a047;
-*/
 }
 
 #myModal div.modal-body {
