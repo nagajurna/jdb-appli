@@ -530,7 +530,7 @@ main.component('modalPlace', {
 		
 		$scope.$on('placeModal', function(ev, spot) {
 			ctrl.spot = spot;
-			//ctrl.getComments(spot._id)
+			ctrl.getComments(spot._id)
 		});
 		
 			
