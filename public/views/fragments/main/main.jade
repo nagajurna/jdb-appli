@@ -27,14 +27,17 @@
         .navbar-header(ng-class="{hide: $ctrl.home}")
           button(ng-if='!$ctrl.currentuser' type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('sign-in')")
             span(class="glyphicon glyphicon-log-in")
+            //img(src="/images/google- icons/ic_input_white_24dp/web/ic_input_white_24dp_1x.png")
           button(ng-if='$ctrl.currentuser' type="button" class="menu-right-title" ng-click="$ctrl.modalLoad('menu')")
             span(ng-if='$ctrl.currentuser' class="glyphicon glyphicon-user")
-          
+            //img(src="/images/google- icons/ic_account_circle_white_24dp/web/ic_account_circle_white_24dp_1x.png")
                    
           //a.navbar-brand(href='' ng-class="{hide: $ctrl.hideLogo}") {{ $ctrl.logo }}
           <game-drop-down game="$ctrl.maintitle"></game-drop-down>
                  
           button(type="button" class="menu-right-title" ng-if="$ctrl.btnViews" ng-click="$ctrl.toggleView()")
+            //img(src="/images/google- icons/ic_list_white_24dp/web/ic_list_white_24dp_1x.png" ng-if="$ctrl.view==='map'")
+            //img(src="/images/google- icons/ic_location_on_white_24dp/web/ic_location_on_white_24dp_1x.png" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-map-marker" ng-if="$ctrl.view==='list'")
             span(class="glyphicon glyphicon-list" ng-if="$ctrl.view==='map'")
           

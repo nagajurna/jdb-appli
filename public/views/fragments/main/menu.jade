@@ -1,18 +1,15 @@
 .row
   .col-xs-12
     p(ng-if='$ctrl.currentuser')
-      a(href='' ng-click="$ctrl.template='profile'")
-        <span class="glyphicon glyphicon-user"></span>&ensp;PROFIL
+      a(href='' ng-click="$ctrl.template='profile'") Profil
 hr(ng-if='$ctrl.currentuser && $ctrl.currentuser.role==="ADMIN"')
 .row
   .col-xs-12
     p(ng-if='$ctrl.currentuser && $ctrl.currentuser.role==="ADMIN"')
-      a(href='/admin' ng-click="$ctrl.close()")
-        <span class="glyphicon glyphicon-king"></span>&ensp;ADMINISTRATION
+      a(href='/admin' ng-click="$ctrl.close()") Administration
 hr(ng-if='$ctrl.currentuser')
 .row
   .col-xs-12
     p(ng-if='$ctrl.currentuser')
-      a(href='' ng-click='$ctrl.signout()')
-        <span class="glyphicon glyphicon-log-in"></span>&ensp;D&EacuteCONNEXION
+      a(href='' ng-click='$ctrl.signout()') D&eacuteconnexion
   

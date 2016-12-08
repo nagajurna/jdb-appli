@@ -131,14 +131,12 @@ var leafletDirective = angular.module('app.leaflet', [])
 		scope.$watchCollection(attrs.source, function(newColl,oldColl,scope) {
 			if(attrs.class==="map-lg" && window.innerWidth >= 768)  {
 				 if(angular.isDefined(newColl) & !angular.equals(newColl, oldColl)) {
-					console.log("lg");
 					removeMarker(markers);//suppress all previous markers
 					addMarker(newColl);//add new markers
 					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)
 				}
 			} else {
 				if(angular.isDefined(newColl)) {
-					console.log("sm");
 					removeMarker(markers);//suppress all previous markers
 					addMarker(newColl);//add new markers
 					mapService.setMarkers(newColl);//save new collection in session (in cas of page refresh)

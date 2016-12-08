@@ -20,6 +20,7 @@ html, body {
 	height: 100vh;
 }
 
+
 a {
   color: #757575;
   text-decoration: none;
@@ -66,9 +67,11 @@ div.modal-content {
 	border-radius: 0px;
 }
 
+/*
 div#myModal.modal.fade.in, div#placeModal.modal.fade.in {
 	background-color: #43a047;
 }
+*/
 
 #myModal div.modal-body {
 	min-height: 406px;

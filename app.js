@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/angular', express.static(__dirname + '/node_modules/angular/'));
 app.use('/angular-route', express.static(__dirname + '/node_modules/angular-route/'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/'));
-app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/'));
+app.use('/bootstrap', express.static(__dirname + '/public/bootstrap/'));
 app.use('/leaflet', express.static(__dirname + '/node_modules/leaflet/'));
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
