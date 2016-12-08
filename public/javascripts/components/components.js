@@ -504,7 +504,7 @@ main.component('modalPlace', {
 		
 		var ctrl = this;
 		ctrl.comments = [];
-		//ctrl.modal = 'place';
+		ctrl.modal = 'place';
 		ctrl.maintitle = "";
 		
 		
