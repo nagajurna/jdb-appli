@@ -36,16 +36,16 @@ a:active {
 	text-decoration: none;
 }
 
-button.place-modal  {
-	border: none;
+a.place-modal  {
+	padding: 15px;
 	padding-top: 0px;
 }
 
-button.place-modal.pull-left {
+a.place-modal.pull-left {
 	padding-left: 0px;
 }
 
-button.place-modal.pull-right {
+a.place-modal.pull-right {
 	padding-right: 0px;
 }
 
@@ -157,7 +157,7 @@ button.menu-left-title, button.menu-right-title {
 }
 
 button.menu-right-title.locate {
-	background-color: #388e3c;
+	background-color: #43a047;
 }
 
 game-drop-down a.dropdown-toggle {
@@ -364,7 +364,7 @@ ul.dropdown-menu.game-dropdown > li.active a {
 }
 
 .name {
-	color: #4caf50;
+	color: #43a047;
 	font-size: 1.10em;
 	font-weight: bold;
 }

@@ -87,30 +87,32 @@ var leafletDirective = angular.module('app.leaflet', [])
 						games += '<span>' + places[i].games[j].name + virg + '</span>';
 					}
 					var popupContent;
-					if(attrs.class==="map-sm") {
+					if(attrs.class==="map-sm") {//no link
 						popupContent = '<span id="' + i + '" class="popup-link"><strong>' + places[i].name + '</strong></span></br>' + games + '</br>'
-					} else {
+					} else {//regular link
 						popupContent = '<a id="' + places[i].nameAlpha + '" href="' + link1 + '" class="popup-link"><strong>' + places[i].name + '</strong></a></br>' + games + '</br>'
 					}
+					
+					//Pop-up on click, map-sm : placeModal (lg => regular link)
+					$(element).unbind().on("click", ".popup-link", function(e){
+						if(attrs.class==="map-sm") {//get modal place from map
+							var spot = places[e.target.parentElement.id];
+							mapService.callPlaceModal(spot);
+						}
+					});
 					
 					//Pop-up				  
 					var popup = L.popup({closeButton: false, autoPanPadding: L.point(5,60), className: 'popup'})
 						.setContent(popupContent);
 					marker.bindPopup(popup);
 					
-					//Pop-up link on click (map-sm : placeModal)
-					$(element).unbind().on("click", ".popup-link", function(e){
-						if(attrs.class==="map-sm") {//get modal place from map
-							var spot = places[e.target.parentElement.id];
-							mapService.setPlaceModal(spot);
-						}
-					});
-					
-					//Marker on click : interaction between map and list (lg)						
+					//Marker on click : interaction between map and list						
 					var myFunction = function(place) {
 						marker.on('click', function(ev) {
 							if (attrs.class==="map-lg") {
 								mapService.setScrollPosition(link2, place._id)
+							} else {
+								mapService.setSelectedSpot(place);
 							}
 						});
 					}(places[i]);
@@ -123,7 +125,6 @@ var leafletDirective = angular.module('app.leaflet', [])
 		removeMarker = function(markers) {
 			for(i=0; i<markers.length; i++)
 			{
-				//mapService.setSelectedMarker(null);
 				map.removeLayer(markers[i]);
 			}
 		}
@@ -154,7 +155,9 @@ var leafletDirective = angular.module('app.leaflet', [])
 			map.setView(center, zoom);
 		} else if(attrs.class==="map-sm") {
 			if(mapService.getSelectedSpot()) {//get modal place from list
+				
 				scope.$watch(attrs.source, function(newColl,oldColl) {
+					
 					var spot = mapService.getSelectedSpot();
 					center = [spot.lat,spot.lg];
 					zoom = 16;
@@ -377,9 +380,9 @@ main.component('main', {
 			});
 			
 			//on placeToggleView from map to placesList
-			$scope.$on('goToMap', function(event,data) {
-				ctrl.placeToggleView();
-			});
+			//$scope.$on('goToMap', function(event,data) {
+				//ctrl.placeToggleView();
+			//});
 			
 			
 			$(window).on('resize', function() {
@@ -510,6 +513,7 @@ main.component('modalPlace', {
 	controller: function($rootScope, $scope, $http, $location, $sce, toHtmlFilter, mapService) {
 		
 		var ctrl = this;
+		ctrl.spot = {};
 		ctrl.comments = [];
 		ctrl.modal = 'place';
 		ctrl.maintitle = "";
@@ -536,23 +540,30 @@ main.component('modalPlace', {
 		
 		$scope.$on('placeModal', function(ev, spot) {
 			ctrl.spot = spot;
-			//console.log(spot);
 			if(ctrl.view==='map') {
 				$scope.$digest();
 			}
+			
+			
 		});
 		
-		//$("#placeModal").on('show.bs.modal', function() {
-				//ctrl.spot = spot;
-		//});
-		
+			
 		$scope.$on('refreshComment', function(event, data) {
 			console.log(data);
 			ctrl.getComments(data);
 		});	
 		
+		$("#placeModal").on('show.bs.modal', function() {
+			var img = new Image();
+			img.src = ctrl.spot.image_link;
+			img.onload = function(e) {
+				$('#img' + ctrl.spot._id).append(e.target);
+			};
+		});
 		
+				
 		$("#placeModal").on('hidden.bs.modal', function() {
+				$('#img' + ctrl.spot._id).empty();
 				ctrl.spot = {};
 				ctrl.comments = [];
 				$rootScope.$broadcast('count', ctrl.spot);
@@ -616,7 +627,7 @@ main.directive('gameDropDown', function($route, mapService) {
 			};
 			
 			scope.onChange = function() {
-				//mapService.setSelectedMarker(null);
+				mapService.setSelectedSpot(null);
 			}
 			
 						
@@ -742,7 +753,7 @@ places.component('placesList', {
 		// sm devices : placeModal
 		ctrl.getPlaceModal = function(spot) {
 			spot.index = ctrl.spots.indexOf(spot)
-			mapService.setPlaceModal(spot);
+			mapService.callPlaceModal(spot);
 		}
 		
 		
@@ -907,6 +918,7 @@ places.component('placeModal', {
 		ctrl.goToList = function(spot) {
 			mapService.stopLocate();
 			mapService.setScrollPosition($location.path(),spot._id);
+			mapService.setSelectedSpot(null);
 			ctrl.view = 'list';
 			$("#placeModal").modal('hide');
 		}

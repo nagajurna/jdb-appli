@@ -57,7 +57,7 @@ var mapService = angular.module('app.mapService', [])
 		//$rootScope.$broadcast('placeModal', spot);
 	//};
 	
-	mapService.setPlaceModal = function(spot) {
+	mapService.callPlaceModal = function(spot) {
 		$rootScope.$broadcast('placeModal', spot);
 	};
 	
