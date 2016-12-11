@@ -547,13 +547,14 @@ main.component('modalPlace', {
 			
 		});
 		
-			
+		//when new comment, getComments is launched form this component	
 		$scope.$on('refreshComment', function(event, data) {
 			console.log(data);
 			ctrl.getComments(data);
 		});	
 		
 		$("#placeModal").on('show.bs.modal', function() {
+			//load image in modal
 			var img = new Image();
 			img.src = ctrl.spot.image_link;
 			img.onload = function(e) {
@@ -563,10 +564,11 @@ main.component('modalPlace', {
 		
 				
 		$("#placeModal").on('hidden.bs.modal', function() {
-				$('#img' + ctrl.spot._id).empty();
-				ctrl.spot = {};
-				ctrl.comments = [];
-				$rootScope.$broadcast('count', ctrl.spot);
+			//remove image from modal
+			$('#img' + ctrl.spot._id).empty();
+			ctrl.spot = {};
+			ctrl.comments = [];
+			$rootScope.$broadcast('count', ctrl.spot);
 		});
 		
 	}

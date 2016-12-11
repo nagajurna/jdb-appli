@@ -2,6 +2,7 @@
 require( './db' );
 
 var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -54,6 +55,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 // config Passport
 var configPassport = require('./passport/config');
+
+app.use(cors());
 
 app.use('/', routes);
 app.use('/api', api);
