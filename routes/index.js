@@ -13,6 +13,13 @@ router.get('/', function(req, res, next) {
 	//res.status('200').sendFile('index', {root: 'public/views/'});
 });
 
+router.get('/xsrf', function(req, res, next) {
+	//generate token for XSRF-TOKEN
+	var token = base64url(crypto.randomBytes(64));
+	res.cookie('XSRF-TOKEN', token);
+	return res.json({token: token});
+});
+
 /* GET fragments files. */
 //router.get('/fragments/:filename', function(req, res, next) {
 	//console.log('ok');
