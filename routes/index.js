@@ -14,8 +14,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/xsrf', function(req, res, next) {
-	var token = req.cookie('XSRF-TOKEN');
-	return res.json({token: token});
+	if(req.cookie.XSRF-TOKEN) {
+		var token = req.cookie.XSRF-TOKEN;
+		return res.json({token: token});
+	}
+	return null
 });
 
 /* GET fragments files. */
