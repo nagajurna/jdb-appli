@@ -18,7 +18,7 @@ router.get('/xsrf', function(req, res, next) {
 		var token = req.cookie.XSRF-TOKEN;
 		return res.json({token: token});
 	}
-	return null
+	return res.json({token: null});
 });
 
 /* GET fragments files. */
