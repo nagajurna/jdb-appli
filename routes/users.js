@@ -106,10 +106,12 @@ router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 		});
 	  })(req, res, next);
 });
-	
-router.post('/signin', [credentialsPreCheck], function(req, res, next) {
+
+
+router.post('/signin', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signin', function(err, user, info) {
+
 		if (err) { return next(err); }
 		
 		if (!user) { return res.json(info); }
@@ -250,6 +252,7 @@ router.get('/signout', function(req, res){
 });
 
 router.get('/check', function(req, res){
+	
 	//if session
 	if(req.isAuthenticated()) {
 	  var currentUser = {};

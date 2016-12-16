@@ -56,11 +56,22 @@ app.use(passport.session());
 // config Passport
 var configPassport = require('./passport/config');
 
+var corsOptions = {
+   origin: true,
+   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+   methods: ['GET', 'PUT', 'POST'],
+   allowedHeaders: 'Content-Type'
+};
+
+app.options('*', cors(corsOptions));
 app.use(cors());
+
 
 app.use('/', routes);
 app.use('/api', api);
 app.use('/users', users);
+
+app.options('/api/users/signin', cors());	
 
 app.all('/*', function(req, res) {
         res.render('index', {title: "JDB"});
