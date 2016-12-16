@@ -45,6 +45,17 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/'));
 app.use('/bootstrap', express.static(__dirname + '/public/bootstrap/'));
 app.use('/leaflet', express.static(__dirname + '/node_modules/leaflet/'));
 
+var corsOptions = {
+   origin: true,
+   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+   allowedHeaders: ['Content-Type','X-XSRF-TOKEN', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
+   credentials: true
+};
+
+//app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -56,22 +67,13 @@ app.use(passport.session());
 // config Passport
 var configPassport = require('./passport/config');
 
-var corsOptions = {
-   origin: true,
-   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-   methods: ['GET', 'PUT', 'POST'],
-   allowedHeaders: ['Content-Type','X-XSRF-TOKEN']
-};
-
-app.options('*', cors(corsOptions));
-app.use(cors());
 
 
 app.use('/', routes);
 app.use('/api', api);
 app.use('/users', users);
 
-app.options('/api/users/signin', cors());	
+
 
 app.all('/*', function(req, res) {
         res.render('index', {title: "JDB"});
