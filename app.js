@@ -61,7 +61,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('jdb secret key'));
-app.use(session({ secret: 'my secret key', resave: false, saveUninitialized: false, cookie: { httpOnly: false }}));
+app.use(session({ secret: 'my secret key', resave: false, saveUninitialized: false, cookie: { httpOnly: false, domain: "desolate-inlet-15869.herokuapp.com" }}));
 app.use(passport.initialize());
 app.use(passport.session());
 // config Passport
