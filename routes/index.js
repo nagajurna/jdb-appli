@@ -14,8 +14,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/xsrf', function(req, res, next) {
-	//generate token for XSRF-TOKEN
-	var token = req.cookie('XSRF-TOKEN', token);
+	var token = req.cookie('XSRF-TOKEN');
 	return res.json({token: token});
 });
 
