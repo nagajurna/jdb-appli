@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var base64url = require('base64url');
 var router = express.Router();
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	//generate token for XSRF-TOKEN
@@ -13,13 +14,6 @@ router.get('/', function(req, res, next) {
 	//res.status('200').sendFile('index', {root: 'public/views/'});
 });
 
-router.get('/xsrf', function(req, res, next) {
-	if(req.cookie.XSRF-TOKEN) {
-		var token = req.cookie.XSRF-TOKEN;
-		return res.json({token: token});
-	}
-	return res.json({token: null});
-});
 
 /* GET fragments files. */
 //router.get('/fragments/:filename', function(req, res, next) {
