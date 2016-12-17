@@ -263,6 +263,7 @@ main.component('main', {
 			ctrl.appInit = function () {
 				ctrl.getUser();
 				ctrl.getMarkers();
+				ctrl.getGames();
 			};
 			
 			/*USER*/
@@ -280,6 +281,13 @@ main.component('main', {
 				ctrl.currentuser = data.user;
 				ctrl.admin = (ctrl.currentuser && ctrl.currentuser.role==="ADMIN") ? true : false;
 			});
+			ctrl.getGames = function() {
+				$http.get('/api/games').
+					then(function(response) {
+						//TEST
+						
+					});
+			};
 			//log out
 			ctrl.signout = function() {
 				$http.get('/users/signout').

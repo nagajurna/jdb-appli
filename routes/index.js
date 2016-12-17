@@ -1,15 +1,14 @@
 var express = require('express');
-var crypto = require('crypto');
-var base64url = require('base64url');
+//var crypto = require('crypto');
+//var base64url = require('base64url');
 var router = express.Router();
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	//generate token for XSRF-TOKEN
-	var token = base64url(crypto.randomBytes(64));
-	console.log(token);
-	res.cookie('XSRF-TOKEN', token);
+	//var token = base64url(crypto.randomBytes(64));
+	//res.cookie('XSRF-TOKEN', token);
 	//render index
 	res.render('index', {title: "JDB"});
 	//res.status('200').sendFile('index', {root: 'public/views/'});
