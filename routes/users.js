@@ -16,7 +16,7 @@ var csrfToken;
 
 var csrfCheck = function(req, res, next) {
 	
-	if(req.body.csrfToken !== csrfToken + 'mlk') { 
+	if(req.body.csrfToken !== csrfToken) { 
 		return res.json({xsrfAlert: true, message: 'requête invalide'}); 
 	}
 	
@@ -87,7 +87,7 @@ var credentialsPreCheck = function(req, res, next) {
 	next();
 }
 
-router.get(/^\/(signup|signin)$/, function(req, res, next) {
+router.get('/csrfToken', function(req, res, next) {
 	csrfToken = base64url(crypto.randomBytes(64));
 	return res.json({ csrfToken: csrfToken });
 });

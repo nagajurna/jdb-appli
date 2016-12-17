@@ -1371,7 +1371,7 @@ users.component('signUp', {
 		ctrl.user.csrfToken = "";
 		
 		ctrl.token = function() {
-			$http.get('/users/signup').
+			$http.get('/users/csrfToken').
 				then(function(response) {
 					ctrl.user.csrfToken = response.data.csrfToken;
 				});
@@ -1429,7 +1429,7 @@ users.component('signIn', {
 		ctrl.user.csrfToken = "";
 		
 		ctrl.token = function() {
-			$http.get('/users/signin').
+			$http.get('/users/csrfToken').
 				then(function(response) {
 					ctrl.user.csrfToken = response.data.csrfToken;
 				});
