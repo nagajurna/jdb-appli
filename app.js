@@ -49,11 +49,11 @@ var corsOptions = {
    origin: true,
    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
    methods: ['GET', 'PUT', 'POST'],
-   allowedHeaders: ['Content-Type', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
-   credentials: false
+   allowedHeaders: ['Content-Type', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept', 'X-XSRF-TOKEN'],
+   credentials: true
 };
 
-//app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
