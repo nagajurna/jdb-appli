@@ -48,8 +48,8 @@ app.use('/leaflet', express.static(__dirname + '/node_modules/leaflet/'));
 var corsOptions = {
    origin: true,
    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-   methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-   allowedHeaders: ['Content-Type','X-XSRF-TOKEN', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
+   methods: ['GET', 'PUT', 'POST'],
+   allowedHeaders: ['Content-Type', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
    credentials: false
 };
 
