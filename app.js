@@ -50,7 +50,7 @@ var corsOptions = {
    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
    allowedHeaders: ['Content-Type','X-XSRF-TOKEN', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
-   credentials: true
+   credentials: false
 };
 
 //app.options('*', cors(corsOptions));
