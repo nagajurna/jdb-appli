@@ -263,7 +263,6 @@ main.component('main', {
 			ctrl.appInit = function () {
 				ctrl.getUser();
 				ctrl.getMarkers();
-				ctrl.getGames();
 			};
 			
 			/*USER*/
@@ -281,13 +280,7 @@ main.component('main', {
 				ctrl.currentuser = data.user;
 				ctrl.admin = (ctrl.currentuser && ctrl.currentuser.role==="ADMIN") ? true : false;
 			});
-			ctrl.getGames = function() {
-				$http.get('/api/games').
-					then(function(response) {
-						//TEST
-						
-					});
-			};
+			
 			//log out
 			ctrl.signout = function() {
 				$http.get('/users/signout').
@@ -1375,6 +1368,14 @@ users.component('signUp', {
 		ctrl.maintitle = "Inscription";
 		ctrl.user = {};
 		ctrl.form = {};
+		ctrl.user.csrfToken = "";
+		
+		ctrl.token = function() {
+			$http.get('/users/signup').
+				then(function(response) {
+					ctrl.user.csrfToken = response.data.csrfToken;
+				});
+		};
 		
 		ctrl.signup = function() {
 			$http.post('/users/signup', ctrl.user).
@@ -1402,6 +1403,8 @@ users.component('signUp', {
 								ctrl.onCompleted({action: "hide"});
 							}
 						});
+					} else {
+						ctrl.form.message = response.data.message;
 					}
 				});
 		};
@@ -1423,6 +1426,15 @@ users.component('signIn', {
 		ctrl.maintitle = "Connexion";
 		ctrl.user = {};
 		ctrl.form = {};
+		ctrl.user.csrfToken = "";
+		
+		ctrl.token = function() {
+			$http.get('/users/signin').
+				then(function(response) {
+					ctrl.user.csrfToken = response.data.csrfToken;
+				});
+		};
+		
 		
 		ctrl.signin = function() {
 			$http.post('/users/signin', ctrl.user).
@@ -1451,6 +1463,8 @@ users.component('signIn', {
 							}
 						});
 						
+					} else {
+						ctrl.form.message = response.data.message;
 					}
 				});
 		};		

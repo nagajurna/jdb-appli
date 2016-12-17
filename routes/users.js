@@ -12,10 +12,12 @@ var User = require('../Models/User');
 
 var passport = require('passport');
 
-var xsrfCheck = function(req, res, next) {
+var csrfToken;
+
+var csrfCheck = function(req, res, next) {
 	
-	if(req.headers['x-xsrf-token'] !== req.cookies['XSRF-TOKEN']) { 
-		return res.json({xsrfAlert: true, message: 'req.not.valid : cookie ' + req.cookies['XSRF-TOKEN'] + ' header: ' +  req.headers['x-xsrf-token']}); 
+	if(req.body.csrfToken !== csrfToken + 'mlk') { 
+		return res.json({xsrfAlert: true, message: 'requête invalide'}); 
 	}
 	
 	next();
@@ -85,7 +87,12 @@ var credentialsPreCheck = function(req, res, next) {
 	next();
 }
 
-router.post('/signup', [credentialsPreCheck], function(req, res, next) {
+router.get(/^\/(signup|signin)$/, function(req, res, next) {
+	csrfToken = base64url(crypto.randomBytes(64));
+	return res.json({ csrfToken: csrfToken });
+});
+
+router.post('/signup', [csrfCheck, credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signup', function(err, user, info) {
 		if (err) { return next(err); }
@@ -109,7 +116,7 @@ router.post('/signup', [credentialsPreCheck], function(req, res, next) {
 });
 
 
-router.post('/signin', [credentialsPreCheck], function(req, res, next) {
+router.post('/signin', [csrfCheck, credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signin', function(err, user, info) {
 

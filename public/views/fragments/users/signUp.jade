@@ -1,4 +1,4 @@
-div(title="formulaire d'inscription")
+div(title="formulaire d'inscription" ng-init="$ctrl.token()")
   form(novalidate)
     p(ng-bind='$ctrl.form.message' class='small top-error-message')
     .form-group
@@ -20,6 +20,7 @@ div(title="formulaire d'inscription")
     .row
       .col-xs-4
         p
+          input(type="hidden" ng-model="$ctrl.user.csrfToken")
           input(type='submit' class="btn btn-default" title="Valider" ng-click='$ctrl.signup()' value='Valider')
       .col-xs-8    
         .checkbox(class="pull-right")
