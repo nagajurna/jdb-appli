@@ -85,7 +85,7 @@ var credentialsPreCheck = function(req, res, next) {
 	next();
 }
 
-router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
+router.post('/signup', [credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signup', function(err, user, info) {
 		if (err) { return next(err); }
@@ -109,7 +109,7 @@ router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next)
 });
 
 
-router.post('/signin', [xsrfCheck, credentialsPreCheck], function(req, res, next) {
+router.post('/signin', [credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signin', function(err, user, info) {
 
@@ -131,7 +131,7 @@ router.post('/signin', [xsrfCheck, credentialsPreCheck], function(req, res, next
 	  })(req, res, next);
 });
 	
-router.put('/resetPassword', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
+router.put('/resetPassword', [credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('resetPassword', function(err, user, info) {
 		if (err) { return next(err); }
@@ -143,7 +143,7 @@ router.put('/resetPassword', [xsrfCheck,credentialsPreCheck], function(req, res,
 	  })(req, res, next);
 });
 
-router.post('/forgotPassword', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
+router.post('/forgotPassword', [credentialsPreCheck], function(req, res, next) {
 	
 	User.findOne({email :  req.body.email }, function(err, user) {
 		if(err) {
@@ -197,7 +197,7 @@ router.post('/forgotPassword', [xsrfCheck,credentialsPreCheck], function(req, re
 	 
 });
 
-router.put('/forgotPassword/reset', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
+router.put('/forgotPassword/reset', [credentialsPreCheck], function(req, res, next) {
 	console.log(req.body);
 	User.findOne({email :  req.body.email }, function(err, user) {
 		if(err) {

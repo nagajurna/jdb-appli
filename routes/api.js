@@ -12,17 +12,8 @@ var Place = require('../Models/Place');
 var Comment = require('../Models/Comment');
 
 
-var xsrftoken = function(req, res, next) {
-	
-	var token = base64url(crypto.randomBytes(64));
-	console.log(token);
-	res.cookie('XSRF-TOKEN', token);
-	
-	next();
-};
-
 /* GET games */
-router.get('/games', xsrftoken, function(req, res, next) {
+router.get('/games', function(req, res, next) {
 	
 	Game
 	.find()

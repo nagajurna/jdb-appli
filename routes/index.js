@@ -1,6 +1,6 @@
 var express = require('express');
-//var crypto = require('crypto');
-//var base64url = require('base64url');
+var crypto = require('crypto');
+var base64url = require('base64url');
 var router = express.Router();
 
 
