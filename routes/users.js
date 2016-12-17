@@ -84,7 +84,7 @@ var credentialsPreCheck = function(req, res, next) {
 	next();
 }
 
-router.post('/signup', [credentialsPreCheck], function(req, res, next) {
+router.post('/signup', [xsrfCheck,credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signup', function(err, user, info) {
 		if (err) { return next(err); }
@@ -108,7 +108,7 @@ router.post('/signup', [credentialsPreCheck], function(req, res, next) {
 });
 
 
-router.post('/signin', [credentialsPreCheck], function(req, res, next) {
+router.post('/signin', [xsrfCheck, credentialsPreCheck], function(req, res, next) {
 	
 	passport.authenticate('signin', function(err, user, info) {
 
