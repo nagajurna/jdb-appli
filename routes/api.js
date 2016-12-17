@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var cookieParser = require('cookie-parser');
 var Entities = require('html-entities').XmlEntities;
+var crypto = require('crypto');
+var base64url = require('base64url');
 
 var mongoose = require('mongoose');
 
@@ -10,8 +12,17 @@ var Place = require('../Models/Place');
 var Comment = require('../Models/Comment');
 
 
+var xsrftoken = function(req, res, next) {
+	
+	var token = base64url(crypto.randomBytes(64));
+	console.log(token);
+	res.cookie('XSRF-TOKEN', token);
+	
+	next();
+};
+
 /* GET games */
-router.get('/games', function(req, res, next) {
+router.get('/games', xsrftoken, function(req, res, next) {
 	
 	Game
 	.find()
