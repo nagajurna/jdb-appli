@@ -16,8 +16,8 @@ var csrfToken;
 
 var csrfCheck = function(req, res, next) {
 	
-	if(req.body.csrfToken !== csrfToken + 'lkj') { 
-		return res.json({xsrfAlert: true, message: 'requête invalide'}); 
+	if(req.body.csrfToken !== csrfToken) { 
+		return res.json({ xsrfAlert: true, message: 'requête invalide' }); 
 	}
 	
 	next();
