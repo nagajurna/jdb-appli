@@ -533,6 +533,11 @@ main.component('modalPlace', {
 		
 		ctrl.backToPlace = function() {
 			ctrl.placetemplate = 'place';
+			var img = new Image();
+			img.src = ctrl.spot.image_link;
+			img.onload = function(e) {
+				$('#img' + ctrl.spot._id).append(e.target);
+			};
 		}
 		
 		ctrl.close = function(spot) {
@@ -550,7 +555,11 @@ main.component('modalPlace', {
 		
 		//when new comment, getComments is launched form this component	
 		$scope.$on('refreshComment', function(event, data) {
-			console.log(data);
+			var img = new Image();
+			img.src = ctrl.spot.image_link;
+			img.onload = function(e) {
+				$('#img' + ctrl.spot._id).append(e.target);
+			};
 			ctrl.getComments(data);
 		});	
 		
@@ -1178,6 +1187,19 @@ comments.component('commentNew', {
 		ctrl.path = $location.path().replace('/comments/new','');
 		ctrl.form = {};
 		ctrl.comment = {};
+		ctrl.comment.csrfToken = "";
+		
+		ctrl.token = function() {
+			$http.get('/api/csrfToken').
+				then(function(response) {
+					ctrl.comment.csrfToken = response.data.csrfToken;
+				});
+		};
+		
+		ctrl.init = function() {
+			ctrl.token();
+			ctrl.getPlace();
+		}
 				
 		ctrl.getPlace = function() {
 			$http.get('/api/places/'  + $route.current.params.name).
@@ -1196,6 +1218,7 @@ comments.component('commentNew', {
 			
 			$http.post('/api/comments', ctrl.comment).
 				then(function(response) {
+					
 					if(response.data.saved===false) {
 						if(response.data.reason.name === "ValidationError")
 						{
@@ -1204,10 +1227,12 @@ comments.component('commentNew', {
 							ctrl.form.message = "Problème au moment de l\'enregistrement";
 						}
 						
-					} else {
+					} else if(response.data.saved===true) {
 						ctrl.comment = {};
 						ctrl.form = {};
 						$location.path(ctrl.path);
+					} else {
+						ctrl.form.message = response.data.message;
 					}
 				});
 		};
@@ -1235,6 +1260,14 @@ comments.component('newCommentModal', {
 		ctrl.maintitle = '';
 		ctrl.form = {};
 		ctrl.comment = {};
+		ctrl.comment.csrfToken = "";
+		
+		ctrl.token = function() {
+			$http.get('/api/csrfToken').
+				then(function(response) {
+					ctrl.comment.csrfToken = response.data.csrfToken;
+				});
+		};
 				
 		ctrl.add = function() {
 			if(!ctrl.currentuser) {
@@ -1254,12 +1287,14 @@ comments.component('newCommentModal', {
 							ctrl.form.message = "Problème au moment de l\'enregistrement";
 						}
 						
-					} else {
+					} else if(response.data.saved===true) {
 						ctrl.comment = {};
 						ctrl.form = {};
 						$rootScope.$broadcast('refreshComment', ctrl.spot);
 						ctrl.placetemplate = 'place';
 						//ctrl.onCompleted({ id: ctrl.spot._id});
+					} else {
+						ctrl.form.message = response.data.message;
 					}
 				});
 		};

@@ -11,6 +11,21 @@ var Game = require('../Models/Game');
 var Place = require('../Models/Place');
 var Comment = require('../Models/Comment');
 
+var csrfToken;
+
+var csrfCheck = function(req, res, next) {
+	
+	if(req.body.csrfToken !== csrfToken) { 
+		return res.json({ xsrfAlert: true, message: 'requête invalide' }); 
+	}
+	
+	next();
+};
+
+router.get('/csrfToken', function(req, res, next) {
+	csrfToken = base64url(crypto.randomBytes(64));
+	return res.json({ csrfToken: csrfToken });
+});
 
 /* GET games */
 router.get('/games', function(req, res, next) {
@@ -254,7 +269,7 @@ router.get('/admin/comments/place/:id', function(req, res, next) {
 });
 
 /* Add comment*/
-router.post('/comments', function(req, res, next) {
+router.post('/comments', csrfCheck, function(req, res, next) {
 	
 	var entities = new Entities();
 	var text;
