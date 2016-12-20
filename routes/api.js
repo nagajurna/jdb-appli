@@ -98,6 +98,21 @@ router.delete('/games/:id', function(req, res, next) {
 
 
 /* GET places */
+router.get('/search', function(req, res, next) {
+	var q = {$regex: req.query.q, $options: "i"};
+	Place
+	.find({visible: true})
+	.or([{ name: q}, { adress: q}, { cp: q}, { city: q}, { description: q}])
+	.sort({ nameAlpha: 1 })
+	.populate('games')
+	.exec(function(err,places) {
+		if(err) return console.log(err);
+		res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+		res.json(places);
+		});
+});
+
+/* GET places */
 router.get('/places', function(req, res, next) {
 	Place
 	.find({visible: true})
@@ -122,6 +137,7 @@ router.get('/places', function(req, res, next) {
 		res.json(places);
 		});
 });
+
 
 /* GET places/game */
 router.get('/places/game/:id', function(req, res, next) {
