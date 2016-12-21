@@ -98,8 +98,8 @@ router.delete('/games/:id', function(req, res, next) {
 
 
 /* GET places */
-router.get('/search', function(req, res, next) {
-	var q = {$regex: req.query.q, $options: "i"};
+router.post('/search', function(req, res, next) {
+	var q = {$regex: req.body.search, $options: "i"};
 	Place
 	.find({visible: true})
 	.or([{ name: q}, { adress: q}, { cp: q}, { city: q}, { description: q}])
