@@ -107,7 +107,6 @@ router.get('/search', function(req, res, next) {
 	.populate('games')
 	.exec(function(err,places) {
 		if(err) return console.log(err);
-		res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		res.json(places);
 		});
 });
