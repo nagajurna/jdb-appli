@@ -205,7 +205,6 @@ router.post('/forgotPassword', [credentialsPreCheck], function(req, res, next) {
 });
 
 router.put('/forgotPassword/reset', [credentialsPreCheck], function(req, res, next) {
-	console.log(req.body);
 	User.findOne({email :  req.body.email }, function(err, user) {
 		if(err) {
 			console.log(err);
